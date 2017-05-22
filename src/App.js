@@ -17,7 +17,8 @@ class App extends Component {
             "department":[],
             "SAT":null,
             "ACT":null,
-            "ranking": null
+            "ranking": null,
+            "handleChange": this.handleChange
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
@@ -133,8 +134,7 @@ class App extends Component {
                 </form>
             </Drawer>
             <Content >
-            {child}
-
+                {child}
             </Content>
         </Layout>
     );
