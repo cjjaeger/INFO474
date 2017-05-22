@@ -7,13 +7,17 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "git": "^0.1.5",
     "jquery": "^3.2.1",
+    "lfs": "0.0.4",
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
+    "react-bootstrap": "^0.31.0",
     "react-bootstrap-slider": "^2.0.0",
     "react-dom": "^15.5.4",
     "react-mdl": "^1.10.3",
-    "react-router": "^3.0.0"
+    "react-router": "^3.0.0",
+    "react-select": "^1.0.0-rc.4"
   },
   "scripts": {
     "start": "react-scripts start",

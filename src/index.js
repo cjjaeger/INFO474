@@ -8,7 +8,9 @@ import './index.css';
 import 'react-mdl/extra/material.css';
 import 'react-mdl/extra/material.js';
 import "bootstrap/dist/css/bootstrap.css";
-import "react-bootstrap-slider/src/css/bootstrap-slider.min.css"
+import "react-bootstrap-slider/src/css/bootstrap-slider.min.css";
+import 'react-select/dist/react-select.css';
+
 
 ReactDOM.render(
     <Router history={hashHistory}>

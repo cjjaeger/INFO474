@@ -17,6 +17,12 @@
 .App-intro {
   font-size: large;
 }
+.center{
+    margin-left: auto;
+    margin-right: auto;
+    height: inherit;
+
+}
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
