@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import Filter from './Filter';
-import {Layout, Header, Drawer, Navigation, Content,Textfield, Checkbox,Button  } from 'react-mdl';
-import {ControlLabel} from 'react-bootstrap';
+import { Layout, Header, Drawer, Content, Textfield, Checkbox, Button } from 'react-mdl';
+import { ControlLabel } from 'react-bootstrap';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Select from 'react-select';
-
-
 
 class App extends Component {
     constructor(props) {
@@ -87,10 +84,9 @@ class App extends Component {
         }
         //console.log(event.target.checked);
     }
+    
     render() {
-        const {children} = this.props;
-        var stuff =this.state.filter;
-        const child = React.cloneElement(children, stuff);
+        const child = React.cloneElement(this.props.children, this.state);
         //console.log( this.props);
         var deptsList = ["Aeronautics and Astronautics","African Studies",
         "American Ethnic Studies",
@@ -151,9 +147,9 @@ class App extends Component {
             deptsList[i] = {"value":deptsList[i], "label":deptsList[i]};
         }
         return (
-
         <Layout fixedHeader fixedDrawer>
-            <Header title={<h1> Because College</h1>}>
+            <Header>
+              <h1>Because College</h1>
             </Header>
             <Drawer title="Filter">
                 <form role="form">
@@ -239,7 +235,7 @@ class App extends Component {
             {child}
             </Content>
         </Layout>
-    );
+      );
   }
 }
 
