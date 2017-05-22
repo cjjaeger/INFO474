@@ -230,7 +230,9 @@ class App extends Component {
                         reversed={false}
                         name="tuition"
                         />
-                     <Button onClick={this.applyFilter} raised colored>Apply Filter</Button>
+                    <div id="filterButton">
+                        <Button onClick={this.applyFilter} raised colored>Apply Filter</Button>
+                    </div>
                 </form>
             </Drawer>
             <Content >
