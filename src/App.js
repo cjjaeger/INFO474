@@ -134,6 +134,7 @@ class App extends Component {
             </Drawer>
             <Content >
             {child}
+
             </Content>
         </Layout>
     );
