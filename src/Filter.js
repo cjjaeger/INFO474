@@ -23,20 +23,27 @@ class Filter extends Component {
       const {msg} = this.props;
       //console.log(this.props);
     return (
-      <div className="center">
-     {this.props.SAT}
-     <Textfield
-         onChange={this.setZipFilter}
-         pattern="-?[0-9]*(\.[0-9]+)?"
-         error="Input is not a number!"
-         label="Zip Code"
-         style={{width: '200px'}}
-         name="zip"
-         floatingLabel
-         />
-         <Button onClick={this.filterMap} raised colored>Next</Button>
-
-      </div>
+        <div>
+            <div className="center">
+            <div className="alert alert-info" role="alert">
+                Enter in your zip code so we can customize the colleges we show to you!
+            </div>
+            </div>
+            <div className="center">
+                <Textfield
+                onChange={this.setZipFilter}
+                pattern="-?[0-9]*(\.[0-9]+)?"
+                error="Input is not a number!"
+                label="Zip Code"
+                style={{width: '200px'}}
+                name="zip"
+                floatingLabel
+                />
+            </div>
+            <div className="center">
+                <Button onClick={this.filterMap} raised colored>Next</Button>
+            </div>
+        </div>
     );
   }
 }
