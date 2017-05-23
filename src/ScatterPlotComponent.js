@@ -9,38 +9,39 @@ class ScatterPlotComponent extends Component {
         this.update();
     }
 
-    update(){
-        var xVar = 'graduationRate';
-        var yVar = 'medianIncome';
+    update() {
+        var xVar = '2014.student.retention_rate.four_year.full_time';
+        var yVar = '2014.student.avg_dependent_income.2014dollars';
         var chartData;
 
-        // Load data in using d3's csv function.
-        d3.csv("data.csv", function(error, data) {
-            // Put data into generic terms
-            var prepData = function() {
-                chartData = data.map(function(d) {
-                    // console.log(d);
-                    return {
-                        x: d[xVar],
-                        y: d[yVar],
-                        id: d.name,
-                        location: d.location
-                    };
-                });
-            };
+        var prepData = () => {
+            chartData = this.props.data.filter(d => {
+              return d[xVar] != null && d[yVar] != null &&
+                     d.id != null && d['school.locale'] != null;
+            });
+            chartData = chartData.map(d => {
+                // console.log(d);
+                return {
+                    x: d[xVar],
+                    y: d[yVar],
+                    id: d.name,
+                    location: d['school.locale']
+                };
+            });
+        };
 
-            prepData();
+        prepData();
 
-            // Define function to draw ScatterPlot
-            var scatter = ScatterPlot().xTitle('Graduation Rate (%)')
-                                        .yTitle('Median Income ($)');
+        // Define function to draw ScatterPlot
+        var scatter = ScatterPlot().xTitle('Graduation Rate')
+                                   .height(700)
+                                   .width(900)
+                                   .yTitle('Median Family Income');
 
-            // Create chart
-            var chart = d3.select("#root")
-                .datum(chartData)
-                .call(scatter);
-
-        });
+        // Create chart
+        var chart = d3.select(this.root)
+            .datum(chartData)
+            .call(scatter);
 
     }
 

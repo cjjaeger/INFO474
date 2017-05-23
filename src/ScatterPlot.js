@@ -69,8 +69,9 @@ var ScatterPlot = function() {
                 .attr('class', 'title y');
 
             // Define xAxis and yAxis functions
-            var xAxis = d3.axisBottom().tickFormat(d3.format('.2s'));
-            var yAxis = d3.axisLeft().tickFormat(d3.format('.2s'));
+            var xAxis = d3.axisBottom().tickFormat(d3.format(".0%"));
+
+            var yAxis = d3.axisLeft().tickFormat(d3.format('$.2s'));
 
             // Calculate x and y scales
             var xMax = d3.max(data, (d) => +d.x) * 1.05;
@@ -124,15 +125,13 @@ var ScatterPlot = function() {
                 .attr("height", 18)
                 .style("fill", fill);
 
-            var legendText = ['urban', 'semi-rural', 'rural']
-
             // draw legend text
             legend.append("text")
                 .attr("x", width - 24)
                 .attr("y", 9)
                 .attr("dy", ".35em")
                 .style("text-anchor", "end")
-                .text(legendText, function(d) { 
+                .text(function(d) {
                     return d;
                 });
 
