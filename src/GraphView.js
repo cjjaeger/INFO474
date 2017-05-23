@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DonutScatterComponent from './DonutScatterComponent';
+import ScatterPlotComponent from './ScatterPlotComponent';
 import './App.css';
 
 class GraphView extends Component {

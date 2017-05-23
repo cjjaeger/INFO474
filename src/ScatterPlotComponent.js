@@ -10,32 +10,37 @@ class ScatterPlotComponent extends Component {
     }
 
     update(){
-        this.scatterPlot.xTitle('Graduation Rate (%)')
-                        .yTitle('Median Income ($)');
-
-        var chartData = this.props.data.filter(function(x) {
-            // return x['appliedFinancialAid'] !== null &&
-            //      x['receivedFinancialAid'] !== null &&
-            //      x['receivedFullFinancialAid'] !== null &&
-            //      x.roomAndBoardCost !== null &&
-            //      x['2014.cost.tuition.out_of_state'] !== null;
-        });
-
-        chartData = chartData.map(function(d) {
-        //xVar and yVar using data name
         var xVar = 'graduationRate';
         var yVar = 'medianIncome';
-        return {
-            x: d[xVar],
-            y: d[yVar],
-            id: d.name,
-            location: d.location
-        };
-        });
+        var chartData;
 
-        d3.select(this.root)
-            .datum(chartData)
-            .call(this.scatterPlot);
+        // Load data in using d3's csv function.
+        d3.csv("data.csv", function(error, data) {
+            // Put data into generic terms
+            var prepData = function() {
+                chartData = data.map(function(d) {
+                    // console.log(d);
+                    return {
+                        x: d[xVar],
+                        y: d[yVar],
+                        id: d.name,
+                        location: d.location
+                    };
+                });
+            };
+
+            prepData();
+
+            // Define function to draw ScatterPlot
+            var scatter = ScatterPlot().xTitle('Graduation Rate (%)')
+                                        .yTitle('Median Income ($)');
+
+            // Create chart
+            var chart = d3.select("#root")
+                .datum(chartData)
+                .call(scatter);
+
+        });
 
     }
 
