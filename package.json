@@ -31,8 +31,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "scrape": "npm run scrape:us-news-ids && npm run scrape:us-news-data",
+    "scrape": "npm run scrape:us-news && npm run scrape:college-scorecard && npm run scrape:merge",
+    "scrape:us-news": "npm run scrape:us-news-ids && npm run scrape:us-news-data",
     "scrape:us-news-ids": "node script/scrape-us-news-ids.js",
-    "scrape:us-news-data": "node script/scrape-us-news-data.js"
+    "scrape:us-news-data": "node script/scrape-us-news-data.js",
+    "scrape:college-scorecard": "node script/scrape-college-scorecard-data.js",
+    "scrape:merge": "node script/merge-data.js"
   }
 }

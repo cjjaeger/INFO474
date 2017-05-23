@@ -8,20 +8,27 @@ class DonutScatterComponent extends Component {
     this.donutScatter = DonutScatter();
     this.update();
   }
-  
+
   update() {
     // Update parameters
     this.donutScatter
-        .width(700)
-        .height(500)
+        .width(900)
+        .height(700)
         .fill('blue')
         .xTitle('Tuition')
         .yTitle('Room and Board')
         .xAccessor('tuition')
         .yAccessor('roomAndBoardCost');
-    
-    var chartData = this.props.data.map(function(element) {
-      if (element == null) return {id: 0, name: 'l', tuition: 10, pieParts: []};
+
+    var chartData = this.props.data.filter(function(x) {
+      return x['appliedFinancialAid'] !== null &&
+             x['receivedFinancialAid'] !== null &&
+             x['receivedFullFinancialAid'] !== null &&
+             x.roomAndBoardCost !== null &&
+             x['2014.cost.tuition.out_of_state'] !== null;
+    });
+
+    chartData = chartData.map(function(element) {
       var none = element['appliedFinancialAid'] - element['receivedFinancialAid'];
       var partial = element['receivedFinancialAid'] - element['receivedFullFinancialAid'];
       var full = element['receivedFullFinancialAid'];
@@ -52,7 +59,7 @@ class DonutScatterComponent extends Component {
         .datum(chartData)
         .call(this.donutScatter);
   }
-  
+
   componentWillReceiveProps(props) {
     this.props = props;
     this.update();

@@ -4,7 +4,8 @@ import { Layout, Header, Drawer, Content, Textfield, Checkbox, Button } from 're
 import { ControlLabel } from 'react-bootstrap';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Select from 'react-select';
-import data from '../data/merge-test.json';
+// Just importing for now, but this slows down initial page load
+import data from '../public/data/merged-data.json';
 
 class App extends Component {
     constructor(props) {
@@ -34,7 +35,7 @@ class App extends Component {
         this.setState({
             passed: false
         });
-        
+
     }
     setZip(event){
         this.handleChange(event);
@@ -86,7 +87,7 @@ class App extends Component {
         }
         //console.log(event.target.checked);
     }
-    
+
     render() {
       var childState = Object.assign({}, this.state);
       childState.data = data;
