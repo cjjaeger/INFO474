@@ -4,6 +4,7 @@ import { Layout, Header, Drawer, Content, Textfield, Checkbox, Button } from 're
 import { ControlLabel } from 'react-bootstrap';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Select from 'react-select';
+import data from '../data/merge-test.json';
 
 class App extends Component {
     constructor(props) {
@@ -33,6 +34,7 @@ class App extends Component {
         this.setState({
             passed: false
         });
+        
     }
     setZip(event){
         this.handleChange(event);
@@ -86,7 +88,9 @@ class App extends Component {
     }
     
     render() {
-        const child = React.cloneElement(this.props.children, this.state);
+      var childState = Object.assign({}, this.state);
+      childState.data = data;
+        const child = React.cloneElement(this.props.children, childState);
         //console.log( this.props);
         var deptsList = ["Aeronautics and Astronautics","African Studies",
         "American Ethnic Studies",

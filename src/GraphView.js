@@ -3,9 +3,12 @@ import DonutScatterComponent from './DonutScatterComponent';
 import './App.css';
 
 class GraphView extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
-      <DonutScatterComponent />
+      <DonutScatterComponent data={this.props.data} />
     );
   }
 }

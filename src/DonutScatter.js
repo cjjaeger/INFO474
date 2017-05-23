@@ -6,7 +6,7 @@ import donutChart from './DonutChart';
 var DonutScatter = function() {
     // Set default values
     var height = 500,
-        width = 500,
+        width = 900,
         xAccessor = 'x',
         yAccessor = 'y',
         nameAccessor = 'name',
@@ -15,7 +15,7 @@ var DonutScatter = function() {
         xTitle = 'X Axis Title',
         yTitle = 'Y Axis Title',
         fill = 'green',
-        radius = (d) => 6,
+        radius = (d) => 5,
         margin = {
             left: 70,
             bottom: 50,
@@ -74,15 +74,15 @@ var DonutScatter = function() {
             var xAxis = d3.axisBottom();
             var yAxis = d3.axisLeft();
 
-            // // Define a hover
-            var tip = d3tip()
+            // Define a hover
+            /*var tip = d3tip()
                       .attr('class', 'd3-tip')
                       .offset([-10, 0])
                       .html(function(d) {
                         return "<strong>" + d[nameAccessor] + "</strong>";
-                      });
+                      });*/
 
-            ele.select('svg').call(tip);
+            //ele.select('svg').call(tip);
 
             // Calculate x and y scales
             let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.05;
@@ -106,13 +106,13 @@ var DonutScatter = function() {
             // Draw markers
             let gs = ele.select('.chartG').selectAll('g.donut').data(data, d => d.id);
             
-            let donut = donutChart().sliceVal('value').sliceCat('name').width(15).height(15);
+            let donut = donutChart().sliceVal('value').sliceCat('name').width(10).height(10);
 
             // Use the .enter() method to get entering elements, and assign initial position
             gs.enter().append('g')
                 .attr('class', 'donut')
-                .on('mouseover', tip.show)
-                .on('mouseout', tip.hide)
+                //.on('mouseover', tip.show)
+                //.on('mouseout', tip.hide)
                 .merge(gs)
                 .attr('transform', (d) => {
                   return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';

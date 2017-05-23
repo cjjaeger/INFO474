@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import './App.css';
 import DonutScatter from './DonutScatter';
 
-class DonutScatterComponent extends Component {  
+class DonutScatterComponent extends Component {
   componentDidMount() {
     this.donutScatter = DonutScatter();
     this.update();
@@ -18,74 +18,38 @@ class DonutScatterComponent extends Component {
         .xTitle('Tuition')
         .yTitle('Room and Board')
         .xAccessor('tuition')
-        .yAccessor('roomAndBoard');
+        .yAccessor('roomAndBoardCost');
+    
+    var chartData = this.props.data.map(function(element) {
+      if (element == null) return {id: 0, name: 'l', tuition: 10, pieParts: []};
+      var none = element['appliedFinancialAid'] - element['receivedFinancialAid'];
+      var partial = element['receivedFinancialAid'] - element['receivedFullFinancialAid'];
+      var full = element['receivedFullFinancialAid'];
+      return {
+        id: element.id,
+        name: element.name,
+        roomAndBoardCost: element.roomAndBoardCost,
+        tuition: element['2014.cost.tuition.out_of_state'],
+        pieParts: [
+          {
+            name: 'none',
+            value: none
+          },
+          {
+            name: 'partial',
+            value: partial
+          },
+          {
+            name: 'full',
+            value: full
+          }
+        ]
+      };
+    });
 
     // Call d3 update
     d3.select(this.root)
-        .datum(
-          [
-            {
-              id: 'expensive',
-              name: 'Expensive',
-              roomAndBoard: 20000,
-              tuition: 80000,
-              pieParts: [
-                {
-                  name: 'none',
-                  value: 30.0
-                },
-                {
-                  name: 'partial',
-                  value: 30.0
-                },
-                {
-                  name: 'full',
-                  value: 40.0
-                }
-              ]
-            },
-            {
-              id: 'med1',
-              name: 'Medium 1',
-              roomAndBoard: 5000,
-              tuition: 10000,
-              pieParts: [
-                {
-                  name: 'none',
-                  value: 10.0
-                },
-                {
-                  name: 'partial',
-                  value: 70.0
-                },
-                {
-                  name: 'full',
-                  value: 20.0
-                }
-              ]
-            },
-            {
-              id: 'cheap',
-              name: 'Cheap',
-              roomAndBoard: 1000,
-              tuition: 4000,
-              pieParts: [
-                {
-                  name: 'none',
-                  value: 0.0
-                },
-                {
-                  name: 'partial',
-                  value: 60.0
-                },
-                {
-                  name: 'full',
-                  value: 40.0
-                }
-              ]
-            }
-          ]
-        )
+        .datum(chartData)
         .call(this.donutScatter);
   }
   

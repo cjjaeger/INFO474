@@ -33,7 +33,7 @@ function donutChart() {
             // Create arc generator for slices
             var arc = d3.arc()
                 .outerRadius(radius)
-                .innerRadius(radius - 3)
+                .innerRadius(radius - 2)
                 .cornerRadius(cornerRadius)
                 .padAngle(padAngle);
 
@@ -50,6 +50,7 @@ function donutChart() {
                     .attr('class', 'path')
                         .append('path')
                         .attr('d', arc)
+                        .attr('opacity', 0.7)
                         .attr('fill', function(d) {
                           return color(d.data[sliceCat]); 
                         });
