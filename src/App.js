@@ -1,31 +1,52 @@
 import React, { Component } from 'react';
 import './App.css';
-import Filter from './Filter';
-import {Layout, Header, Drawer, Navigation, Content, Spinner,Textfield, Checkbox  } from 'react-mdl';
+import { Layout, Header, Drawer, Content, Textfield, Checkbox, Button } from 'react-mdl';
+import { ControlLabel } from 'react-bootstrap';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
-
-
+import Select from 'react-select';
+// Just importing for now, but this slows down initial page load
+import data from '../public/data/merged-data.json';
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            "zip": null,
-            "inArea": false,
-            "radius": null,
-            "tuition":[0,70000],
-            "department":[],
-            "SAT":null,
-            "ACT":null,
-            "ranking": null,
-            "handleChange": this.handleChange
+            "filter":{
+                "zip": "",
+                "inArea": false,
+                "radius": null,
+                "tuition":[0,70000],
+                "department":[],
+                "SAT":null,
+                "ACT":null,
+                "ranking": null,
+                "handleCheck": this.setZip = this.setZip.bind(this)
+            },
+            "initialZip": false
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
+        this.setZip = this.setZip.bind(this);
+        this.changeValue = this.changeValue.bind(this);
+        this.logChange = this.logChange.bind(this);
     }
     componentWillMount() {
         this.setState({
             passed: false
+        });
+
+    }
+    setZip(event){
+        this.handleChange(event);
+    }
+    changeValue(e){
+        this.state.filter.tuition = e.target.value;
+        console.log(this.state);
+
+    }
+    applyFilter(e){
+        this.setState({
+            initialZip: true
         });
     }
 
@@ -35,11 +56,24 @@ class App extends Component {
 
         var changes = {}; //object to hold changes
         changes[field] = value; //change this field
-        this.setState(changes); //update state
-    }
-    filterMap(e){
 
+
+        this.state.filter[field] = value; //update state
+        //console.log(this.state.filter);
+        //using set state so that things will rerender
+        //need to fix this
+        this.setState({
+            initialZip: true
+        });
     }
+    logChange(val){
+        this.state.filter.department = val;
+        this.setState({
+            initialZip: true
+        });
+    }
+
+
     handleCheck(event){
         if(event.target.checked){
             this.setState({
@@ -50,19 +84,76 @@ class App extends Component {
                 inArea:false
             });
         }
-        console.log(event.target.checked);
+        //console.log(event.target.checked);
     }
-    render() {
-        const {children} = this.props;
-        var drawerContent = <Navigation><p>Chat is an online collaborative social media.</p>
-        <p>Your work will never be the same</p></Navigation>;
-        var stuff = this.state.filter;
-        const child = React.cloneElement(children, {stuff});
-        console.log(this.state);
-        return (
 
+    render() {
+      var childState = Object.assign({}, this.state);
+      childState.data = data;
+        const child = React.cloneElement(this.props.children, childState);
+        //console.log( this.props);
+        var deptsList = ["Aeronautics and Astronautics","African Studies",
+        "American Ethnic Studies",
+        "American Indian Studies",
+        "Anesthesiology",
+        "Anthropology",
+        "Applied and Computational Mathematical Sciences (ACMS)",
+        "Applied Mathematics",
+        "Aquatic and Fishery Sciences",
+        "Architecture",
+        "Art, Art History, and Design",
+        "Astronomy",
+        "Biochemistry",
+        "Bioengineering",
+        "Biology",
+        "Biostatistics",
+        "Chemistry",
+        "Classics",
+        "Communication",
+        "Dance",
+        "Drama",
+        "Economics",
+        "Endodontics",
+        "English",
+        "Epidemiology",
+        "Geography",
+        "Germanics",
+        "History",
+        "Immunology",
+        "Linguistics",
+        "Mathematics",
+        "Medicine",
+        "Microbiology",
+        "Museology",
+        "Music",
+        "Nephrology",
+        "Neurology",
+        "Neurosurgery",
+        "Oceanography",
+        "Ophthalmology",
+        "Orthodontics",
+        "Pathobiology",
+        "Pathology",
+        "Pediatrics",
+        "Periodontics",
+        "Pharmaceutics",
+        "Pharmacology",
+        "Pharmacy",
+        "Philosophy",
+        "Physics",
+        "Psychology",
+        "Radiology",
+        "Sociology",
+        "Statistics",
+        "Surgery",
+        "Urology"];
+        for (var i = 0; i < deptsList.length; i++) {
+            deptsList[i] = {"value":deptsList[i], "label":deptsList[i]};
+        }
+        return (
         <Layout fixedHeader fixedDrawer>
-            <Header title={<h1> Because College</h1>}>
+            <Header>
+              <h1>Because College</h1>
             </Header>
             <Drawer title="Filter">
                 <form role="form">
@@ -73,6 +164,7 @@ class App extends Component {
                         label="Zip Code"
                         style={{width: '200px'}}
                         name="zip"
+                        value={this.state.filter.zip}
                         floatingLabel
                         />
                     <Checkbox
@@ -110,6 +202,14 @@ class App extends Component {
                         name="ACT"
                         floatingLabel
                         />
+                    <Select
+                        multi simpleValue
+                      name="form-field-name"
+                      value={this.state.filter.department}
+                      options={deptsList}
+                      onChange={this.logChange}
+                      placeholder="Select desired departments"
+                        />
                     <Textfield
                         onChange={this.handleChange}
                         pattern="-?[0-9]*(\.[0-9]+)?"
@@ -119,25 +219,27 @@ class App extends Component {
                         name="ranking"
                         floatingLabel
                         />
-
+                    <ControlLabel>Tuition Range:</ControlLabel>
                     <ReactBootstrapSlider
-                        value={this.state.tuition}
+                        value={[0,70000]}
                         change={this.changeValue}
                         slideStop={this.changeValue}
                         step={1000}
                         max={70000}
                         min={0}
-                        reversed={true}
-                        range={true}
+                        reversed={false}
+                        name="tuition"
                         />
-                     <button className="btn btn-default"  onClick={(e) => this.signIn(e)}>Sign-In</button>
+                    <div id="filterButton">
+                        <Button onClick={this.applyFilter} raised colored>Apply Filter</Button>
+                    </div>
                 </form>
             </Drawer>
             <Content >
                 {child}
             </Content>
         </Layout>
-    );
+      );
   }
 }
 

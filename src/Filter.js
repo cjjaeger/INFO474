@@ -1,42 +1,49 @@
-import React, { Component, Button } from 'react';
+import React, { Component } from 'react';
 import './App.css';
+import { Textfield, Button } from 'react-mdl';
+import { hashHistory } from 'react-router';
+import { ReactBootstrapSlider } from 'react-bootstrap-slider';
+
 
 class Filter extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        //   "filter":{
-        //       "zip": "",
-        //       "inArea": false,
-        //       "radius": null,
-        //       "tuition":{
-        //           "min":0,
-        //           "max": 70000
-        //       },
-        //       "department":[],
-        //       "SAT":null,
-        //       "ACT":null,
-        //       "ranking": null
-        //   }
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      zip: 0,
+      tuition: [0, 70000]
+    };
+    this.setZipFilter = this.setZipFilter.bind(this);
+  }
+  setZipFilter(event){
+    this.props.handleCheck(event)
+    console.log(this.state);
+  }
+  filterMap(e){
+    hashHistory.push('/viz');
+  }
 
   render() {
-      const {msg} = this.props;
-      console.log(this.props);
     return (
       <div>
-     {this.props.SAT}
-     <Textfield
-         onChange={this.handleChange}
-         pattern="-?[0-9]*(\.[0-9]+)?"
-         error="Input is not a number!"
-         label="Zip Code"
-         style={{width: '200px'}}
-         name="zip"
-         floatingLabel
-         />
-
+        <div className="center">
+        <div className="alert alert-info" role="alert">
+            Enter in your zip code so we can customize the colleges we show to you!
+        </div>
+        </div>
+        <div className="center">
+            <Textfield
+            onChange={this.setZipFilter}
+            pattern="-?[0-9]*(\.[0-9]+)?"
+            error="Input is not a number!"
+            label="Zip Code"
+            style={{width: '200px'}}
+            name="zip"
+            floatingLabel
+            />
+        </div>
+        <div className="center">
+            <Button onClick={this.filterMap} raised colored>Next</Button>
+        </div>
       </div>
     );
   }

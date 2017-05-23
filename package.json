@@ -2,23 +2,42 @@
   "name": "INFO474",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://cjjaeger.github.io/INFO474",
   "devDependencies": {
     "react-scripts": "0.9.5"
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "d3": "^4.9.1",
+    "d3-tip": "^0.7.1",
     "jquery": "^3.2.1",
+    "lfs": "0.0.4",
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
+    "react-bootstrap": "^0.31.0",
     "react-bootstrap-slider": "^2.0.0",
     "react-dom": "^15.5.4",
     "react-mdl": "^1.10.3",
-    "react-router": "^3.0.0"
+    "react-router": "^3.0.0",
+    "react-select": "^1.0.0-rc.4",
+    "cheerio": "^0.22.0",
+    "lodash": "^4.17.4",
+    "progress": "^2.0.0",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "request": "^2.81.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "npm run build && script/deploy.sh",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "scrape": "npm run scrape:us-news && npm run scrape:college-scorecard && npm run scrape:merge",
+    "scrape:us-news": "npm run scrape:us-news-ids && npm run scrape:us-news-data",
+    "scrape:us-news-ids": "node script/scrape-us-news-ids.js",
+    "scrape:us-news-data": "node script/scrape-us-news-data.js",
+    "scrape:college-scorecard": "node script/scrape-college-scorecard-data.js",
+    "scrape:merge": "node script/merge-data.js"
   }
 }
