@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DonutScatterComponent from './DonutScatterComponent';
+import ScatterPlotComponent from './ScatterPlotComponent';
 import './App.css';
 
 class GraphView extends Component {
@@ -8,7 +9,10 @@ class GraphView extends Component {
   }
   render() {
     return (
-      <DonutScatterComponent data={this.props.data} />
+      <div>
+        <DonutScatterComponent data={this.props.data} />
+        <ScatterPlotComponent data={this.props.data} />
+      </div>
     );
   }
 }

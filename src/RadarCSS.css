@@ -1,0 +1,25 @@
+.verticesTooltip {
+    position: absolute;
+    color: black;
+    font-size: 10px;
+    width: 100px;
+    height: auto;
+    padding: 5px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    pointer-events: none;
+    opacity: 0;
+    background: #f4f4f4;
+}
+
+.level-labels {
+    font-family: sans-serif;
+}
+
+.axis-lines {
+    stroke-width: 1px;
+}
+
+.axis-labels {
+    font-family: sans-serif;
+}
