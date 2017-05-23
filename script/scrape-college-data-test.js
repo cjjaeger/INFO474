@@ -27,19 +27,24 @@ performRequest();
 function addUniversityData(items) {
     items.forEach(function (item) {
         item['school.ownership'] = item['school.ownership'] == 1 ? 'Public' : 'Private';
-        if (item['school.degree_urbanization'] == 1 || item['school.degree_urbanization'] == 2) {
-            item['school.degree_urbanization'] = 'City';
-        } else if (item['school.degree_urbanization'] == 3 || item['school.degree_urbanization'] == 4) {
-            item['school.degree_urbanization'] = 'Urban';
-        } else if (item['school.degree_urbanization'] == 5 || item['school.degree_urbanization'] == 6) {
-            item['school.degree_urbanization'] = 'Town';
+        debugger;
+        if (item['school.locale'] == 11 || item['school.locale'] == 12 || item['school.locale'] == 13) {
+            item['school.locale'] = 'City';
+        } else if (item['school.locale'] == 21 || item['school.locale'] == 22 || item['school.locale'] == 23) {
+            item['school.locale'] = 'Suburb';
+        } else if (item['school.locale'] == 31 || item['school.locale'] == 32 || item['school.locale'] == 33) {
+            item['school.locale'] = 'Town';
         } else {
-            item['school.degree_urbanization'] = 'Rural';
+            item['school.locale'] = 'Rural';
         }
         // item['school.degree_urbanization'] = item['school.degree_urbanization'] == 1 || item['school.degree_urbanization'] == 2 ? 'City'
         //     : item['school.degree_urbanization'] == 3 || item['school.degree_urbanization'] == 4 ? 'Urban'
         //         : item['school.degree_urbanization'] == 5 || item['school.degree_urbanization'] == 6 ? 'Town' : 'Rural';
-        universityData.push(item);
+        var ordered={};
+        Object.keys(item).sort().forEach(function(key){
+            ordered[key] = item[key];
+        })
+        universityData.push(ordered);
     });
     pagesDone++;
     if (pagesDone === pages) {
@@ -70,10 +75,10 @@ function urlOptionsForPage(pageNum) {
     var apiKey = '&api_key=1GzxPNgnOKN6yoEalMpmnnkAVizG2YUttvSWVEsZ';
     var fourYearsFilter = '&school.institutional_characteristics.level=1';
     var year = '2014';
-    var initialConfig = '&per_page=100&sort=name:asce';
+    var initialConfig = '&per_page=100&sort=school.name:asce';
 
     // To add more fields within the school category, simply add the value of the field shown under "developer-friendly name" column into schoolCategory
-    var schoolCategory = ['name', 'city', 'zip', 'ownership', 'state_fips', 'locale', 'degree_urbanization', 'degree_urbanization', 'carnegie_size_setting'];
+    var schoolCategory = ['name', 'city', 'zip', 'ownership', 'state_fips', 'locale'];
 
     // To add more fields within the academics category, simply add the value of the field shown under "developer-friendly name" column into academicsCategory
     // var academicsCategory = ['program_percentage.agriculture', 'program_percentage.resources', 'program_percentage.architecture', 'program_percentage.ethnic_cultural_gender',
@@ -97,7 +102,7 @@ function urlOptionsForPage(pageNum) {
     //     'program.bachelors.health', 'program.bachelors.business_marketing', 'program.bachelors.history'];
 
     // To add more fields within the admission category, simply add the value of the field shown under "developer-friendly name" column into admissionCategory
-    var admissionCategory = ['admission_rate.overall', 'sat_scores.midpoint.critical_reading', 'sat_scores.midpoint.math', 'sat_scores.midpoint.writing', 'sat_scores.average.overall'];
+    var admissionCategory = ['admission_rate.overall', 'sat_scores.midpoint.critical_reading', 'sat_scores.midpoint.math', 'sat_scores.midpoint.writing', 'sat_scores.average.overall','act_scores.midpoint.cumulative'];
 
     // To add more fields within the aid category, simply add the value of the field shown under "developer-friendly name" column into aidCategory    
     var aidCategory = ['pell_grant_rate', 'federal_loan_rate', 'loan_principal', 'median_debt.completers.overall', 'median_debt.noncompleters', 'median_debt.pell_grant',
@@ -108,13 +113,14 @@ function urlOptionsForPage(pageNum) {
     // To add more fields within the student category, simply add the value of the field shown under "developer-friendly name" column into studentCategory
     var studentCategory = ['size', 'demographics.race_ethnicity.white', 'demographics.race_ethnicity.black', 'demographics.race_ethnicity.hispanic', 'demographics.race_ethnicity.asian',
         'demographics.race_ethnicity.aian', 'demographics.race_ethnicity.nhpi', 'demographics.race_ethnicity.two_or_more', 'demographics.race_ethnicity.non_resident_alien', 'demographics.race_ethnicity.unknown',
-        'share_first.time_full.time','retention_rate.four_year.full_time', 'demographics.median_hh_income', 'demographics.men', 'demographics.women'];
-
+        'share_first.time_full.time','retention_rate.four_year.full_time', 'demographics.men', 'demographics.women','avg_dependent_income.2014dollars'];
+    
+    var costCategory = ['tuition.out_of_state','tuition.in_state'];
     // Once all the categories are determined, pass the concatenated version of each category (using concatCategory method) as parameters into _.concat
     // concatCategory method takes 2 parameter: "dev-category" string (case-sensitive) AND the corresponding ____Category variable i.e concatCategory('school',schoolCatgory)
     // Then pass the return value of concatCategory() as parameter for _.concat() in requestedFields variable
     // Every category needs year, except for schoolCategory
-    var requestedFields = _.concat(concatCategory('school', schoolCategory, null),
+    var requestedFields = _.concat(concatCategory('school', schoolCategory, null), concatCategory('cost', costCategory, year),
         concatCategory('admissions', admissionCategory, year), concatCategory('aid', aidCategory, year), concatCategory('student', studentCategory, year));
     var url = 'https://api.data.gov/ed/collegescorecard/v1/schools?fields=' + requestedFields.toString()
         + apiKey + fourYearsFilter + initialConfig + '&page=' + pageNum;
