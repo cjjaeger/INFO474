@@ -13,7 +13,8 @@ $(function() {
                 return {
                     x: d[xVar],
                     y: d[yVar],
-                    id: d.name
+                    id: d.name,
+                    location: d.location
                 };
             });
         };

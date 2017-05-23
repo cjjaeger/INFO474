@@ -2,20 +2,21 @@
 var ScatterPlot = function() {
     // Set default values
     var height = 500,
-        width = 500,
+        width = 800,
         xScale = d3.scaleLinear(),
         yScale = d3.scaleLinear(),
         xTitle = 'X Axis Title',
         yTitle = 'Y Axis Title',
-        title = 'Graduation Rate and Median Income',
-        fill = 'green',
+        title = '',
         radius = 6,
         margin = {
             left: 70,
             bottom: 50,
             top: 30,
             right: 10,
-        };
+        },
+        fill = d3.scaleOrdinal().range(d3.schemeCategory10),
+        cValue = function(d) { return d.location; };
 
     // Function returned by ScatterPlot
     var chart = function(selection) {
@@ -93,7 +94,9 @@ var ScatterPlot = function() {
 
             // Use the .enter() method to get entering elements, and assign initial position
             circles.enter().append('circle')
-                .attr('fill', fill)
+                .attr('fill', function(d) {
+                    return fill(cValue(d));
+                })
                 .attr('cy', chartHeight)
                 .style('opacity', .3)
                 .attr('cx', (d) => xScale(d.x))
@@ -101,10 +104,35 @@ var ScatterPlot = function() {
                 .merge(circles)
                 .attr('r', radius)
                 .transition()
-                .duration(1500)
+                .duration(800)
                 .delay((d) => xScale(d.x) * 5)
                 .attr('cx', (d) => xScale(d.x))
-                .attr('cy', (d) => yScale(d.y))
+                .attr('cy', (d) => yScale(d.y));
+
+            var legend = svgEnter.selectAll(".legend")
+                .data(fill.domain())
+                .enter().append("g")
+                .attr("class", "legend")
+                .attr("transform", function(d, i) { return "translate(-80," + i * 20 + ")"; });
+
+            // draw legend colored rectangles
+            legend.append("rect")
+                .attr("x", width - 18)
+                .attr("width", 18)
+                .attr("height", 18)
+                .style("fill", fill);
+
+            var legendText = ['urban', 'semi-rural', 'rural']
+
+            // draw legend text
+            legend.append("text")
+                .attr("x", width - 24)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .style("text-anchor", "end")
+                .text(legendText, function(d) { 
+                    return d;
+                });
 
             // Use the .exit() and .remove() methods to remove elements that are no longer in the data
             circles.exit().remove();
