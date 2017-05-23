@@ -18,12 +18,21 @@
     "react-dom": "^15.5.4",
     "react-mdl": "^1.10.3",
     "react-router": "^3.0.0",
-    "react-select": "^1.0.0-rc.4"
+    "react-select": "^1.0.0-rc.4",
+    "cheerio": "^0.22.0",
+    "lodash": "^4.17.4",
+    "progress": "^2.0.0",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "request": "^2.81.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "scrape": "npm run scrape:us-news-ids && npm run scrape:us-news-data",
+    "scrape:us-news-ids": "node script/scrape-us-news-ids.js",
+    "scrape:us-news-data": "node script/scrape-us-news-data.js"
   }
 }
