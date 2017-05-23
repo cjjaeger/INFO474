@@ -15,7 +15,7 @@ class Filter extends Component {
     this.setZipFilter = this.setZipFilter.bind(this);
   }
   setZipFilter(event){
-    this.props.handleCheck(event)
+    this.props.filter.handleCheck(event)
     console.log(this.state);
   }
   filterMap(e){
@@ -23,6 +23,7 @@ class Filter extends Component {
   }
 
   render() {
+      console.log(this.props.filter);
     return (
       <div>
         <div className="center">
