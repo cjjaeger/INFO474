@@ -1,3 +1,5 @@
+import * as d3 from 'd3';
+
 // ScatterPlot
 var ScatterPlot = function() {
     // Set default values
@@ -177,3 +179,5 @@ var ScatterPlot = function() {
 
     return chart;
 };
+
+export default ScatterPlot;
