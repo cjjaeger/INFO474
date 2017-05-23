@@ -13,9 +13,7 @@ function donutChart() {
         cornerRadius = 0,
         sliceVal,
         sliceCat,
-        title,
-        showTooltip = true, // Boolean for tooltip
-        showLabels = true // Boolean for labels;
+        title;
 
         // Function returned by chart
         function chart(selection) {
@@ -130,20 +128,6 @@ function donutChart() {
     chart.cornerRadius = function(value) {
         if(!arguments.length) {return cornerRadius;}
         cornerRadius = value;
-        return chart;
-    }
-
-    // Show labels accessor
-    chart.showLabels = function(value) {
-        if(!arguments.length) {return showLabels;}
-        showLabels = value;
-        return chart;
-    }
-
-    // Show tooltip accessor
-    chart.showTooltip = function(value) {
-        if(!arguments.length) {return showTooltip;}
-        showTooltip = value;
         return chart;
     }
 
