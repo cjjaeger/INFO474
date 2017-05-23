@@ -42,7 +42,7 @@ function addUniversityIds(items) {
   pagesDone++;
   bar.tick();
   if (pagesDone === pages) {
-    fs.writeFile('data/us-news-ids.json', JSON.stringify(universityIds, null, 2));
+    fs.writeFile('public/data/us-news-ids.json', JSON.stringify(universityIds, null, 2));
   }
 }
 

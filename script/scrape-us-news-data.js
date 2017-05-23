@@ -3,7 +3,7 @@ var cheerio = require('cheerio');
 var request = require('request');
 var ProgressBar = require('progress');
 
-var ids = JSON.parse(fs.readFileSync('data/us-news-ids.json'));
+var ids = JSON.parse(fs.readFileSync('public/data/us-news-ids.json'));
 var schools = [];
 
 var bar = new ProgressBar(
@@ -96,5 +96,5 @@ function urlOptionsForId(id) {
 }
 
 function writeResults() {
-  fs.writeFile('data/us-news-data.json', JSON.stringify(schools, null, 2));
+  fs.writeFile('public/data/us-news-data.json', JSON.stringify(schools, null, 2));
 }
