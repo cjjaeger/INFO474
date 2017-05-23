@@ -2,6 +2,7 @@
   "name": "INFO474",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://cjjaeger.github.io/INFO474",
   "devDependencies": {
     "react-scripts": "0.9.5"
   },
@@ -29,6 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "npm run build && script/deploy.sh",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "scrape": "npm run scrape:us-news && npm run scrape:college-scorecard && npm run scrape:merge",
