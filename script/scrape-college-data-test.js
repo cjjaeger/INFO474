@@ -75,7 +75,7 @@ function urlOptionsForPage(pageNum) {
     var apiKey = '&api_key=1GzxPNgnOKN6yoEalMpmnnkAVizG2YUttvSWVEsZ';
     var fourYearsFilter = '&school.institutional_characteristics.level=1';
     var year = '2014';
-    var initialConfig = '&per_page=100&sort=school.name:asce';
+    var initialConfig = '&per_page=100&sort=school.name:asc';
 
     // To add more fields within the school category, simply add the value of the field shown under "developer-friendly name" column into schoolCategory
     var schoolCategory = ['name', 'city', 'zip', 'ownership', 'state_fips', 'locale'];
@@ -116,14 +116,16 @@ function urlOptionsForPage(pageNum) {
         'share_first.time_full.time','retention_rate.four_year.full_time', 'demographics.men', 'demographics.women','avg_dependent_income.2014dollars'];
     
     var costCategory = ['tuition.out_of_state','tuition.in_state'];
+
+    var rootCategory = ['ope8_id','ope6_id']
     // Once all the categories are determined, pass the concatenated version of each category (using concatCategory method) as parameters into _.concat
     // concatCategory method takes 2 parameter: "dev-category" string (case-sensitive) AND the corresponding ____Category variable i.e concatCategory('school',schoolCatgory)
     // Then pass the return value of concatCategory() as parameter for _.concat() in requestedFields variable
     // Every category needs year, except for schoolCategory
     var requestedFields = _.concat(concatCategory('school', schoolCategory, null), concatCategory('cost', costCategory, year),
-        concatCategory('admissions', admissionCategory, year), concatCategory('aid', aidCategory, year), concatCategory('student', studentCategory, year));
+        concatCategory('admissions', admissionCategory, year), concatCategory('aid', aidCategory, year), concatCategory('student', studentCategory, year),rootCategory);
     var url = 'https://api.data.gov/ed/collegescorecard/v1/schools?fields=' + requestedFields.toString()
         + apiKey + fourYearsFilter + initialConfig + '&page=' + pageNum;
-    //debugger;
+    debugger;
     return url;
 }
