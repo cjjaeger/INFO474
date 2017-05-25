@@ -4,8 +4,11 @@ import { Layout, Header, Drawer, Content, Textfield, Checkbox, Button } from 're
 import { ControlLabel } from 'react-bootstrap';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Select from 'react-select';
+import 'whatwg-fetch';
+
 // Just importing for now, but this slows down initial page load
 import data from '../public/data/merged-data.json';
+import stateData from '../public/data/state-abbr-to-fips.json';
 
 class App extends Component {
     constructor(props) {
@@ -20,57 +23,68 @@ class App extends Component {
                 "SAT":null,
                 "ACT":null,
                 "ranking": null,
-                "handleCheck": this.setZip = this.setZip.bind(this)
-            },
-            "initialZip": false
+                "handleCheck": this.setZip = this.setZip.bind(this),
+                "zipltlng":{},
+                "zipState":""
+            }
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
         this.setZip = this.setZip.bind(this);
         this.changeValue = this.changeValue.bind(this);
         this.logChange = this.logChange.bind(this);
+        this.setZipLocation = this.setZipLocation.bind(this);
+        this.applyFilter = this.applyFilter.bind(this);
     }
     componentWillMount() {
-        this.setState({
-            passed: false
-        });
-
+        var childState = Object.assign({}, this.state);
+        childState.data = data;
+        this.child = React.cloneElement(this.props.children, childState);
+    }
+    componentWillReceiveProps(props){
+        var childState = Object.assign({}, this.state);
+        childState.data = data;
+        this.child = React.cloneElement(this.props.children, childState);
+        this.forceUpdate();
     }
     setZip(event){
+
         this.handleChange(event);
     }
     changeValue(e){
         this.state.filter.tuition = e.target.value;
         console.log(this.state);
-
     }
     applyFilter(e){
-        this.setState({
-            initialZip: true
+        e.preventDefault();
+        var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ encodeURIComponent(this.state.filter.zip);
+        fetch(url) //download the data
+      .then(function(res) { return res.json(); })
+      .then((datas) =>{
+        this.setZipLocation(datas.results);
+      });
+        this.forceUpdate();
+    }
+    setZipLocation(datas){
+        this.state.filter.zipltlng = datas[0].geometry.location; //update state
+        var stateFips = datas[0].address_components[3].short_name
+        this.state.filter.zipState = stateData[stateFips] ; //update state
+        var newData = data.filter((obj)=>{
+            return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
         });
+        console.log(newData);
+
     }
 
     handleChange(event) {
         var field = event.target.name;
         var value = event.target.value;
-
-        var changes = {}; //object to hold changes
-        changes[field] = value; //change this field
-
-
         this.state.filter[field] = value; //update state
-        //console.log(this.state.filter);
-        //using set state so that things will rerender
-        //need to fix this
-        this.setState({
-            initialZip: true
-        });
+        this.forceUpdate();
     }
     logChange(val){
         this.state.filter.department = val;
-        this.setState({
-            initialZip: true
-        });
+        this.forceUpdate();
     }
 
 
@@ -88,9 +102,7 @@ class App extends Component {
     }
 
     render() {
-      var childState = Object.assign({}, this.state);
-      childState.data = data;
-        const child = React.cloneElement(this.props.children, childState);
+        console.log(stateData);
         //console.log( this.props);
         var deptsList = ["Aeronautics and Astronautics","African Studies",
         "American Ethnic Studies",
@@ -221,7 +233,7 @@ class App extends Component {
                         />
                     <ControlLabel>Tuition Range:</ControlLabel>
                     <ReactBootstrapSlider
-                        value={[0,70000]}
+                        value={this.state.filter.tuition}
                         change={this.changeValue}
                         slideStop={this.changeValue}
                         step={1000}
@@ -236,7 +248,7 @@ class App extends Component {
                 </form>
             </Drawer>
             <Content >
-                {child}
+                {this.child}
             </Content>
         </Layout>
       );

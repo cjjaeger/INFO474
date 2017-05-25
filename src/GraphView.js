@@ -8,10 +8,12 @@ class GraphView extends Component {
     super(props);
   }
   render() {
+     
     return (
       <div>
-        <DonutScatterComponent data={this.props.data} />
-        <ScatterPlotComponent data={this.props.data} />
+
+        <DonutScatterComponent data={this.props.data} filter={this.props.filter}/>
+        <ScatterPlotComponent data={this.props.data} filter={this.props.filter}/>
       </div>
     );
   }

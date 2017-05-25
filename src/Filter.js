@@ -19,6 +19,7 @@ class Filter extends Component {
     console.log(this.state);
   }
   filterMap(e){
+      e.preventDefault();
     hashHistory.push('/viz');
   }
 

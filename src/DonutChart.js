@@ -37,10 +37,10 @@ function donutChart() {
                 .cornerRadius(cornerRadius)
                 .padAngle(padAngle);
 
-            console.log(selection);
+            //console.log(selection);
             // Iterate through selections
             selection.each(function(data) {
-                console.log(data);
+                //console.log(data);
                 // Append svg through data-join if necessary
                 var g = d3.select(this);
                 // Enter paths
@@ -52,7 +52,7 @@ function donutChart() {
                         .attr('d', arc)
                         .attr('opacity', 0.7)
                         .attr('fill', function(d) {
-                          return color(d.data[sliceCat]); 
+                          return color(d.data[sliceCat]);
                         });
 
                 // Update paths
