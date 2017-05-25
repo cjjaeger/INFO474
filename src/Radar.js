@@ -1,11 +1,11 @@
 var radar = function () {
         
-        var width = 800,
-            height = 600,
+        var width = 1000,
+            height = 1000,
             maxValue = 0,
             level = 3,
-            levelScale = 0.85,
-            labelScale = 0.9,
+            levelScale = 0.9,
+            labelScale = 1.1,
             factor = 1,
             radians = 2 * Math.PI,
             paddingX = width,
@@ -13,13 +13,12 @@ var radar = function () {
             polygonAreaOpacity = 0.3,
             polygonStrokeOpacity = 1,
             polygonPointSize = 4,
-            legendBoxSize = 10,
             color = d3.scaleOrdinal().range(d3.schemeCategory10),
             margin = {
-                top: 10,
-                right: 10,
+                top: 60,
+                right: 60,
                 bottom: 150,
-                left: 60
+                left: 120
             },
             allAxis = null,
             totalAxes = null,
@@ -27,7 +26,6 @@ var radar = function () {
             verticesTooltip = null,
             axes = null,
             vertices = null,
-            legend = null,
             over = "ontouchstart" in window ? "touchstart" : "mouseover";
             out = "ontouchstart" in window ? "touchend" : "mouseout";
 
@@ -36,7 +34,6 @@ var radar = function () {
             var drawHeight = height - margin.top - margin.bottom;
 
             section.each(function(data){
-                console.log(data);
                 var ele = d3.select(this);
                 var svg = ele.selectAll("svg").data([data]);
 
@@ -49,7 +46,8 @@ var radar = function () {
                 gEnter.append("g")
                         .attr('height', drawHeight)
                         .attr('width', drawWidth)
-                        .attr("class", "chartG");
+                        .attr("class", "chartG")
+                        .attr("transform", "translate(" + 20 + "," + 30 + ")");
 
                 data = data.map(function(datum) {
                     if(datum instanceof Array) {
@@ -58,7 +56,7 @@ var radar = function () {
                     return datum;
                 });
 
-                 maxValue = Math.max(maxValue, d3.max(function(d) {
+                 maxValue = Math.max(maxValue, d3.max(data, function(d) {
                     return d3.max(d.axes, function(o) { 
                         return o.value; 
                     });
@@ -82,7 +80,7 @@ var radar = function () {
                                     .append("div")
                                     .attr("class", "verticesTooltip")
 
-                level = gEnter.selectAll(" .level")
+                svgLevel = gEnter.selectAll(" .level")
                                 .append("g")
                                 .attr("class", level);
 
@@ -93,27 +91,20 @@ var radar = function () {
 
                 vertices = gEnter.selectAll(" .vertices");
 
-                legend = gEnter.append("g")
-                                .attr("class", "legend")
-                                .attr("height", height/2)
-                                .attr("width", width/2)
-                                .attr("transform", "translate(" + 0 + "," + 1.1*height + ")")
-
                 /****************************************  coordinates  ************************************************/
-                data.forEach(function(d) {
-                    d.axes.forEach(function(d, i) {
+                data.forEach(function(group) {
+                    group.axes.forEach(function(d, i) {
                         d.coordinates = { 
                             x: width / 2 * (1 - (parseFloat(Math.max(d.value, 0)) / maxValue) * Math.sin(i * radians / totalAxes)),
                             y: height / 2 * (1 - (parseFloat(Math.max(d.value, 0)) / maxValue) * Math.cos(i * radians / totalAxes))
                         };
                     });
                 });
-                console.log(data.coordinates);
                 /****************************************  level  ************************************************/
                 for(var eachLevel=0; eachLevel<level; eachLevel++) {
                     var levelFactor = radius * ((eachLevel + 1) / level);
 
-                    level.data(allAxis).enter()
+                    svgLevel.data(allAxis).enter()
                         .append("line")
                         .attr("class", "levelLines")
                         .attr("x1", function(d, i) { 
@@ -137,7 +128,7 @@ var radar = function () {
                 for (var eachLevel = 0; eachLevel < level; eachLevel++) {
                     var levelFactor = radius * ((eachLevel + 1) / level);
 
-                    level.data([1]).enter()
+                    svgLevel.data([1]).enter()
                         .append("text")
                         .attr("class", "levelLabels")
                         .text((maxValue * (eachLevel + 1) / level).toFixed(2))
@@ -149,7 +140,7 @@ var radar = function () {
                         })
                         .attr("transform", "translate(" + (width / 2 - levelFactor + 5) + ", " + (height / 2 - levelFactor) + ")")
                         .attr("fill", "gray")
-                        .attr("font-size", 10 * labelScale + "px");
+                        .attr("font-size", 17 * labelScale + "px");
                 }
 
                 /****************************************  axes  ************************************************/
@@ -174,51 +165,26 @@ var radar = function () {
                         return d; 
                     })
                     .attr("text-anchor", "middle")
-                    .attr("x", function(d, i) { return width / 2 * (1 - 1.1 * Math.sin(i * radians / totalAxes)); })
-                    .attr("y", function(d, i) { return height / 2 * (1 - 1.1 * Math.cos(i * radians / totalAxes)); })
-                    .attr("font-size", 11 * labelScale + "px");
-
-                /****************************************  legend  ************************************************/
-                legend.selectAll(".legendTiles")
-                        .data(data).enter()
-                        .append("rect")
-                        .attr("class", "legendTiles")
-                        .attr("x", width - paddingX / 2)
-                        .attr("y", function(d, i) { 
-                            return i * 2 * legendBoxSize; 
-                        })
-                        .attr("width", legendBoxSize)
-                        .attr("height", legendBoxSize)
-                        .attr("fill", function(d, g) { 
-                            return color(g); 
-                        });
-
-                legend.selectAll(".legendLabels")
-                        .data(data).enter()
-                        .append("text")
-                        .attr("class", "legendLabels")
-                        .attr("x", width - paddingX / 2 + (1.5 * legendBoxSize))
-                        .attr("y", function(d, i) { 
-                            return i * 2 * legendBoxSize; 
-                        })
-                        .attr("dy", 0.07 * legendBoxSize + "em")
-                        .attr("font-size", 11 * labelScale + "px")
-                        .attr("fill", "gray")
-                        .text(function(d) {
-                            return d.group;
-                        });
+                    .attr("x", function(d, i) { return width / 2 * (1 - 1.08 * Math.sin(i * radians / totalAxes)); })
+                    .attr("y", function(d, i) { return height / 2 * (1 - 1.08 * Math.cos(i * radians / totalAxes)); })
+                    .attr("font-size", 15 * labelScale + "px");
 
                 /****************************************  vertices  ************************************************/
                 data.forEach(function(group, g) {
                     vertices.data(group.axes).enter()
-                    .append("circle")
-                    .attr("class", "polygonVertice")
-                    .attr("r", polygonPointSize)
-                    .attr("x", function(d, i) { return d.coordinates.x; })
-                    .attr("y", function(d, i) { return d.coordinates.y; })
-                    .attr("fill", color(g))
-                    .on(over, verticesTooltipShow)
-                    .on(out, verticesTooltipHide);
+                            .append("circle")
+                            .attr("class", "polygonVertice")
+                            .attr("r", polygonPointSize)
+                            .attr("cx", function(d, i) { 
+                                return d.coordinates.x; 
+                            })
+                            .attr("cy", function(d, i) { 
+                                return d.coordinates.y; 
+                            })
+                            .attr("fill", color(g))
+                            .attr("fill-opacity", 1)
+                            .on(over, verticesTooltipShow)
+                            .on(out, verticesTooltipHide);
                 });
 
                 /****************************************  polygons  ************************************************/
@@ -228,7 +194,7 @@ var radar = function () {
                 .attr("points", function(group) { 
                     var verticesString = "";
                     group.axes.forEach(function(d) { 
-                        verticesString += d.coordinates.x + "," + d.coordinates.y + " "; 
+                        verticesString = verticesString + d.coordinates.x + "," + d.coordinates.y + " "; 
                     });
                     return verticesString;
                 })
@@ -302,12 +268,6 @@ var radar = function () {
             if (!arguments.length) return labelScale;
             labelScale = value;
             return chart;
-        };
-
-        chart.legendBoxSize = function(value) {
-            if (!arguments.length) return legendBoxSize;
-            legendBoxSize = value;
-            return my;
         };
 
         chart.color = function(value) {
