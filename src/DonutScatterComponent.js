@@ -2,23 +2,23 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import './App.css';
 import DonutScatter from './DonutScatter';
+import donutChart from './DonutChart';
 
 class DonutScatterComponent extends Component {
   componentDidMount() {
     this.donutScatter = DonutScatter();
+    this.donut = donutChart();
     this.update();
   }
 
   update() {
-    // Update parameters
-    this.donutScatter
-        .width(900)
+    this.donutScatter.width(900)
         .height(700)
-        .fill('blue')
         .xTitle('Tuition')
         .yTitle('Room and Board')
         .xAccessor('tuition')
-        .yAccessor('roomAndBoardCost');
+        .yAccessor('roomAndBoardCost')
+        .onHover(this.updateLargeDonut.bind(this));
 
     var chartData = this.props.data.filter(function(x) {
       return x['appliedFinancialAid'] !== null &&
@@ -55,9 +55,22 @@ class DonutScatterComponent extends Component {
     });
 
     // Call d3 update
-    d3.select(this.root)
+    d3.select(this.donutScatterRoot)
         .datum(chartData)
         .call(this.donutScatter);
+  }
+  
+  updateLargeDonut(d) {
+    this.donut
+      .sliceVal('value')
+      .sliceCat('name')
+      .title(d.name)
+      .width(300)
+      .height(400);
+
+    d3.select(this.largeDonutRoot)
+      .data([d.pieParts])
+      .call(this.donut);
   }
 
   componentWillReceiveProps(props) {
@@ -67,7 +80,9 @@ class DonutScatterComponent extends Component {
 
   render() {
     return (
-      <div id="donut-scatter" ref={ node => this.root = node }>
+      <div>
+        <div id="donut-scatter" ref={ node => this.donutScatterRoot = node }></div>
+        <div id="large-donut" ref={ node => this.largeDonutRoot = node }></div>
       </div>
     );
   }

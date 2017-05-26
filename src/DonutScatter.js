@@ -1,7 +1,7 @@
 // ScatterPlot
 import * as d3 from 'd3';
 import d3tip from 'd3-tip';
-import donutChart from './DonutChart';
+import miniDonutChart from './MiniDonutChart';
 
 var DonutScatter = function() {
     // Set default values
@@ -15,6 +15,7 @@ var DonutScatter = function() {
         xTitle = 'X Axis Title',
         yTitle = 'Y Axis Title',
         fill = 'green',
+        onHover = () => null,
         radius = (d) => 5,
         margin = {
             left: 70,
@@ -85,7 +86,7 @@ var DonutScatter = function() {
             //ele.select('svg').call(tip);
 
             // Calculate x and y scales
-            let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.05;
+            let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.01;
             let xMin = d3.min(data, (d) => +d[xAccessor]) * .5;
             xScale.range([0, chartWidth]).domain([xMin, xMax]);
 
@@ -106,23 +107,48 @@ var DonutScatter = function() {
             // Draw markers
             let gs = ele.select('.chartG').selectAll('g.donut').data(data, d => d.id);
             
-            let donut = donutChart().sliceVal('value').sliceCat('name').width(10).height(10);
+            let donut = miniDonutChart().firstSlice('pieParts').sliceVal('value').sliceCat('name').width(10).height(10);
 
             // Use the .enter() method to get entering elements, and assign initial position
             gs.enter().append('g')
                 .attr('class', 'donut')
                 //.on('mouseover', tip.show)
                 //.on('mouseout', tip.hide)
+                .on('mouseover', d => {
+                  ele.select('.chartG').selectAll('circle.enclosing-circle')
+                    .data([d])
+                    .enter()
+                      .append('circle')
+                      .attr('class', 'enclosing-circle')
+                      .attr('cx', xScale(d[xAccessor]))
+                      .attr('cy', yScale(d[yAccessor]))
+                    .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                      .attr('fill', 'none')
+                      .attr('stroke-width', 1)
+                      .attr('stroke', 'red')
+                      .attr('r', 8)
+                      .transition().duration(200)
+                      .attr('cx', xScale(d[xAccessor]))
+                      .attr('cy', yScale(d[yAccessor]));
+                  
+                  // Exterior callback
+                  onHover(d);
+                })
                 .merge(gs)
                 .attr('transform', (d) => {
                   return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
                 })
-                .data(data.map(d => d.pieParts), (d, i) => i)
                 .call(donut);
 
             // Use the .exit() and .remove() methods to remove elements that are no longer in the data
             gs.exit().remove();
         });
+    };
+    
+    chart.onHover = function(value) {
+      if (!arguments.length) return onHover;
+      onHover = value;
+      return chart;
     };
     
     chart.xAccessor = function(value) {
