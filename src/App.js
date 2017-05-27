@@ -37,9 +37,7 @@ class App extends Component {
         this.applyFilter = this.applyFilter.bind(this);
     }
     componentWillMount() {
-        var childState = Object.assign({}, this.state);
-        childState.data = data;
-        this.child = React.cloneElement(this.props.children, childState);
+
     }
     componentWillReceiveProps(props){
         var childState = Object.assign({}, this.state);
@@ -57,12 +55,16 @@ class App extends Component {
     }
     applyFilter(e){
         e.preventDefault();
+
         var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ encodeURIComponent(this.state.filter.zip);
         fetch(url) //download the data
       .then(function(res) { return res.json(); })
       .then((datas) =>{
         this.setZipLocation(datas.results);
       });
+      var childState = Object.assign({}, this.state);
+      childState.data = data;
+      this.child = React.cloneElement(this.props.children, childState);
         this.forceUpdate();
     }
     setZipLocation(datas){
@@ -102,6 +104,7 @@ class App extends Component {
     }
 
     render() {
+
         console.log(stateData);
         //console.log( this.props);
         var deptsList = ["Aeronautics and Astronautics","African Studies",
@@ -214,6 +217,7 @@ class App extends Component {
                         name="ACT"
                         floatingLabel
                         />
+                        {false &&
                     <Select
                         multi simpleValue
                       name="form-field-name"
@@ -222,6 +226,7 @@ class App extends Component {
                       onChange={this.logChange}
                       placeholder="Select desired departments"
                         />
+                    }
                     <Textfield
                         onChange={this.handleChange}
                         pattern="-?[0-9]*(\.[0-9]+)?"

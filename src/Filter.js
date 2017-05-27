@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import { Textfield, Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
-import { ReactBootstrapSlider } from 'react-bootstrap-slider';
 
 
 class Filter extends Component {
