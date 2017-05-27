@@ -11,9 +11,11 @@ function miniDonutChart() {
         color = d3.scaleOrdinal(d3.schemeCategory20),
         padAngle = 0,
         cornerRadius = 0,
+        donutThickness = 50,
         firstSlice = null,
         sliceVal,
         sliceCat,
+        showLabels = false,
         title;
 
         // Function returned by chart
@@ -34,34 +36,45 @@ function miniDonutChart() {
             // Create arc generator for slices
             var arc = d3.arc()
                 .outerRadius(radius)
-                .innerRadius(radius - 2)
+                .innerRadius(radius - donutThickness)
                 .cornerRadius(cornerRadius)
                 .padAngle(padAngle);
+
+            // Create arc generator for labels
+            var label = d3.arc()
+                .outerRadius(radius + 10)
+                .innerRadius(radius + 10);
 
             // Iterate through selections
             selection.each(function(data) {
                 // Append svg through data-join if necessary
                 var g = d3.select(this);
-                
+
                 if (firstSlice) {
                   data = data[firstSlice];
                 }
-                
+
                 // Enter paths
-                var path = g.selectAll('.path')
-                    .data(pie(data))
+                var path = g.selectAll('g.path')
+                    .data(pie(data));
+
+                var pathGEnter = path
                     .enter().append('g')
-                    .attr('class', 'path')
+                    .attr('class', 'path');
+
+                pathGEnter
                         .append('path')
                         .attr('d', arc)
                         .attr('opacity', 0.7)
                         .attr('fill', function(d) {
-                          return color(d.data[sliceCat]); 
+                          return color(d.data[sliceCat]);
                         });
 
                 // Update paths
-                path.transition().duration(750)
-                    .attrTween('d', arcTween);
+                path.select('path').transition().delay(2000).duration(2000)
+                    .attr('d', function(d) {
+                      return arc(d);
+                    });//, arcTween);
 
                 // Exit paths
                 path.exit().remove();
@@ -74,12 +87,35 @@ function miniDonutChart() {
                       return arc(i(t));
                   };
                 };
+
+                // Function to calculate angle for text
+                var getAngle = function (d) {
+                    return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
+                };
+
+                // If showLabels is true, append and update text
+                if (showLabels) {
+                    // Rotate to prevent overlap
+                    // http://stackoverflow.com/questions/14534024/preventing-overlap-of-text-in-d3-pie-chart
+                    pathGEnter.append('text')
+                        .merge(path.selectAll('text'))
+                        .attr("transform", function(d) {
+                            return "translate(" + label.centroid(d) + ") rotate(" + getAngle(d) + ")";
+                        })
+                        .attr("dy", 5)
+                        .style("text-anchor", "start")
+                        .text(function(d) {
+                            return d.data[sliceVal] === 0 ? "" : d.data[sliceCat];
+                        });
+                } else {
+                  path.selectAll('text').transition().duration(2000).remove();
+                }
             });
         };
 
     // Define accessors for variables
     // If called without argument, method returns variable value
-    
+
     chart.firstSlice = function(value) {
       if(!arguments.length) {return firstSlice;}
       firstSlice = value;
@@ -97,6 +133,12 @@ function miniDonutChart() {
     chart.height = function(value) {
         if(!arguments.length) {return height};
         height = value;
+        return chart;
+    };
+
+    chart.donutThickness = function(value) {
+        if(!arguments.length) {return donutThickness};
+        donutThickness = value;
         return chart;
     };
 
@@ -139,6 +181,12 @@ function miniDonutChart() {
     chart.cornerRadius = function(value) {
         if(!arguments.length) {return cornerRadius;}
         cornerRadius = value;
+        return chart;
+    }
+
+    chart.showLabels = function(value) {
+        if(!arguments.length) {return showLabels;}
+        showLabels = value;
         return chart;
     }
 

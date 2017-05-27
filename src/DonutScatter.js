@@ -30,8 +30,10 @@ var DonutScatter = function() {
         var chartHeight = height - margin.bottom - margin.top;
         var chartWidth = width - margin.left - margin.right;
 
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+
         // Iterate through selections, in case there are multiple
-        selection.each(function(data){
+        selection.each(function(data) {
 
             // Use the data-join to create the svg (if necessary)
             var ele = d3.select(this);
@@ -75,16 +77,6 @@ var DonutScatter = function() {
             var xAxis = d3.axisBottom();
             var yAxis = d3.axisLeft();
 
-            // Define a hover
-            /*var tip = d3tip()
-                      .attr('class', 'd3-tip')
-                      .offset([-10, 0])
-                      .html(function(d) {
-                        return "<strong>" + d[nameAccessor] + "</strong>";
-                      });*/
-
-            //ele.select('svg').call(tip);
-
             // Calculate x and y scales
             let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.01;
             let xMin = d3.min(data, (d) => +d[xAccessor]) * .5;
@@ -94,75 +86,148 @@ var DonutScatter = function() {
             var yMax = d3.max(data, (d) => +d[yAccessor]) * 1.05;
             yScale.range([chartHeight, 0]).domain([yMin, yMax]);
 
-            // Update axes
-            xAxis.scale(xScale);
-            yAxis.scale(yScale);
-            ele.select('.axis.x').transition().duration(1000).call(xAxis);
-            ele.select('.axis.y').transition().duration(1000).call(yAxis);
+            if (!gEnter.empty()) {
+              // This is the first render, run the intro!
+              var firstCollege = data[Math.floor(Math.random() * data.length)];
 
-            // Update titles
-            ele.select('.title.x').text(xTitle)
-            ele.select('.title.y').text(yTitle)
+              let donut = miniDonutChart()
+                .firstSlice('pieParts')
+                .sliceVal('value')
+                .sliceCat('name')
+                .width(200)
+                .height(200)
+                .donutThickness(50)
+                .showLabels(true)
+                .color(color);
 
-            // Draw markers
-            let gs = ele.select('.chartG').selectAll('g.donut').data(data, d => d.id);
-            
-            let donut = miniDonutChart().firstSlice('pieParts').sliceVal('value').sliceCat('name').width(10).height(10);
+              let chartG = ele.select('.chartG');
 
-            // Use the .enter() method to get entering elements, and assign initial position
-            gs.enter().append('g')
-                .attr('class', 'donut')
-                //.on('mouseover', tip.show)
-                //.on('mouseout', tip.hide)
-                .on('mouseover', d => {
-                  ele.select('.chartG').selectAll('circle.enclosing-circle')
-                    .data([d])
-                    .enter()
-                      .append('circle')
-                      .attr('class', 'enclosing-circle')
-                      .attr('cx', xScale(d[xAccessor]))
-                      .attr('cy', yScale(d[yAccessor]))
-                    .merge(ele.select('.chartG').select('circle.enclosing-circle'))
-                      .attr('fill', 'none')
-                      .attr('stroke-width', 1)
-                      .attr('stroke', 'red')
-                      .attr('r', 8)
-                      .transition().duration(200)
-                      .attr('cx', xScale(d[xAccessor]))
-                      .attr('cy', yScale(d[yAccessor]));
-                  
-                  // Exterior callback
-                  onHover(d);
-                })
-                .merge(gs)
-                .attr('transform', (d) => {
-                  return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
-                })
-                .call(donut);
+              let g = chartG.selectAll('g.donut')
+                .data([firstCollege], d => d.id);
 
-            // Use the .exit() and .remove() methods to remove elements that are no longer in the data
-            gs.exit().remove();
+              g.enter()
+                .append('g')
+                  .attr('class', 'donut')
+                  .attr('transform', 'translate(' + (chartWidth / 2) + ',' + (chartHeight / 2) + ')')
+                  .call(donut);
+
+              chartG.selectAll('g.donut')
+                  .data([firstCollege], d => d.id)
+                  .transition()
+                  .delay(2000)
+                  .duration(1500)
+                  .attr('transform', 'translate(' + xScale(firstCollege[xAccessor]) + ', ' + yScale(firstCollege[yAccessor]) + ')')
+                  .transition()
+                  .duration(1500)
+                  .call(donut.width(10).height(10).donutThickness(2).showLabels(false))
+                  .on('end', renderCompleteChart);
+
+              // Update axes
+              xAxis.scale(xScale);
+              yAxis.scale(yScale);
+              ele.select('.axis.x').transition().duration(2000).call(xAxis);
+              ele.select('.axis.y').transition().duration(2000).call(yAxis);
+
+              // Update titles
+              ele.select('.title.x').text(xTitle)
+              ele.select('.title.y').text(yTitle)
+
+              chartG.append('text')
+                .attr('class', 'first-college-name')
+                .attr('text-anchor', 'middle')
+                .text(firstCollege.name)
+                .attr('x', chartWidth / 2)
+                .attr('y', (chartHeight / 2) - 120)
+                .transition()
+                .delay(2000)
+                .remove();
+            } else {
+              renderCompleteChart();
+            }
+
+            function renderCompleteChart() {
+              // Update axes
+              xAxis.scale(xScale);
+              yAxis.scale(yScale);
+              ele.select('.axis.x').transition().duration(2000).call(xAxis);
+              ele.select('.axis.y').transition().duration(2000).call(yAxis);
+
+              // Update titles
+              ele.select('.title.x').text(xTitle)
+              ele.select('.title.y').text(yTitle)
+
+              // Draw markers
+              let gs = ele.select('.chartG').selectAll('g.donut').data(data, d => d.id);
+
+              let donut = miniDonutChart()
+                .firstSlice('pieParts')
+                .sliceVal('value')
+                .sliceCat('name')
+                .width(10)
+                .height(10)
+                .donutThickness(2)
+                .color(color);
+
+              // Use the .enter() method to get entering elements, and assign initial position
+              gs.enter().append('g')
+                  .attr('class', 'donut')
+                  .on('mouseover', d => {
+                    ele.select('.chartG').selectAll('circle.enclosing-circle')
+                      .data([d])
+                      .enter()
+                        .append('circle')
+                        .attr('class', 'enclosing-circle')
+                        .attr('cx', xScale(d[xAccessor]))
+                        .attr('cy', yScale(d[yAccessor]))
+                      .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                        .attr('fill', 'none')
+                        .attr('stroke-width', 1)
+                        .attr('stroke', 'red')
+                        .attr('r', 8)
+                        .transition().duration(200)
+                        .attr('cx', xScale(d[xAccessor]))
+                        .attr('cy', yScale(d[yAccessor]));
+
+                    // Exterior callback
+                    onHover(d);
+                  })
+                  .attr('opacity', 0)
+                  .merge(gs)
+                  .attr('transform', (d) => {
+                    return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
+                  })
+                  .call(donut)
+                  .transition()
+                  .duration(1500)
+                  .delay(function(d, i) {
+                    return (Math.random() * 500) + 500;
+                  })
+                  .attr('opacity', 1);
+
+              // Use the .exit() and .remove() methods to remove elements that are no longer in the data
+              gs.exit().remove();
+            }
         });
     };
-    
+
     chart.onHover = function(value) {
       if (!arguments.length) return onHover;
       onHover = value;
       return chart;
     };
-    
+
     chart.xAccessor = function(value) {
       if (!arguments.length) return xAccessor;
       xAccessor = value;
       return chart;
     };
-    
+
     chart.yAccessor = function(value) {
       if (!arguments.length) return yAccessor;
       yAccessor = value;
       return chart;
     };
-    
+
     chart.nameAccessor = function(value) {
       if (!arguments.length) return nameAccessor;
       nameAccessor = value;
@@ -199,7 +264,7 @@ var DonutScatter = function() {
       yTitle = value;
       return chart;
     };
-    
+
     chart.radius = function(value){
       if (!arguments.length) return radius;
       radius = value;

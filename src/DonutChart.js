@@ -67,12 +67,12 @@ function donutChart() {
                 // Append tooltip text and style
                 // http://bl.ocks.org/nnattawat/9368297
                 var tooltip = svgEnter.append('text')
-                    .attr('class', 'tooltip')
+                    .attr('class', 'donut-tooltip')
                     .attr('transform', 'translate(' + (width)/2 + ',' + height/2 + ')')
                     .style('text-anchor', 'middle')
                     .attr('font-weight', 'bold')
                     .style('font-size', '1.5em')
-                    .merge(svg.select('text.tooltip'));
+                    .merge(svg.select('text.donut-tooltip'));
 
                 // Append g to svg
                 var g = svgEnter.append('g')
@@ -82,15 +82,15 @@ function donutChart() {
 
                 // Enter paths
                 var path = g.selectAll('.path').data(pie(data));
-                
+
                 var pathGEnter = path
                     .enter().append('g').attr('class', 'path');
-                
+
                 // Function to calculate angle for text
                 var getAngle = function (d) {
                     return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
                 };
-                
+
                 // If showLabels is true, append and update text
                 if(showLabels) {
                     // Rotate to prevent overlap
@@ -106,7 +106,7 @@ function donutChart() {
                             return d.data[sliceVal] === 0 ? "" : d.data[sliceCat];
                         });
                 }
-                
+
                 pathGEnter
                     .append('path')
                     .attr('d', arc)
@@ -115,7 +115,7 @@ function donutChart() {
                 // Update paths
                 path.select('path').transition().duration(750)
                     .attrTween('d', arcTween);
-                    
+
 
                 // Exit paths
                 path.exit().remove();
@@ -134,7 +134,7 @@ function donutChart() {
                 if(showTooltip) {
                     // Show tooltip on mouseover
                     path.on('mouseover', function(d) {
-                        tooltip.html(d.data[sliceCat] + ': <tspan x="0" dy="1.2em">' + d.data[sliceVal] + '</tspan')
+                        tooltip.html(d.data[sliceCat] + ':<tspan x="0" dy="1.2em">' + d.data[sliceVal].toFixed(0) + '%</tspan')
                             .style('display', 'block')
                             .attr('fill', color(d.data[sliceCat]));
                     })

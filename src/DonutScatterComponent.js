@@ -29,9 +29,12 @@ class DonutScatterComponent extends Component {
     });
 
     chartData = chartData.map(function(element) {
-      var none = element['appliedFinancialAid'] - element['receivedFinancialAid'];
-      var partial = element['receivedFinancialAid'] - element['receivedFullFinancialAid'];
-      var full = element['receivedFullFinancialAid'];
+      var receivedFullPercent = element['receivedFullFinancialAid'] / 100;
+      var appliedPercent = element['appliedFinancialAid'] / 100;
+      var receivedPercent = element['receivedFinancialAid'] / 100;
+      var full = (receivedFullPercent * receivedPercent) / appliedPercent;
+      var none = (appliedPercent - receivedPercent) / appliedPercent;
+      var partial = (receivedPercent - (receivedFullPercent * receivedPercent)) / appliedPercent;
       return {
         id: element.id,
         name: element.name,
@@ -40,15 +43,15 @@ class DonutScatterComponent extends Component {
         pieParts: [
           {
             name: 'none',
-            value: none
+            value: none * 100
           },
           {
             name: 'partial',
-            value: partial
+            value: partial * 100
           },
           {
             name: 'full',
-            value: full
+            value: full * 100
           }
         ]
       };
@@ -59,7 +62,7 @@ class DonutScatterComponent extends Component {
         .datum(chartData)
         .call(this.donutScatter);
   }
-  
+
   updateLargeDonut(d) {
     this.donut
       .sliceVal('value')
