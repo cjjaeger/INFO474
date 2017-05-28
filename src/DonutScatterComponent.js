@@ -14,7 +14,7 @@ class DonutScatterComponent extends Component {
   }
  filterMap(e){
       e.preventDefault();
-    hashHistory.push('/scatter');
+    hashHistory.push('/viz/scatter');
   }
   update() {
     // Update parameters

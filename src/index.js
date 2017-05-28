@@ -22,8 +22,8 @@ ReactDOM.render(
         <IndexRoute component={Filter} />
         <Route path='/viz' component={GraphView}>
             <IndexRoute component={DonutScatterComponent} />
-          <Route path='/donut'component={DonutScatterComponent}/>
-          <Route path='/scatter'component={ScatterPlotComponent}/>
+          <Route path='/viz/donut'component={DonutScatterComponent}/>
+          <Route path='/viz/scatter'component={ScatterPlotComponent}/>
         </Route>
       </Route>
     </Router>,
