@@ -50,8 +50,6 @@ class DonutScatterComponent extends Component {
         })
         .onHover(this.updateLargeDonut.bind(this));
 
-    console.log(this.props.data.length);
-
     var chartData = this.props.data.filter(function(x) {
       return x['appliedFinancialAid'] !== null &&
              x['receivedFinancialAid'] !== null &&

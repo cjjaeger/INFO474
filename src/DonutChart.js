@@ -229,6 +229,15 @@ function donutChart() {
                       .on('mouseout', function() {
                           tooltip.style('display', 'none');
                       });
+                } else {
+                  // Hide the tooltip
+                  tooltip.style('display', 'none');
+                  // Remove listeners
+                  svg
+                    .select('g.chart-g')
+                    .selectAll('.path')
+                    .on('mouseover', null)
+                    .on('mouseout', null);
                 }
             });
         };
