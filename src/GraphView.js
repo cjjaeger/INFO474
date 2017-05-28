@@ -14,7 +14,6 @@ class GraphView extends Component {
         this.child = React.cloneElement(this.props.children, childState)
     return (
       <div>
-        <h2>still here</h2>
           {this.child}
        {/* <DonutScatterComponent data={this.props.data} filter={this.props.filter}/>
         <ScatterPlotComponent data={this.props.data} filter={this.props.filter}/>*/}

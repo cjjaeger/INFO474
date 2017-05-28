@@ -26,7 +26,8 @@ class App extends Component {
                 "handleCheck": this.setZip = this.setZip.bind(this),
                 "zipltlng":{},
                 "zipState":""
-            }
+            }, 
+            "data":data
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
@@ -38,12 +39,12 @@ class App extends Component {
     }
     componentWillMount() {
         var childState = Object.assign({}, this.state);
-        childState.data = data;
+       // childState.data = data;
         this.child = React.cloneElement(this.props.children, childState);
     }
     componentWillReceiveProps(props){
         var childState = Object.assign({}, this.state);
-        childState.data = data;
+        //childState.data = data;
         this.child = React.cloneElement(this.props.children, childState);
         //this.forceUpdate();
     }
@@ -64,8 +65,12 @@ class App extends Component {
       .then((datas) =>{
         this.setZipLocation(datas.results);
       });
+      var newData = data.filter((obj)=>{
+            return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
+        });
+        this.setState({"data": newData});
       var childState = Object.assign({}, this.state);
-      childState.data = data;
+      //childState.data = data;
       this.child = React.cloneElement(this.props.children, childState);
         this.forceUpdate();
     }
@@ -73,10 +78,8 @@ class App extends Component {
         this.state.filter.zipltlng = datas[0].geometry.location; //update state
         var stateFips = datas[0].address_components[3].short_name
         this.state.filter.zipState = stateData[stateFips] ; //update state
-        var newData = data.filter((obj)=>{
-            return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
-        });
-        console.log(newData);
+        
+        console.log(data);
     }
 
     handleChange(event) {
@@ -167,7 +170,7 @@ class App extends Component {
             deptsList[i] = {"value":deptsList[i], "label":deptsList[i]};
         }
         return (
-        <Layout fixedHeader fixedDrawer>
+        <Layout fixedHeader>
             <Header>
               <h1>Because College</h1>
             </Header>

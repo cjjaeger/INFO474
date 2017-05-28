@@ -26,3 +26,13 @@ form{
 #large-donut{
     display: inline;
 }
+.mdl-layout .mdl-layout__drawer-button::before{
+  content: "Refine";
+}
+.mdl-layout .mdl-layout__drawer-button{
+  font-size: 10pt;
+  width: 50px;
+}
+.mdl-layout .mdl-layout__drawer-button .material-icons{
+    display: none;
+}
