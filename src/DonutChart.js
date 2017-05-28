@@ -132,7 +132,7 @@ function donutChart() {
                 // Function to calculate angle for text
                 var getAngle = function (d) {
                     d.perpendicular = (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
-                    if (d.perpendicular > 180) {
+                    if (d.perpendicular > 90) {
                       return d.perpendicular + 180;
                     } else {
                       return d.perpendicular;
@@ -140,7 +140,7 @@ function donutChart() {
                 };
 
                 var getTextAnchor = function(d) {
-                  if (d.perpendicular > 180) {
+                  if (d.perpendicular > 90) {
                     return 'end';
                   } else {
                     return 'start';
@@ -152,7 +152,7 @@ function donutChart() {
                     // Rotate to prevent overlap
                     // http://stackoverflow.com/questions/14534024/preventing-overlap-of-text-in-d3-pie-chart
                     var labels = pathGEnter.append('text');
-                    var existingLabels = path.selectAll('text');
+                    var existingLabels = path.select('text');
 
                     if (isTransition) {
                       labels = labels.transition(context);
