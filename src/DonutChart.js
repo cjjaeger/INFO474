@@ -44,9 +44,10 @@ function donutChart() {
                 .outerRadius(radius + 10)
                 .innerRadius(radius + 10);
 
+            //console.log(selection);
             // Iterate through selections
             selection.each(function(data) {
-                console.log(data);
+                //console.log(data);
                 // Append svg through data-join if necessary
                 var ele = d3.select(this);
                 var svg = ele.selectAll('svg').data([data]);
@@ -104,6 +105,7 @@ function donutChart() {
                         .style("text-anchor", "start")
                         .text(function(d) {
                             return d.data[sliceVal] === 0 ? "" : d.data[sliceCat];
+
                         });
                 }
 

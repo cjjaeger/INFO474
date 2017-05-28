@@ -3,6 +3,10 @@ import * as d3 from 'd3';
 import './App.css';
 import DonutScatter from './DonutScatter';
 import donutChart from './DonutChart';
+import {Button } from 'react-mdl';
+import { hashHistory } from 'react-router';
+
+
 
 class DonutScatterComponent extends Component {
   componentDidMount() {
@@ -10,10 +14,13 @@ class DonutScatterComponent extends Component {
     this.donut = donutChart();
     this.update();
   }
-
+ filterMap(e){
+      e.preventDefault();
+    hashHistory.push('/viz/scatter');
+  }
   update() {
-    this.donutScatter.width(900)
-        .height(700)
+    this.donutScatter.width(600)
+        .height(400)
         .xTitle('Tuition')
         .yTitle('Room and Board')
         .xAccessor('tuition')
@@ -86,6 +93,7 @@ class DonutScatterComponent extends Component {
       <div>
         <div id="donut-scatter" ref={ node => this.donutScatterRoot = node }></div>
         <div id="large-donut" ref={ node => this.largeDonutRoot = node }></div>
+        <Button onClick={this.filterMap} raised colored>Next</Button>
       </div>
     );
   }
