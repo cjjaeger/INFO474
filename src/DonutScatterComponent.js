@@ -32,7 +32,7 @@ class DonutScatterComponent extends Component {
           var fullPercent = d.pieParts.filter(x => x.name === 'full')[0].value;
 
           return {
-            label: `At ${d.name}, ${Math.round(partialPercent).toLocaleString()}% of applicants receive financial aid. ${Math.round(fullPercent).toLocaleString()}% of applicants receive enough to fully cover their need.`,
+            label: `At ${d.name}, ${Math.round(partialPercent + fullPercent).toLocaleString()}% of applicants receive financial aid. ${Math.round(fullPercent).toLocaleString()}% of applicants receive enough to fully cover their need.`,
             title: "Financial Aid"
           };
         })
