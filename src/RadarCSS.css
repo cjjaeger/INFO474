@@ -11,15 +11,3 @@
     opacity: 0;
     background: #f4f4f4;
 }
-
-.level-labels {
-    font-family: sans-serif;
-}
-
-.axis-lines {
-    stroke-width: 1px;
-}
-
-.axis-labels {
-    font-family: sans-serif;
-}

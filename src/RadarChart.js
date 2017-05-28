@@ -1,4 +1,6 @@
-var radar = function () {
+import * as d3 from 'd3';
+
+var radarChart = function () {
         
         var width = 1000,
             height = 1000,
@@ -131,6 +133,7 @@ var radar = function () {
                     svgLevel.data([1]).enter()
                         .append("text")
                         .attr("class", "levelLabels")
+                        .attr("font-family", "sans-serif")
                         .text((maxValue * (eachLevel + 1) / level).toFixed(2))
                         .attr("x", function(d) { 
                             return levelFactor * (1 - Math.sin(0)); 
@@ -155,7 +158,8 @@ var radar = function () {
                     .attr("y2", function(d, i) { 
                         return height / 2 * (1 - Math.cos(i * radians / totalAxes)); 
                     })
-                    .attr("stroke", "grey");
+                    .attr("stroke", "grey")
+                    .attr("stroke-width", 1 + "px");
 
                 /****************************************  axes label  ************************************************/
                 axes.data(allAxis).enter()
@@ -167,7 +171,8 @@ var radar = function () {
                     .attr("text-anchor", "middle")
                     .attr("x", function(d, i) { return width / 2 * (1 - 1.08 * Math.sin(i * radians / totalAxes)); })
                     .attr("y", function(d, i) { return height / 2 * (1 - 1.08 * Math.cos(i * radians / totalAxes)); })
-                    .attr("font-size", 15 * labelScale + "px");
+                    .attr("font-size", 15 * labelScale + "px")
+                    .attr("font-family", "sans-serif");
 
                 /****************************************  vertices  ************************************************/
                 data.forEach(function(group, g) {
