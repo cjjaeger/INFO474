@@ -20,7 +20,7 @@ class DonutScatterComponent extends Component {
 
   update() {
     this.donutScatter.width(900)
-        .height(600)
+        .height(500)
         .xTitle('Tuition')
         .yTitle('Room and Board')
         .xAccessor('tuition')
@@ -104,6 +104,8 @@ class DonutScatterComponent extends Component {
 
     d3.select(this.largeDonutRoot)
       .data([d])
+      // .transition()
+      // .duration(1000)
       .call(this.donut);
   }
 

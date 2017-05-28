@@ -19,7 +19,6 @@ class App extends Component {
                 "inArea": false,
                 "radius": null,
                 "tuition":[0,70000],
-                "department":[],
                 "SAT":null,
                 "ACT":null,
                 "ranking": null,
@@ -88,10 +87,6 @@ class App extends Component {
         this.state.filter[field] = value; //update state
         this.forceUpdate();
     }
-    logChange(val){
-        this.state.filter.department = val;
-        this.forceUpdate();
-    }
 
 
     handleCheck(event){
@@ -111,64 +106,8 @@ class App extends Component {
 
         console.log(stateData);
         //console.log( this.props);
-        var deptsList = ["Aeronautics and Astronautics","African Studies",
-        "American Ethnic Studies",
-        "American Indian Studies",
-        "Anesthesiology",
-        "Anthropology",
-        "Applied and Computational Mathematical Sciences (ACMS)",
-        "Applied Mathematics",
-        "Aquatic and Fishery Sciences",
-        "Architecture",
-        "Art, Art History, and Design",
-        "Astronomy",
-        "Biochemistry",
-        "Bioengineering",
-        "Biology",
-        "Biostatistics",
-        "Chemistry",
-        "Classics",
-        "Communication",
-        "Dance",
-        "Drama",
-        "Economics",
-        "Endodontics",
-        "English",
-        "Epidemiology",
-        "Geography",
-        "Germanics",
-        "History",
-        "Immunology",
-        "Linguistics",
-        "Mathematics",
-        "Medicine",
-        "Microbiology",
-        "Museology",
-        "Music",
-        "Nephrology",
-        "Neurology",
-        "Neurosurgery",
-        "Oceanography",
-        "Ophthalmology",
-        "Orthodontics",
-        "Pathobiology",
-        "Pathology",
-        "Pediatrics",
-        "Periodontics",
-        "Pharmaceutics",
-        "Pharmacology",
-        "Pharmacy",
-        "Philosophy",
-        "Physics",
-        "Psychology",
-        "Radiology",
-        "Sociology",
-        "Statistics",
-        "Surgery",
-        "Urology"];
-        for (var i = 0; i < deptsList.length; i++) {
-            deptsList[i] = {"value":deptsList[i], "label":deptsList[i]};
-        }
+        
+       
         return (
         <Layout fixedHeader>
             <Header>
@@ -221,16 +160,7 @@ class App extends Component {
                         name="ACT"
                         floatingLabel
                         />
-                        {false &&
-                    <Select
-                        multi simpleValue
-                      name="form-field-name"
-                      value={this.state.filter.department}
-                      options={deptsList}
-                      onChange={this.logChange}
-                      placeholder="Select desired departments"
-                        />
-                    }
+                    
                     <Textfield
                         onChange={this.handleChange}
                         pattern="-?[0-9]*(\.[0-9]+)?"
