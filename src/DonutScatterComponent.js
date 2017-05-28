@@ -6,25 +6,48 @@ import donutChart from './DonutChart';
 import {Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
 
-
-
 class DonutScatterComponent extends Component {
   componentDidMount() {
     this.donutScatter = DonutScatter();
     this.donut = donutChart();
     this.update();
   }
- filterMap(e){
-      e.preventDefault();
-    hashHistory.push('/viz/scatter');
+
+  filterMap(e){
+    e.preventDefault();
+    hashHistory.push('/viz/2');
   }
+
   update() {
-    this.donutScatter.width(600)
-        .height(400)
+    this.donutScatter.width(900)
+        .height(600)
         .xTitle('Tuition')
         .yTitle('Room and Board')
         .xAccessor('tuition')
         .yAccessor('roomAndBoardCost')
+        .xAxisTickFormat(d3.format('$.2s'))
+        .yAxisTickFormat(d3.format('$.2s'))
+        .donutIntro(d => {
+          var partialPercent = d.pieParts.filter(x => x.name === 'partial')[0].value;
+          var fullPercent = d.pieParts.filter(x => x.name === 'full')[0].value;
+
+          return {
+            label: `At ${d.name}, ${Math.round(partialPercent + fullPercent).toLocaleString()}% of applicants receive financial aid. ${Math.round(fullPercent).toLocaleString()}% of applicants receive enough to fully cover their need.`,
+            title: "Financial Aid"
+          };
+        })
+        .xAxisIntro(d => {
+          return {
+            label: `${d.name} costs $${Math.round(d.tuition).toLocaleString()} per year.`,
+            title: "Tuition"
+          };
+        })
+        .yAxisIntro(d => {
+          return {
+            label: `At ${d.name}, it costs $${Math.round(d.roomAndBoardCost).toLocaleString()} per year to live on campus.`,
+            title: "Room and Board"
+          };
+        })
         .onHover(this.updateLargeDonut.bind(this));
 
     var chartData = this.props.data.filter(function(x) {
@@ -72,6 +95,7 @@ class DonutScatterComponent extends Component {
 
   updateLargeDonut(d) {
     this.donut
+      .firstSlice('pieParts')
       .sliceVal('value')
       .sliceCat('name')
       .title(d.name)
@@ -79,7 +103,7 @@ class DonutScatterComponent extends Component {
       .height(400);
 
     d3.select(this.largeDonutRoot)
-      .data([d.pieParts])
+      .data([d])
       .call(this.donut);
   }
 
@@ -92,7 +116,7 @@ class DonutScatterComponent extends Component {
     return (
       <div>
         <div id="donut-scatter" ref={ node => this.donutScatterRoot = node }></div>
-        <div id="large-donut" ref={ node => this.largeDonutRoot = node }></div>
+        <svg id="large-donut" width="300" height="400" ref={ node => this.largeDonutRoot = node }></svg>
         <Button onClick={this.filterMap} raised colored>Next</Button>
       </div>
     );
