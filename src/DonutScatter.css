@@ -1,0 +1,22 @@
+.annotation path {
+  stroke: #E8336D;
+  fill: none;
+}
+
+.annotation path.connector-arrow,
+.annotation path.connector-dot,
+.title text, .annotation text {
+  fill: #E8336D;
+}
+
+.annotation-note-bg {
+  fill: rgba(0, 0, 0, 0);
+}
+
+.annotation-note-title, text.title {
+  font-weight: bold;
+}
+
+text.title {
+  font-size: 1.2em;
+}

@@ -19,3 +19,10 @@ form{
     padding-left: 10px;
     padding-right: 10px;
 }
+
+#donut-scatter{
+    display: inline;
+}
+#large-donut{
+    display: inline;
+}
