@@ -32,7 +32,6 @@ class App extends Component {
         this.handleCheck = this.handleCheck.bind(this);
         this.setZip = this.setZip.bind(this);
         this.changeValue = this.changeValue.bind(this);
-        this.logChange = this.logChange.bind(this);
         this.setZipLocation = this.setZipLocation.bind(this);
         this.applyFilter = this.applyFilter.bind(this);
     }
