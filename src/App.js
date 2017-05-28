@@ -37,13 +37,15 @@ class App extends Component {
         this.applyFilter = this.applyFilter.bind(this);
     }
     componentWillMount() {
-
+        var childState = Object.assign({}, this.state);
+        childState.data = data;
+        this.child = React.cloneElement(this.props.children, childState);
     }
     componentWillReceiveProps(props){
         var childState = Object.assign({}, this.state);
         childState.data = data;
         this.child = React.cloneElement(this.props.children, childState);
-        this.forceUpdate();
+        //this.forceUpdate();
     }
     setZip(event){
 

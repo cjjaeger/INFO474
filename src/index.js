@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Route, Router, hashHistory, IndexRoute} from 'react-router';
 import DonutScatterComponent from './DonutScatterComponent';
+import ScatterPlotComponent from './ScatterPlotComponent';
+
 
 import App from './App';
 import GraphView from './GraphView';
@@ -20,7 +22,8 @@ ReactDOM.render(
         <IndexRoute component={Filter} />
         <Route path='/viz' component={GraphView}>
             <IndexRoute component={DonutScatterComponent} />
-          <Route path=':graphType'/>
+          <Route path='/donut'component={DonutScatterComponent}/>
+          <Route path='/scatter'component={ScatterPlotComponent}/>
         </Route>
       </Route>
     </Router>,

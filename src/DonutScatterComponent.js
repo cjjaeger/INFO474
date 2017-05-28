@@ -2,13 +2,20 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import './App.css';
 import DonutScatter from './DonutScatter';
+import {Button } from 'react-mdl';
+import { hashHistory } from 'react-router';
+
+
 
 class DonutScatterComponent extends Component {
   componentDidMount() {
     this.donutScatter = DonutScatter();
     this.update();
   }
-
+ filterMap(e){
+      e.preventDefault();
+    hashHistory.push('/scatter');
+  }
   update() {
     // Update parameters
     this.donutScatter
@@ -67,7 +74,10 @@ class DonutScatterComponent extends Component {
 
   render() {
     return (
+      <div>
       <div id="donut-scatter" ref={ node => this.root = node }>
+      </div>
+        <Button onClick={this.filterMap} raised colored>Next</Button>
       </div>
     );
   }
