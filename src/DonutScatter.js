@@ -1,7 +1,9 @@
 // ScatterPlot
 import * as d3 from 'd3';
+import * as d3a from 'd3-svg-annotation';
 import d3tip from 'd3-tip';
-import miniDonutChart from './MiniDonutChart';
+import donutChart from './DonutChart';
+import './DonutScatter.css';
 
 var DonutScatter = function() {
     // Set default values
@@ -14,8 +16,13 @@ var DonutScatter = function() {
         yScale = d3.scaleLinear(),
         xTitle = 'X Axis Title',
         yTitle = 'Y Axis Title',
+        xAxisTickFormat = d3.format(".0"),
+        yAxisTickFormat = d3.format(".0"),
         fill = 'green',
         onHover = () => null,
+        donutIntro,
+        xAxisIntro,
+        yAxisIntro,
         radius = (d) => 5,
         margin = {
             left: 70,
@@ -65,17 +72,19 @@ var DonutScatter = function() {
 
             // Add a title g for the x axis
             gEnter.append('text')
+                .attr('text-anchor', 'middle')
                 .attr('transform', 'translate(' + (margin.left + chartWidth/2) + ',' + (chartHeight + margin.top + 40) + ')')
                 .attr('class', 'title x');
 
             // Add a title g for the y axis
             gEnter.append('text')
+                .attr('text-anchor', 'middle')
                 .attr('transform', 'translate(' + (margin.left - 40) + ',' + (margin.top + chartHeight/2) + ') rotate(-90)')
                 .attr('class', 'title y');
 
             // Define xAxis and yAxis functions
-            var xAxis = d3.axisBottom();
-            var yAxis = d3.axisLeft();
+            var xAxis = d3.axisBottom().tickFormat(xAxisTickFormat);
+            var yAxis = d3.axisLeft().tickFormat(yAxisTickFormat);
 
             // Calculate x and y scales
             let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.01;
@@ -90,15 +99,61 @@ var DonutScatter = function() {
               // This is the first render, run the intro!
               var firstCollege = data[Math.floor(Math.random() * data.length)];
 
-              let donut = miniDonutChart()
+              let donut = donutChart()
+                .margin({
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0
+                })
+                .centerAroundOrigin(true)
                 .firstSlice('pieParts')
                 .sliceVal('value')
                 .sliceCat('name')
                 .width(200)
                 .height(200)
                 .donutThickness(50)
-                .showLabels(true)
+                .title(firstCollege.name)
                 .color(color);
+
+              var donutIntroAnnotation = d3a.annotation()
+                .type(d3a.annotationCalloutCircle)
+                .annotations([{
+                  note: donutIntro(firstCollege),
+                  subject: {
+                    radius: 105
+                  },
+                  x: chartWidth / 2,
+                  y: chartHeight / 2,
+                  dy: 70,
+                  dx: 110
+                }]);
+
+              var xAxisIntroAnnotation = d3a.annotation()
+                .type(d3a.annotationCalloutCircle)
+                .annotations([{
+                  note: xAxisIntro(firstCollege),
+                  subject: {
+                    radius: 10
+                  },
+                  x: xScale(firstCollege[xAccessor]),
+                  y: chartHeight,
+                  dy: -50,
+                  dx: -50
+                }]);
+
+              var yAxisIntroAnnotation = d3a.annotation()
+                .type(d3a.annotationCalloutCircle)
+                .annotations([{
+                  note: yAxisIntro(firstCollege),
+                  subject: {
+                    radius: 10
+                  },
+                  x: 0,
+                  y: yScale(firstCollege[yAccessor]),
+                  dy: 0,
+                  dx: 20
+                }]);
 
               let chartG = ele.select('.chartG');
 
@@ -114,33 +169,59 @@ var DonutScatter = function() {
               chartG.selectAll('g.donut')
                   .data([firstCollege], d => d.id)
                   .transition()
-                  .delay(2000)
-                  .duration(1500)
-                  .attr('transform', 'translate(' + xScale(firstCollege[xAccessor]) + ', ' + yScale(firstCollege[yAccessor]) + ')')
+                    .delay(4000)
+                    .duration(4000)
+                    .on('start', () => {
+                      chartG.select('.annotations')
+                        .call(xAxisIntroAnnotation);
+
+                      ele.select('.axis.x')
+                        .transition()
+                        .duration(2000)
+                        .call(xAxis);
+
+                      ele.select('.title.x')
+                        .text(xTitle);
+                    })
+                    .attr('transform', 'translate(' + xScale(firstCollege[xAccessor]) + ', ' + (chartHeight / 2) + ')')
                   .transition()
-                  .duration(1500)
-                  .call(donut.width(10).height(10).donutThickness(2).showLabels(false))
-                  .on('end', renderCompleteChart);
+                    .duration(4000)
+                    .on('start', () => {
+                      chartG.select('.annotations')
+                        .call(yAxisIntroAnnotation);
+
+                      ele.select('.axis.y')
+                        .transition()
+                        .duration(2000)
+                        .call(yAxis);
+
+                      ele.select('.title.y')
+                        .text(yTitle);
+                    })
+                    .attr('transform', 'translate(' + xScale(firstCollege[xAccessor]) + ', ' + yScale(firstCollege[yAccessor]) + ')')
+                  .transition()
+                    .duration(1500)
+                    .on('start', () => {
+                      chartG.select('.annotations')
+                        .remove();
+                    })
+                    .call(
+                      donut
+                        .width(10)
+                        .height(10)
+                        .donutThickness(2)
+                        .showLabels(false)
+                        .showTooltip(false)
+                    )
+                    .on('end', renderCompleteChart);
 
               // Update axes
               xAxis.scale(xScale);
               yAxis.scale(yScale);
-              ele.select('.axis.x').transition().duration(2000).call(xAxis);
-              ele.select('.axis.y').transition().duration(2000).call(yAxis);
 
-              // Update titles
-              ele.select('.title.x').text(xTitle)
-              ele.select('.title.y').text(yTitle)
-
-              chartG.append('text')
-                .attr('class', 'first-college-name')
-                .attr('text-anchor', 'middle')
-                .text(firstCollege.name)
-                .attr('x', chartWidth / 2)
-                .attr('y', (chartHeight / 2) - 120)
-                .transition()
-                .delay(2000)
-                .remove();
+              chartG
+                .append('g').attr('class', 'annotations')
+                .call(donutIntroAnnotation);
             } else {
               renderCompleteChart();
             }
@@ -153,19 +234,28 @@ var DonutScatter = function() {
               ele.select('.axis.y').transition().duration(2000).call(yAxis);
 
               // Update titles
-              ele.select('.title.x').text(xTitle)
-              ele.select('.title.y').text(yTitle)
+              ele.select('.title.x').text(xTitle);
+              ele.select('.title.y').text(yTitle);
 
               // Draw markers
               let gs = ele.select('.chartG').selectAll('g.donut').data(data, d => d.id);
 
-              let donut = miniDonutChart()
+              let donut = donutChart()
+                .centerAroundOrigin(true)
                 .firstSlice('pieParts')
                 .sliceVal('value')
                 .sliceCat('name')
                 .width(10)
                 .height(10)
+                .margin({
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0
+                })
                 .donutThickness(2)
+                .showTooltip(false)
+                .showLabels(false)
                 .color(color);
 
               // Use the .enter() method to get entering elements, and assign initial position
@@ -268,6 +358,36 @@ var DonutScatter = function() {
     chart.radius = function(value){
       if (!arguments.length) return radius;
       radius = value;
+      return chart;
+    };
+
+    chart.xAxisTickFormat = function(value) {
+      if (!arguments.length) return xAxisTickFormat;
+      xAxisTickFormat = value;
+      return chart;
+    }
+
+    chart.yAxisTickFormat = function(value) {
+      if (!arguments.length) return yAxisTickFormat;
+      yAxisTickFormat = value;
+      return chart;
+    };
+
+    chart.donutIntro = function(value) {
+      if (!arguments.length) return donutIntro;
+      donutIntro = value;
+      return chart;
+    };
+
+    chart.xAxisIntro = function(value) {
+      if (!arguments.length) return xAxisIntro;
+      xAxisIntro = value;
+      return chart;
+    };
+
+    chart.yAxisIntro = function(value) {
+      if (!arguments.length) return yAxisIntro;
+      yAxisIntro = value;
       return chart;
     };
 

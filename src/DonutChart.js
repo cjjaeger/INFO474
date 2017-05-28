@@ -8,17 +8,22 @@ function donutChart() {
     var width = 600,
         height = 600,
         margin = {top: 140, right:10, bottom:10, left:10},
+        // Whether or not to center around 0,0
+        centerAroundOrigin = false,
         color = d3.scaleOrdinal(d3.schemeCategory20),
         padAngle = 0,
         cornerRadius = 0,
+        donutThickness = 50,
+        firstSlice,
         sliceVal,
         sliceCat,
         title,
         showTooltip = true, // Boolean for tooltip
-        showLabels = true // Boolean for labels;
+        showLabels = true; // Boolean for labels;
 
         // Function returned by chart
-        function chart(selection) {
+        function chart(context) {
+            var isTransition = !!(context.selection);
             // Chart dimension variables
             var chartWidth = (width - margin.left - margin.right);
             var chartHeight = (height - margin.top - margin.bottom);
@@ -35,7 +40,7 @@ function donutChart() {
             // Create arc generator for slices
             var arc = d3.arc()
                 .outerRadius(radius)
-                .innerRadius(radius - 50)
+                .innerRadius(radius - donutThickness)
                 .cornerRadius(cornerRadius)
                 .padAngle(padAngle);
 
@@ -44,69 +49,135 @@ function donutChart() {
                 .outerRadius(radius + 10)
                 .innerRadius(radius + 10);
 
-            //console.log(selection);
-            // Iterate through selections
-            selection.each(function(data) {
-                //console.log(data);
-                // Append svg through data-join if necessary
-                var ele = d3.select(this);
-                var svg = ele.selectAll('svg').data([data]);
+            // Iterate through context
+            context.each(function(data) {
+                if (firstSlice) {
+                  data = data[firstSlice];
+                }
 
-                // Append svg to selection
-                var svgEnter = svg.enter().append('svg')
-                    .attr('width', width)
-                    .attr('height', height);
+                var svg = d3.select(this);
+
+                var svgEnter = svg.enter();
 
                 // Append chart title to svg
-                svgEnter.append('text')
-                    .attr('transform', 'translate(' + ((width - margin.left)/2) + ',' + 30 + ')')
-                    .attr('class', 'chart-title')
-                    .attr('text-anchor', 'middle')
-                    .merge(svg.select('text.chart-title'))
-                    .text(title);
+                var chartTitle = svg.selectAll('text.title')
+                    .data([data])
+                    .enter()
+                    .append('text');
 
                 // Append tooltip text and style
                 // http://bl.ocks.org/nnattawat/9368297
-                var tooltip = svgEnter.append('text')
+                var tooltip = svg.selectAll('text.donut-tooltip')
+                    .data([data])
+                    .enter()
+                    .append('text');
+
+                // Append g to svg
+                var g = svg.selectAll('g.chart-g')
+                    .data([data])
+                    .enter()
+                    .append('g')
+                    .attr('class', 'chart-g');
+
+                var existingTitle = svg.select('text.title');
+                var existingTooltip = svg.select('text.donut-tooltip');
+                var existingChartG = svg.select('g.chart-g');
+
+                if (isTransition) {
+                  chartTitle = chartTitle.transition(context);
+                  tooltip = tooltip.transition(context);
+                  g = g.transition(context);
+
+                  existingTitle = existingTitle.transition(context);
+                  existingTooltip = existingTooltip.transition(context);
+                  existingChartG = existingChartG.transition(context);
+                }
+
+                chartTitle = chartTitle
+                    .attr('class', 'title')
+                    .attr('text-anchor', 'middle')
+                    .merge(existingTitle)
+                    .text(title);
+
+                tooltip = tooltip
                     .attr('class', 'donut-tooltip')
-                    .attr('transform', 'translate(' + (width)/2 + ',' + height/2 + ')')
                     .style('text-anchor', 'middle')
                     .attr('font-weight', 'bold')
                     .style('font-size', '1.5em')
-                    .merge(svg.select('text.donut-tooltip'));
+                    .merge(existingTooltip);
 
-                // Append g to svg
-                var g = svgEnter.append('g')
-                    .attr('transform', 'translate(' + width/2 + "," + height/2 + ')')
-                    .attr('class', 'chart-g')
-                    .merge(svg.select('g.chart-g'));
+                g = g
+                    .merge(existingChartG);
+
+                if (centerAroundOrigin) {
+                  chartTitle
+                    .attr('transform', 'translate(0,' + -(30 + height/2) + ')');
+                } else {
+                  g
+                    .attr('transform', 'translate(' + width/2 + "," + height/2 + ')');
+
+                  tooltip
+                    .attr('transform', 'translate(' + width/2 + "," + height/2 + ')');
+
+                  chartTitle
+                    .attr('transform', 'translate(' + ((width - margin.left)/2) + ',' + 30 + ')')
+                }
 
                 // Enter paths
-                var path = g.selectAll('.path').data(pie(data));
+                var path = svg.select('g.chart-g').selectAll('.path').data(pie(data));
 
                 var pathGEnter = path
                     .enter().append('g').attr('class', 'path');
 
                 // Function to calculate angle for text
                 var getAngle = function (d) {
-                    return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
+                    d.perpendicular = (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
+                    if (d.perpendicular > 180) {
+                      return d.perpendicular + 180;
+                    } else {
+                      return d.perpendicular;
+                    }
+                };
+
+                var getTextAnchor = function(d) {
+                  if (d.perpendicular > 180) {
+                    return 'end';
+                  } else {
+                    return 'start';
+                  }
                 };
 
                 // If showLabels is true, append and update text
-                if(showLabels) {
+                if (showLabels) {
                     // Rotate to prevent overlap
                     // http://stackoverflow.com/questions/14534024/preventing-overlap-of-text-in-d3-pie-chart
-                    pathGEnter.append('text')
-                        .merge(path.select('text'))
+                    var labels = pathGEnter.append('text');
+                    var existingLabels = path.selectAll('text');
+
+                    if (isTransition) {
+                      labels = labels.transition(context);
+                      existingLabels = existingLabels.transition(context);
+                    }
+
+                    labels.merge(existingLabels)
                         .attr("transform", function(d) {
                             return "translate(" + label.centroid(d) + ") rotate(" + getAngle(d) + ")";
                         })
                         .attr("dy", 5)
-                        .style("text-anchor", "start")
+                        .style("text-anchor", getTextAnchor)
                         .text(function(d) {
                             return d.data[sliceVal] === 0 ? "" : d.data[sliceCat];
-
                         });
+                } else {
+                  var labels = path.selectAll('text');
+
+                  if (isTransition) {
+                    // We want labels to be removed at the beginning, not the
+                    // end, of a transition.
+                    labels = labels.transition(context).duration(0);
+                  }
+
+                  labels.remove();
                 }
 
                 pathGEnter
@@ -115,12 +186,23 @@ function donutChart() {
                     .attr('fill', function(d) {return color(d.data[sliceCat]); });
 
                 // Update paths
-                path.select('path').transition().duration(750)
-                    .attrTween('d', arcTween);
+                var updating = path.select('path')
 
+                if (isTransition) {
+                  updating = updating.transition(context);
+                }
+
+                updating
+                  .attr('d', arc);
 
                 // Exit paths
-                path.exit().remove();
+                var exiting = path.exit();
+
+                if (isTransition) {
+                  exiting = exiting.transition(context);
+                }
+
+                exiting.remove();
 
                 // Store angles and interpolate from current to new angles
                 function arcTween(a) {
@@ -133,24 +215,32 @@ function donutChart() {
 
 
                 // If showTooltip is true, display tooltip
-                if(showTooltip) {
-                    // Show tooltip on mouseover
-                    path.on('mouseover', function(d) {
-                        tooltip.html(d.data[sliceCat] + ':<tspan x="0" dy="1.2em">' + d.data[sliceVal].toFixed(0) + '%</tspan')
-                            .style('display', 'block')
-                            .attr('fill', color(d.data[sliceCat]));
-                    })
-
-                    // Hide tooltip on mouseout
-                    path.on('mouseout', function() {
-                        tooltip.style('display', 'none');
-                    })
+                if (showTooltip) {
+                    svg
+                      .select('g.chart-g')
+                      .selectAll('.path')
+                      // Show tooltip on mouseover
+                      .on('mouseover', function(d) {
+                          tooltip.html(d.data[sliceCat] + ':<tspan x="0" dy="1.2em">' + d.data[sliceVal].toFixed(0) + '%</tspan')
+                              .style('display', 'block')
+                              .attr('fill', color(d.data[sliceCat]));
+                      })
+                      // Hide tooltip on mouseout
+                      .on('mouseout', function() {
+                          tooltip.style('display', 'none');
+                      });
                 }
             });
         };
 
     // Define accessors for variables
     // If called without argument, method returns variable value
+
+    chart.firstSlice = function(value) {
+        if(!arguments.length) {return firstSlice;}
+        firstSlice = value;
+        return chart;
+    };
 
     // Width accessor
     chart.width = function(value) {
@@ -221,6 +311,28 @@ function donutChart() {
         showTooltip = value;
         return chart;
     }
+
+    chart.donutThickness = function(value) {
+      if(!arguments.length) {return donutThickness;}
+      donutThickness = value;
+      return chart;
+    }
+
+    chart.margin = function(value) {
+      if (!arguments.length) {
+        return margin;
+      }
+      margin = value;
+      return chart;
+    };
+
+    chart.centerAroundOrigin = function(value) {
+      if (!arguments.length) {
+        return centerAroundOrigin;
+      }
+      centerAroundOrigin = value;
+      return chart;
+    };
 
     return chart;
 };

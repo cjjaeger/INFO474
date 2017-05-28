@@ -17,9 +17,10 @@ class Filter extends Component {
     this.props.filter.handleCheck(event)
     console.log(this.state);
   }
+
   filterMap(e){
-      e.preventDefault();
-    hashHistory.push('/viz');
+    e.preventDefault();
+    hashHistory.push('/viz/1');
   }
 
   render() {
