@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import { Textfield, Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
-import { ReactBootstrapSlider } from 'react-bootstrap-slider';
 
 
 class Filter extends Component {
@@ -16,15 +15,14 @@ class Filter extends Component {
   }
   setZipFilter(event){
     this.props.filter.handleCheck(event)
-    console.log(this.state);
   }
+
   filterMap(e){
-      e.preventDefault();
-    hashHistory.push('/viz');
+    e.preventDefault();
+    hashHistory.push('/viz/1');
   }
 
   render() {
-      console.log(this.props.filter);
     return (
       <div>
         <div className="center">
