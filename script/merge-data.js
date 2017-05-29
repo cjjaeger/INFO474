@@ -18,7 +18,7 @@ function mergingFunction(data) {
   if (found.length != 0) {
     if (found.length > 1 ) {
       let currentSize = found[0]['2014.student.size'];
-      for (i = 1; i < found.length; i++ ) {
+      for (var i = 1; i < found.length; i++ ) {
         if (found[i]['2014.student.size'] > currentSize) {
           return _.merge(data, found[i]);
         }
