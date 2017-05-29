@@ -18,7 +18,7 @@ class App extends Component {
                 "zip": "",
                 "inArea": false,
                 "radius": null,
-                "tuition":[0,70000],
+                "tuition":[0,53000],
                 "SAT":null,
                 "ACT":null,
                 "ranking": null,
@@ -34,6 +34,8 @@ class App extends Component {
         this.changeValue = this.changeValue.bind(this);
         this.setZipLocation = this.setZipLocation.bind(this);
         this.applyFilter = this.applyFilter.bind(this);
+        this.distFrom = this.distFrom.bind(this);
+        this.toRad = this.toRad.bind(this);
     }
     componentWillMount() {
         var childState = Object.assign({}, this.state);
@@ -52,32 +54,65 @@ class App extends Component {
     }
     changeValue(e){
         this.state.filter.tuition = e.target.value;
-        console.log(this.state);
+        //console.log(this.state);
     }
     applyFilter(e){
         e.preventDefault();
-
-        var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ encodeURIComponent(this.state.filter.zip);
-        fetch(url) //download the data
-      .then(function(res) { return res.json(); })
-      .then((datas) =>{
-        this.setZipLocation(datas.results);
-      });
+        if(this.state.zip !==""){
+            var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ encodeURIComponent(this.state.filter.zip);
+            fetch(url) //download the data
+            .then(function(res) { return res.json(); })
+            .then((datas) =>{
+                this.setZipLocation(datas.results);
+            });
+        }
       var newData = data.filter((obj)=>{
             return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
         });
-        this.setState({"data": newData});
+        
       var childState = Object.assign({}, this.state);
-      //childState.data = data;
+      childState.data = newData;
       this.child = React.cloneElement(this.props.children, childState);
-        this.forceUpdate();
-    }
+    this.setState({"data": newData});
+    
+    //console.log("stuff happens");
+}
+
+distFrom( lat1,  lng1,  lat2,  lng2) {
+    var earthRadius = 3958.75; // miles (or 6371.0 kilometers)
+    var dLat = this.toRad(lat2-lat1);
+    var dLng = this.toRad(lng2-lng1);
+    var sindLat = Math.sin(dLat / 2);
+    var sindLng = Math.sin(dLng / 2);
+    var a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+            * Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2));
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var dist = earthRadius * c;
+    return dist;
+}
+toRad(Value) {
+    /** Converts numeric degrees to radians */
+    return Value * Math.PI / 180;
+}
     setZipLocation(datas){
         this.state.filter.zipltlng = datas[0].geometry.location; //update state
         var stateFips = datas[0].address_components[3].short_name
         this.state.filter.zipState = stateData[stateFips] ; //update state
-        
-        console.log(data);
+        var newData;
+        console.log(this.state.filter.inArea);
+        if(this.state.inArea){
+           newData= data.filter((obj)=>{
+            var radius = this.state.filter.radius;
+            var dist = this.distFrom(obj["location.lat"], obj["location.lon"],this.state.filter.zipltlng["lat"],this.state.filter.zipltlng["lng"]);
+             console.log(radius>= dist);
+            return radius>= dist;
+            });
+        }
+        console.log(newData);
+         var childState = Object.assign({}, this.state);
+      childState.data = newData;
+      this.child = React.cloneElement(this.props.children, childState);
+        this.setState({"data": newData});
     }
 
     handleChange(event) {
@@ -103,7 +138,7 @@ class App extends Component {
 
     render() {
 
-        console.log(stateData);
+        //console.log(this.state.inArea);
         //console.log( this.props);
         
        
@@ -175,7 +210,7 @@ class App extends Component {
                         change={this.changeValue}
                         slideStop={this.changeValue}
                         step={1000}
-                        max={70000}
+                        max={53000}
                         min={0}
                         reversed={false}
                         name="tuition"

@@ -88,7 +88,7 @@ var DonutScatter = function() {
 
             // Calculate x and y scales
             let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.01;
-            let xMin = d3.min(data, (d) => +d[xAccessor]) * .5;
+            let xMin = d3.min(data, (d) => +d[xAccessor]) -1000;
             xScale.range([0, chartWidth]).domain([xMin, xMax]);
 
             var yMin = d3.min(data, (d) => +d[yAccessor]) * .5;
