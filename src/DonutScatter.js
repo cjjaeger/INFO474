@@ -266,7 +266,11 @@ var DonutScatter = function() {
               // Use the .enter() method to get entering elements, and assign initial position
               gs.enter().append('g')
                   .attr('class', 'donut')
-                  .on('mouseover', d => {
+                  .on('mouseover', function(d) {
+                    ele.select('.chartG').selectAll('g.donut').each(function() {
+                      this.enclosed = false;
+                    });
+                    this.enclosed = true;
                     ele.select('.chartG').selectAll('circle.enclosing-circle')
                       .data([d])
                       .enter()
@@ -301,6 +305,30 @@ var DonutScatter = function() {
 
               // Use the .exit() and .remove() methods to remove elements that are no longer in the data
               gs.exit().remove();
+
+              var enclosingCircles = ele.select('.chartG').selectAll('g.donut').filter(function() {
+                return this.enclosed;
+              }).each(function(d) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle')
+                  .data([d])
+                  .enter()
+                    .append('circle')
+                    .attr('class', 'enclosing-circle')
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]))
+                  .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                    .attr('fill', 'none')
+                    .attr('stroke-width', 1)
+                    .attr('stroke', 'red')
+                    .attr('r', 8)
+                    .transition().duration(200)
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]));
+              });
+
+              if (enclosingCircles.size() === 0) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle').remove();
+              }
             }
         });
     };
