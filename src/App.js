@@ -167,7 +167,7 @@ class App extends Component {
             deptsList[i] = {"value":deptsList[i], "label":deptsList[i]};
         }
         return (
-        <Layout fixedHeader fixedDrawer>
+        <Layout >
             <Header>
               <h1>Because College</h1>
             </Header>
