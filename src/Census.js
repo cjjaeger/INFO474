@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import CSSTransitionGroup from 'react-transition-group';
+import {CSSTransitionGroup} from 'react-transition-group';
 import './Census.css';
 
 class Census extends Component {
