@@ -55,11 +55,10 @@ var DonutScatter = function() {
 
             // g element for markers
             gEnter.append('g')
-            .attr('transform', 'translate(' +  margin.left + ',' + margin.top + ')')
-            .attr('height', chartHeight)
-            .attr('width', chartWidth)
-                    .attr('class', 'chartG');
-
+                .attr('transform', 'translate(' +  margin.left + ',' + margin.top + ')')
+                .attr('height', chartHeight)
+                .attr('width', chartWidth)
+                .attr('class', 'chartG');
 
             // Append axes to the gEnter element
             gEnter.append('g')
@@ -290,7 +289,7 @@ var DonutScatter = function() {
                   .transition()
                   .duration(1500)
                   .delay(function(d, i) {
-                    return (Math.random() * 500) + 500;
+                    return (i / data.length) * 4000;
                   })
                   .attr('opacity', 1);
 
