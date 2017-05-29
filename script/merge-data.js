@@ -13,10 +13,18 @@ mergedData = mergedData.map(mergingFunction);
 function mergingFunction(data) {
   var dataArray = data.id.split("-");
   var dataID = parseInt(dataArray[dataArray.length - 1], 10);
-  var found = _.find(scorecardData, { 'ope6_id': dataID });
+  var found = _.filter(scorecardData, {'ope6_id': dataID});
 
-  if (found != undefined) {
-    return _.merge(data, found);
+  if (found.length != 0) {
+    if (found.length > 1 ) {
+      let currentSize = found[0]['2014.student.size'];
+      for (i = 1; i < found.length; i++ ) {
+        if (found[i]['2014.student.size'] > currentSize) {
+          return _.merge(data, found[i]);
+        }
+      } 
+    }
+    return _.merge(data, found[0]);
   }
   var foundName = _.find(scorecardData, { 'school.name': data.name });
 
