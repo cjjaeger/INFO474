@@ -19,9 +19,9 @@ class App extends Component {
                 "inArea": false,
                 "radius": null,
                 "tuition":[0,53000],
-                "SAT":null,
-                "ACT":null,
-                "ranking": null,
+                "SAT":"",
+                "ACT":"",
+                "ranking": "",
                 "handleCheck": this.setZip = this.setZip.bind(this),
                 "zipltlng":{},
                 "zipState":""
@@ -36,6 +36,11 @@ class App extends Component {
         this.applyFilter = this.applyFilter.bind(this);
         this.distFrom = this.distFrom.bind(this);
         this.toRad = this.toRad.bind(this);
+        this.tuitionFilter = this.tuitionFilter.bind(this);
+        this.satFilter = this.satFilter.bind(this);
+        this.actFilter = this.actFilter.bind(this);
+        this.rankingFilter = this.rankingFilter.bind(this);
+
     }
     componentWillMount() {
         var childState = Object.assign({}, this.state);
@@ -54,28 +59,76 @@ class App extends Component {
     }
     changeValue(e){
         this.state.filter.tuition = e.target.value;
-        //console.log(this.state);
     }
     applyFilter(e){
         e.preventDefault();
-        if(this.state.zip !==""){
+        if(/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.filter.zip)){
             var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ encodeURIComponent(this.state.filter.zip);
             fetch(url) //download the data
             .then(function(res) { return res.json(); })
             .then((datas) =>{
-                this.setZipLocation(datas.results);
-            });
+                return this.setZipLocation(datas.results);
+            })
+            .then(this.satFilter)
+            .then(this.actFilter)
+            .then(this.rankingFilter)
+            .then(this.tuitionFilter);
+        }else{
+            this.tuitionFilter(data);
         }
-      var newData = data.filter((obj)=>{
+    
+}
+satFilter(datas){
+        console.log(datas+ "satFilter");
+
+    if(this.state.filter.SAT !== ""){
+        return datas.filter((obj)=>{
+            return this.state.filter.SAT>=obj["2014.admissions.sat_scores.average.overall"];
+        });
+    }else{
+        return datas;
+    }
+}
+actFilter(datas){
+    console.log(datas+ "actFilter");
+
+    if(this.state.filter.ACT !== ""){
+        return datas.filter((obj)=>{
+            return this.state.filter.ACT>=obj["2014.admissions.act_scores.midpoint.cumulative"];
+        });
+    }else{
+        return datas;
+    }
+    
+}
+rankingFilter(datas){
+            console.log(datas+ "rankingFilter");
+
+    if((this.state.filter.ranking).length !== 0){
+        var newData= datas.filter((obj)=>{
+            return this.state.filter.rank>=obj["rank"];
+        });
+        console.log(newData+ " 1 rankingFilter");
+        return newData;
+    }else{
+        console.log(datas+ " 2 rankingFilter");
+        return datas;
+    }
+
+}
+    
+
+tuitionFilter(stuff){
+            console.log(stuff+ "tuitionFilter");
+
+  var newData = stuff.filter((obj)=>{
             return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
         });
-        
       var childState = Object.assign({}, this.state);
       childState.data = newData;
       this.child = React.cloneElement(this.props.children, childState);
-    this.setState({"data": newData});
-    
-    //console.log("stuff happens");
+        this.setState({"data": newData});
+
 }
 
 distFrom( lat1,  lng1,  lat2,  lng2) {
@@ -99,20 +152,20 @@ toRad(Value) {
         var stateFips = datas[0].address_components[3].short_name
         this.state.filter.zipState = stateData[stateFips] ; //update state
         var newData;
-        console.log(this.state.filter.inArea);
         if(this.state.inArea){
            newData= data.filter((obj)=>{
             var radius = this.state.filter.radius;
             var dist = this.distFrom(obj["location.lat"], obj["location.lon"],this.state.filter.zipltlng["lat"],this.state.filter.zipltlng["lng"]);
-             console.log(radius>= dist);
+             //console.log(radius>= dist);
             return radius>= dist;
             });
         }
-        console.log(newData);
-         var childState = Object.assign({}, this.state);
-      childState.data = newData;
-      this.child = React.cloneElement(this.props.children, childState);
-        this.setState({"data": newData});
+        console.log(newData+ "setZipLocation");
+    //      var childState = Object.assign({}, this.state);
+    //   childState.data = newData;
+    //   this.child = React.cloneElement(this.props.children, childState);
+         //this.setState({"data": newData});
+         return newData;
     }
 
     handleChange(event) {
@@ -133,15 +186,9 @@ toRad(Value) {
                 inArea:false
             });
         }
-        //console.log(event.target.checked);
     }
 
     render() {
-
-        //console.log(this.state.inArea);
-        //console.log( this.props);
-        
-       
         return (
         <Layout fixedHeader>
             <Header>
