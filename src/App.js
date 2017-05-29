@@ -74,12 +74,15 @@ class App extends Component {
             .then(this.rankingFilter)
             .then(this.tuitionFilter);
         }else{
-            this.tuitionFilter(data);
+            this.tuitionFilter(this.rankingFilter(this.actFilter(this.satFilter(data))));
+            // .then(this.actFilter)
+            // .then(this.rankingFilter)
+            // .then(this.tuitionFilter);
         }
     
 }
 satFilter(datas){
-        console.log(datas+ "satFilter");
+        console.log(datas);
 
     if(this.state.filter.SAT !== ""){
         return datas.filter((obj)=>{
@@ -90,7 +93,7 @@ satFilter(datas){
     }
 }
 actFilter(datas){
-    console.log(datas+ "actFilter");
+    console.log(datas);
 
     if(this.state.filter.ACT !== ""){
         return datas.filter((obj)=>{
@@ -102,7 +105,7 @@ actFilter(datas){
     
 }
 rankingFilter(datas){
-            console.log(datas+ "rankingFilter");
+           // console.log(datas+ "rankingFilter");
 
     if((this.state.filter.ranking).length !== 0){
         var newData= datas.filter((obj)=>{
@@ -111,7 +114,7 @@ rankingFilter(datas){
         console.log(newData+ " 1 rankingFilter");
         return newData;
     }else{
-        console.log(datas+ " 2 rankingFilter");
+        //console.log(datas+ " 2 rankingFilter");
         return datas;
     }
 
@@ -119,7 +122,7 @@ rankingFilter(datas){
     
 
 tuitionFilter(stuff){
-            console.log(stuff+ "tuitionFilter");
+           // console.log(stuff+ "tuitionFilter");
 
   var newData = stuff.filter((obj)=>{
             return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
