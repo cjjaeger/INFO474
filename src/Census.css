@@ -1,3 +1,6 @@
+/** {
+  background-color: #4CAF50;
+}*/
 .jumbo{
     font-family: 'lato';
     font-size: 3em;
@@ -9,16 +12,25 @@
 
 .emphasis {
     font-size: 1.5em;
+    color:white;
 }
-.example-enter {
+.race:hover{
+  color:white;
+}
+.example-appear{
+  opacity: .01;
+}
+.example-appear.example-appear-active {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+/*.example-enter {
   opacity: 0.01;
 }
-
 .example-enter.example-enter-active {
   opacity: 1;
-  transition: opacity 500ms ease-in;
+  transition: opacity 1s ease-in;
 }
-
 .example-leave {
   opacity: 1;
 }
@@ -26,4 +38,4 @@
 .example-leave.example-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
-}
+}*/
