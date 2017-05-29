@@ -142,7 +142,7 @@ class App extends Component {
         this.state.filter.zipltlng = datas[0].geometry.location; //update state
         var stateFips = datas[0].address_components[3].short_name
         this.state.filter.zipState = stateData[stateFips] ; //update state
-        var newData;
+        var newData = data;
         if(this.state.inArea){
            newData= data.filter((obj)=>{
             var radius = this.state.filter.radius;
@@ -150,8 +150,14 @@ class App extends Component {
             return radius>= dist;
             });
         }
-  
-         return newData;
+        
+        var sent = newData.map((obj)=>{
+            if(obj["school.state_fips"]== this.state.filter.zipState){
+                obj['2014.cost.tuition.out_of_state'] = obj["2014.cost.tuition.in_state"];
+            }
+            return obj;
+        });
+         return sent;
     }
 
     handleChange(event) {
