@@ -44,14 +44,11 @@ class App extends Component {
     }
     componentWillMount() {
         var childState = Object.assign({}, this.state);
-       // childState.data = data;
         this.child = React.cloneElement(this.props.children, childState);
     }
     componentWillReceiveProps(props){
         var childState = Object.assign({}, this.state);
-        //childState.data = data;
         this.child = React.cloneElement(this.props.children, childState);
-        //this.forceUpdate();
     }
     setZip(event){
 
@@ -75,81 +72,72 @@ class App extends Component {
             .then(this.tuitionFilter);
         }else{
             this.tuitionFilter(this.rankingFilter(this.actFilter(this.satFilter(data))));
-            // .then(this.actFilter)
-            // .then(this.rankingFilter)
-            // .then(this.tuitionFilter);
         }
     
-}
-satFilter(datas){
-        console.log(datas);
-
-    if(this.state.filter.SAT !== ""){
-        return datas.filter((obj)=>{
-            return this.state.filter.SAT>=obj["2014.admissions.sat_scores.average.overall"];
-        });
-    }else{
-        return datas;
     }
-}
-actFilter(datas){
-    console.log(datas);
+    satFilter(datas){
 
-    if(this.state.filter.ACT !== ""){
-        return datas.filter((obj)=>{
-            return this.state.filter.ACT>=obj["2014.admissions.act_scores.midpoint.cumulative"];
-        });
-    }else{
-        return datas;
+        if(this.state.filter.SAT !== ""){
+            return datas.filter((obj)=>{
+                return this.state.filter.SAT>=obj["2014.admissions.sat_scores.average.overall"];
+            });
+        }else{
+            return datas;
+        }
     }
-    
-}
-rankingFilter(datas){
-           // console.log(datas+ "rankingFilter");
+    actFilter(datas){
 
-    if((this.state.filter.ranking).length !== 0){
-        var newData= datas.filter((obj)=>{
-            return this.state.filter.rank>=obj["rank"];
-        });
-        console.log(newData+ " 1 rankingFilter");
-        return newData;
-    }else{
-        //console.log(datas+ " 2 rankingFilter");
-        return datas;
+        if(this.state.filter.ACT !== ""){
+            return datas.filter((obj)=>{
+                return this.state.filter.ACT>=obj["2014.admissions.act_scores.midpoint.cumulative"];
+            });
+        }else{
+            return datas;
+        }
+        
+    }
+    rankingFilter(datas){
+
+        if((this.state.filter.ranking).length !== 0){
+            var newData= datas.filter((obj)=>{
+                return this.state.filter.ranking >=obj["rank"] && obj["rank"] !== null ;
+            });
+            return newData;
+        }else{
+            return datas;
+        }
+
+    }
+        
+
+    tuitionFilter(stuff){
+
+    var newData = stuff.filter((obj)=>{
+                return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
+            });
+        var childState = Object.assign({}, this.state);
+        childState.data = newData;
+        this.child = React.cloneElement(this.props.children, childState);
+            this.setState({"data": newData});
+
     }
 
-}
-    
-
-tuitionFilter(stuff){
-           // console.log(stuff+ "tuitionFilter");
-
-  var newData = stuff.filter((obj)=>{
-            return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
-        });
-      var childState = Object.assign({}, this.state);
-      childState.data = newData;
-      this.child = React.cloneElement(this.props.children, childState);
-        this.setState({"data": newData});
-
-}
-
-distFrom( lat1,  lng1,  lat2,  lng2) {
-    var earthRadius = 3958.75; // miles (or 6371.0 kilometers)
-    var dLat = this.toRad(lat2-lat1);
-    var dLng = this.toRad(lng2-lng1);
-    var sindLat = Math.sin(dLat / 2);
-    var sindLng = Math.sin(dLng / 2);
-    var a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-            * Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2));
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var dist = earthRadius * c;
-    return dist;
-}
-toRad(Value) {
-    /** Converts numeric degrees to radians */
-    return Value * Math.PI / 180;
-}
+    distFrom( lat1,  lng1,  lat2,  lng2) {
+        var earthRadius = 3958.75; // miles (or 6371.0 kilometers)
+        var dLat = this.toRad(lat2-lat1);
+        var dLng = this.toRad(lng2-lng1);
+        var sindLat = Math.sin(dLat / 2);
+        var sindLng = Math.sin(dLng / 2);
+        var a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2));
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var dist = earthRadius * c;
+        return dist;
+    }
+    toRad(Value) {
+        /** Converts numeric degrees to radians */
+        return Value * Math.PI / 180;
+    }
     setZipLocation(datas){
         this.state.filter.zipltlng = datas[0].geometry.location; //update state
         var stateFips = datas[0].address_components[3].short_name
@@ -159,15 +147,10 @@ toRad(Value) {
            newData= data.filter((obj)=>{
             var radius = this.state.filter.radius;
             var dist = this.distFrom(obj["location.lat"], obj["location.lon"],this.state.filter.zipltlng["lat"],this.state.filter.zipltlng["lng"]);
-             //console.log(radius>= dist);
             return radius>= dist;
             });
         }
-        console.log(newData+ "setZipLocation");
-    //      var childState = Object.assign({}, this.state);
-    //   childState.data = newData;
-    //   this.child = React.cloneElement(this.props.children, childState);
-         //this.setState({"data": newData});
+  
          return newData;
     }
 
