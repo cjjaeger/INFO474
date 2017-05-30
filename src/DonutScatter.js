@@ -266,6 +266,8 @@ var DonutScatter = function() {
               // Use the .enter() method to get entering elements, and assign initial position
               gs.enter().append('g')
                   .attr('class', 'donut')
+                  .attr('opacity', 0)
+                  .merge(gs)
                   .on('mouseover', function(d) {
                     ele.select('.chartG').selectAll('g.donut').each(function() {
                       this.enclosed = false;
@@ -290,8 +292,6 @@ var DonutScatter = function() {
                     // Exterior callback
                     onHover(d);
                   })
-                  .attr('opacity', 0)
-                  .merge(gs)
                   .attr('transform', (d) => {
                     return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
                   })
