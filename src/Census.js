@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import { CSSTransitionGroup } from 'react-transition-group';
-import './Census.css';
 import ReactTooltip from 'react-tooltip';
+import {Button } from 'react-mdl';
+import { hashHistory } from 'react-router';
 
 class Census extends Component {
     constructor(props) {
@@ -21,15 +22,19 @@ class Census extends Component {
         }
 
     }
+    filterMap(e){
+    e.preventDefault();
+    hashHistory.push('/viz/2');
+  }
     
     render() {
 
         var origins = Object.keys(this.state.race).map((value, i) =>
-            <span className='jumbo center col-md-4 race' key={i} value={value} 
-            data-tip={this.state.race[value]}>{value}</span>);
+            <div className='jumbo center col-md-4 race test' key={i} value={value} 
+            data-tip={this.state.race[value]}>{value}</div>);
         return (
-            <div>
-                <CSSTransitionGroup transitionName="example" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+            <div className = 'test'>
+                <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
                     transitionAppearTimeout={1000}>
                     <header className='jumbo center'>
                         <div>The US Census Bureau classifies </div>
@@ -37,6 +42,7 @@ class Census extends Component {
                     </header>
                     {origins}
                     <ReactTooltip place='bottom' className='emphasis' multiline/>
+                    <Button className='anchorBR' onClick={this.filterMap} raised ripple colored>Next >></Button>
                 </CSSTransitionGroup>
             </div>
         );

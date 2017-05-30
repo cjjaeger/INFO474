@@ -1,6 +1,6 @@
-/** {
-  background-color: #4CAF50;
-}*/
+  /*.test {
+    background-color: #4CAF50;
+  }*/
 .jumbo{
     font-family: 'lato';
     font-size: 3em;
@@ -12,30 +12,39 @@
 
 .emphasis {
     font-size: 1.5em;
-    color:white;
+    color:#4CAF50;
+}
+.race{
+  display:flex !important;
 }
 .race:hover{
-  color:white;
+  color:#4CAF50;
 }
-.example-appear{
+.main-appear{
   opacity: .01;
 }
-.example-appear.example-appear-active {
+.main-appear.main-appear-active {
   opacity: 1;
   transition: opacity 1s ease-in;
 }
-/*.example-enter {
+.anchorBR {
+  position:absolute;
+    bottom:5%;
+    right: 5%;
+    border-radius: 25px;
+}
+/*.main-enter {
   opacity: 0.01;
 }
-.example-enter.example-enter-active {
+.main-enter.main-enter-active {
   opacity: 1;
   transition: opacity 1s ease-in;
 }
-.example-leave {
+.main-leave {
   opacity: 1;
 }
 
-.example-leave.example-leave-active {
+.main-leave.main-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
 }*/
