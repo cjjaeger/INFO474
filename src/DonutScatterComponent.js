@@ -58,7 +58,9 @@ class DonutScatterComponent extends Component {
              x['2014.cost.tuition.out_of_state'] !== null;
     });
 
+    console.log(chartData);
     chartData = chartData.map(function(element) {
+      console.log(element.id);
       var receivedFullPercent = element['receivedFullFinancialAid'] / 100;
       var appliedPercent = element['appliedFinancialAid'] / 100;
       var receivedPercent = element['receivedFinancialAid'] / 100;

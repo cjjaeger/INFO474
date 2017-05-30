@@ -1,11 +1,13 @@
 // ScatterPlot
 import * as d3 from 'd3';
+import * as d3a from 'd3-svg-annotation';
+import d3tip from 'd3-tip';
 import radarChart from './RadarChart';
 
 var RadarScatter = function() {
     // Set default values
-    var height = 800,
-        width = 800,
+    var height = 500,
+        width = 900,
         xAccessor = 'x',
         yAccessor = 'y',
         nameAccessor = 'name',
@@ -13,23 +15,31 @@ var RadarScatter = function() {
         yScale = d3.scaleLinear(),
         xTitle = 'X Axis Title',
         yTitle = 'Y Axis Title',
+        xAxisTickFormat = d3.format(".0"),
+        yAxisTickFormat = d3.format(".0"),
         fill = 'green',
+        onHover = () => null,
+        radarIntro,
+        xAxisIntro,
+        yAxisIntro,
         radius = (d) => 5,
         margin = {
             left: 70,
             bottom: 50,
-            top: 10,
+            top: 0,
             right: 50
         };
 
     // Function returned by ScatterPlot
     var chart = function(selection) {
         // Height/width of the drawing area itself
-        var drawHeight = height - margin.bottom - margin.top;
-        var drawWidth = width - margin.left - margin.right;
+        var chartHeight = height - margin.bottom - margin.top;
+        var chartWidth = width - margin.left - margin.right;
+
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
 
         // Iterate through selections, in case there are multiple
-        selection.each(function(data){
+        selection.each(function(data) {
 
             // Use the data-join to create the svg (if necessary)
             var ele = d3.select(this);
@@ -44,15 +54,15 @@ var RadarScatter = function() {
 
             // g element for markers
             gEnter.append('g')
-                .attr('transform', 'translate(' +  margin.left + ',' + margin.top + ')')
-                .attr('height', drawHeight)
-                .attr('width', drawWidth)
-                .attr('class', 'chartG');
+            .attr('transform', 'translate(' +  margin.left + ',' + margin.top + ')')
+            .attr('height', chartHeight)
+            .attr('width', chartWidth)
+                    .attr('class', 'chartG');
 
 
             // Append axes to the gEnter element
             gEnter.append('g')
-                .attr('transform', 'translate(' + margin.left + ',' + (drawHeight + margin.top) + ')')
+                .attr('transform', 'translate(' + margin.left + ',' + (chartHeight + margin.top) + ')')
                 .attr('class', 'axis x');
 
             gEnter.append('g')
@@ -61,81 +71,225 @@ var RadarScatter = function() {
 
             // Add a title g for the x axis
             gEnter.append('text')
-                .attr('transform', 'translate(' + (margin.left + drawWidth/2) + ',' + (drawHeight + margin.top + 40) + ')')
+                .attr('text-anchor', 'middle')
+                .attr('transform', 'translate(' + (margin.left + chartWidth/2) + ',' + (chartHeight + margin.top + 40) + ')')
                 .attr('class', 'title x');
 
             // Add a title g for the y axis
             gEnter.append('text')
-                .attr('transform', 'translate(' + (margin.left - 40) + ',' + (margin.top + drawHeight/2) + ') rotate(-90)')
+                .attr('text-anchor', 'middle')
+                .attr('transform', 'translate(' + (margin.left - 40) + ',' + (margin.top + chartHeight/2) + ') rotate(-90)')
                 .attr('class', 'title y');
 
             // Define xAxis and yAxis functions
-            var xAxis = d3.axisBottom();
-            var yAxis = d3.axisLeft();
-
-            // Define a hover
-            /*var tip = d3tip()
-                      .attr('class', 'd3-tip')
-                      .offset([-10, 0])
-                      .html(function(d) {
-                        return "<strong>" + d[nameAccessor] + "</strong>";
-                      });*/
-
-            //ele.select('svg').call(tip);
+            var xAxis = d3.axisBottom().tickFormat(xAxisTickFormat);
+            var yAxis = d3.axisLeft().tickFormat(yAxisTickFormat);
 
             // Calculate x and y scales
-            let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.05;
+            let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.01;
             let xMin = d3.min(data, (d) => +d[xAccessor]) * .5;
-            xScale.range([0, drawWidth]).domain([xMin, xMax]);
+            xScale.range([0, chartWidth]).domain([xMin, xMax]);
 
             var yMin = d3.min(data, (d) => +d[yAccessor]) * .5;
             var yMax = d3.max(data, (d) => +d[yAccessor]) * 1.05;
-            yScale.range([drawHeight, 0]).domain([yMin, yMax]);
+            yScale.range([chartHeight, 0]).domain([yMin, yMax]);
 
-            // Update axes
-            xAxis.scale(xScale);
-            yAxis.scale(yScale);
-            ele.select('.axis.x').transition().duration(1000).call(xAxis);
-            ele.select('.axis.y').transition().duration(1000).call(yAxis);
+            if (!gEnter.empty()) {
+              // This is the first render, run the intro!
+              var firstCollege = data[Math.floor(Math.random() * data.length)];
 
-            // Update titles
-            ele.select('.title.x').text(xTitle)
-            ele.select('.title.y').text(yTitle)
+              let radar = radarChart()
+                          .width(200)
+                          .height(200);
 
-            // Draw markers
-            let gs = ele.select('.chartG').selectAll('g.radar').data(data, d => d.id);
-            
-            let radar = radarChart().sliceVal('value').sliceCat('name').width(10).height(10);
+              var radarIntroAnnotation = d3a.annotation()
+                .type(d3a.annotationCalloutCircle)
+                .annotations([{
+                  note: radarIntro(firstCollege),
+                  subject: {
+                    radius: 105
+                  },
+                  x: chartWidth / 2,
+                  y: chartHeight / 2,
+                  dy: 70,
+                  dx: 110
+                }]);
 
-            // Use the .enter() method to get entering elements, and assign initial position
-            gs.enter().append('g')
-                .attr('class', 'radar')
-                //.on('mouseover', tip.show)
-                //.on('mouseout', tip.hide)
-                .merge(gs)
-                .attr('transform', (d) => {
-                  return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
-                })
-                .data(data.map(d => d.pieParts), (d, i) => i)
-                .call(radar);
+              var xAxisIntroAnnotation = d3a.annotation()
+                .type(d3a.annotationCalloutCircle)
+                .annotations([{
+                  note: xAxisIntro(firstCollege),
+                  subject: {
+                    radius: 10
+                  },
+                  x: xScale(firstCollege[xAccessor]),
+                  y: chartHeight,
+                  dy: -50,
+                  dx: -50
+                }]);
 
-            // Use the .exit() and .remove() methods to remove elements that are no longer in the data
-            gs.exit().remove();
+              var yAxisIntroAnnotation = d3a.annotation()
+                .type(d3a.annotationCalloutCircle)
+                .annotations([{
+                  note: yAxisIntro(firstCollege),
+                  subject: {
+                    radius: 10
+                  },
+                  x: 0,
+                  y: yScale(firstCollege[yAccessor]),
+                  dy: 0,
+                  dx: 20
+                }]);
+
+              let chartG = ele.select('.chartG');
+
+              let g = chartG.selectAll('g.radar')
+                            .data([firstCollege], d => d.id);
+
+              g.enter()
+                .append('g')
+                  .attr('class', 'radar')
+                  .attr('transform', 'translate(' + (chartWidth / 2) + ',' + (chartHeight / 2) + ')')
+                  .call(radar);
+
+              chartG.selectAll('g.radar')
+                  .data([firstCollege], d => d.id)
+                  .transition()
+                    .delay(4000)
+                    .duration(4000)
+                    .on('start', () => {
+                      chartG.select('.annotations')
+                        .call(xAxisIntroAnnotation);
+
+                      ele.select('.axis.x')
+                        .transition()
+                        .duration(2000)
+                        .call(xAxis);
+
+                      ele.select('.title.x')
+                        .text(xTitle);
+                    })
+                    .attr('transform', 'translate(' + xScale(firstCollege[xAccessor]) + ', ' + (chartHeight / 2) + ')')
+                  .transition()
+                    .duration(4000)
+                    .on('start', () => {
+                      chartG.select('.annotations')
+                        .call(yAxisIntroAnnotation);
+
+                      ele.select('.axis.y')
+                        .transition()
+                        .duration(2000)
+                        .call(yAxis);
+
+                      ele.select('.title.y')
+                        .text(yTitle);
+                    })
+                    .attr('transform', 'translate(' + xScale(firstCollege[xAccessor]) + ', ' + yScale(firstCollege[yAccessor]) + ')')
+                  .transition()
+                    .duration(1500)
+                    .on('start', () => {
+                      chartG.select('.annotations')
+                        .remove();
+                    })
+                    .call(
+                      radar
+                        .width(10)
+                        .height(10)
+                        .radarThickness(2)
+                        .showLabels(false)
+                        .showTooltip(false)
+                    )
+                    .on('end', renderCompleteChart);
+
+              // Update axes
+              xAxis.scale(xScale);
+              yAxis.scale(yScale);
+
+              chartG
+                .append('g').attr('class', 'annotations')
+                .call(radarIntroAnnotation);
+            } else {
+              renderCompleteChart();
+            }
+
+            function renderCompleteChart() {
+              // Update axes
+              xAxis.scale(xScale);
+              yAxis.scale(yScale);
+              ele.select('.axis.x').transition().duration(2000).call(xAxis);
+              ele.select('.axis.y').transition().duration(2000).call(yAxis);
+
+              // Update titles
+              ele.select('.title.x').text(xTitle);
+              ele.select('.title.y').text(yTitle);
+
+              // Draw markers
+              let gs = ele.select('.chartG').selectAll('g.radar').data(data, d => d.id);
+
+              let radar = radarChart()
+                .width(10)
+                .height(10);
+
+              // Use the .enter() method to get entering elements, and assign initial position
+              gs.enter().append('g')
+                  .attr('class', 'radar')
+                  .on('mouseover', d => {
+                    ele.select('.chartG').selectAll('circle.enclosing-circle')
+                      .data([d])
+                      .enter()
+                        .append('circle')
+                        .attr('class', 'enclosing-circle')
+                        .attr('cx', xScale(d[xAccessor]))
+                        .attr('cy', yScale(d[yAccessor]))
+                      .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                        .attr('fill', 'none')
+                        .attr('stroke-width', 1)
+                        .attr('stroke', 'red')
+                        .attr('r', 8)
+                        .transition().duration(200)
+                        .attr('cx', xScale(d[xAccessor]))
+                        .attr('cy', yScale(d[yAccessor]));
+
+                    // Exterior callback
+                    onHover(d);
+                  })
+                  .attr('opacity', 0)
+                  .merge(gs)
+                  .attr('transform', (d) => {
+                    return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
+                  })
+                  .call(radar)
+                  .transition()
+                  .duration(1500)
+                  .delay(function(d, i) {
+                    return (Math.random() * 500) + 500;
+                  })
+                  .attr('opacity', 1);
+
+              // Use the .exit() and .remove() methods to remove elements that are no longer in the data
+              gs.exit().remove();
+            }
         });
     };
-    
+
+    chart.onHover = function(value) {
+      if (!arguments.length) return onHover;
+      onHover = value;
+      return chart;
+    };
+
     chart.xAccessor = function(value) {
       if (!arguments.length) return xAccessor;
       xAccessor = value;
       return chart;
     };
-    
+
     chart.yAccessor = function(value) {
       if (!arguments.length) return yAccessor;
       yAccessor = value;
       return chart;
     };
-    
+
     chart.nameAccessor = function(value) {
       if (!arguments.length) return nameAccessor;
       nameAccessor = value;
@@ -172,12 +326,45 @@ var RadarScatter = function() {
       yTitle = value;
       return chart;
     };
-    
+
     chart.radius = function(value){
       if (!arguments.length) return radius;
       radius = value;
       return chart;
     };
 
+    chart.xAxisTickFormat = function(value) {
+      if (!arguments.length) return xAxisTickFormat;
+      xAxisTickFormat = value;
+      return chart;
+    }
+
+    chart.yAxisTickFormat = function(value) {
+      if (!arguments.length) return yAxisTickFormat;
+      yAxisTickFormat = value;
+      return chart;
+    };
+
+    chart.radarIntro = function(value) {
+      if (!arguments.length) return radarIntro;
+      radarIntro = value;
+      return chart;
+    };
+
+    chart.xAxisIntro = function(value) {
+      if (!arguments.length) return xAxisIntro;
+      xAxisIntro = value;
+      return chart;
+    };
+
+    chart.yAxisIntro = function(value) {
+      if (!arguments.length) return yAxisIntro;
+      yAxisIntro = value;
+      return chart;
+    };
+
     return chart;
 };
+
+
+export default RadarScatter;
