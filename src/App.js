@@ -19,31 +19,30 @@ class App extends Component {
                 "inArea": false,
                 "radius": null,
                 "tuition":[0,70000],
-                "department":[],
                 "SAT":null,
                 "ACT":null,
                 "ranking": null,
                 "handleCheck": this.setZip = this.setZip.bind(this),
                 "zipltlng":{},
                 "zipState":""
-            }
+            }, 
+            "data":data
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
         this.setZip = this.setZip.bind(this);
         this.changeValue = this.changeValue.bind(this);
-        this.logChange = this.logChange.bind(this);
         this.setZipLocation = this.setZipLocation.bind(this);
         this.applyFilter = this.applyFilter.bind(this);
     }
     componentWillMount() {
         var childState = Object.assign({}, this.state);
-        childState.data = data;
+       // childState.data = data;
         this.child = React.cloneElement(this.props.children, childState);
     }
     componentWillReceiveProps(props){
         var childState = Object.assign({}, this.state);
-        childState.data = data;
+        //childState.data = data;
         this.child = React.cloneElement(this.props.children, childState);
         //this.forceUpdate();
     }
@@ -64,8 +63,12 @@ class App extends Component {
       .then((datas) =>{
         this.setZipLocation(datas.results);
       });
+      var newData = data.filter((obj)=>{
+            return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
+        });
+        this.setState({"data": newData});
       var childState = Object.assign({}, this.state);
-      childState.data = data;
+      //childState.data = data;
       this.child = React.cloneElement(this.props.children, childState);
         this.forceUpdate();
     }
@@ -73,20 +76,14 @@ class App extends Component {
         this.state.filter.zipltlng = datas[0].geometry.location; //update state
         var stateFips = datas[0].address_components[3].short_name
         this.state.filter.zipState = stateData[stateFips] ; //update state
-        var newData = data.filter((obj)=>{
-            return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
-        });
-        console.log(newData);
+        
+        console.log(data);
     }
 
     handleChange(event) {
         var field = event.target.name;
         var value = event.target.value;
         this.state.filter[field] = value; //update state
-        this.forceUpdate();
-    }
-    logChange(val){
-        this.state.filter.department = val;
         this.forceUpdate();
     }
 
@@ -108,66 +105,10 @@ class App extends Component {
 
         console.log(stateData);
         //console.log( this.props);
-        var deptsList = ["Aeronautics and Astronautics","African Studies",
-        "American Ethnic Studies",
-        "American Indian Studies",
-        "Anesthesiology",
-        "Anthropology",
-        "Applied and Computational Mathematical Sciences (ACMS)",
-        "Applied Mathematics",
-        "Aquatic and Fishery Sciences",
-        "Architecture",
-        "Art, Art History, and Design",
-        "Astronomy",
-        "Biochemistry",
-        "Bioengineering",
-        "Biology",
-        "Biostatistics",
-        "Chemistry",
-        "Classics",
-        "Communication",
-        "Dance",
-        "Drama",
-        "Economics",
-        "Endodontics",
-        "English",
-        "Epidemiology",
-        "Geography",
-        "Germanics",
-        "History",
-        "Immunology",
-        "Linguistics",
-        "Mathematics",
-        "Medicine",
-        "Microbiology",
-        "Museology",
-        "Music",
-        "Nephrology",
-        "Neurology",
-        "Neurosurgery",
-        "Oceanography",
-        "Ophthalmology",
-        "Orthodontics",
-        "Pathobiology",
-        "Pathology",
-        "Pediatrics",
-        "Periodontics",
-        "Pharmaceutics",
-        "Pharmacology",
-        "Pharmacy",
-        "Philosophy",
-        "Physics",
-        "Psychology",
-        "Radiology",
-        "Sociology",
-        "Statistics",
-        "Surgery",
-        "Urology"];
-        for (var i = 0; i < deptsList.length; i++) {
-            deptsList[i] = {"value":deptsList[i], "label":deptsList[i]};
-        }
+        
+       
         return (
-        <Layout fixedHeader fixedDrawer>
+        <Layout fixedHeader>
             <Header>
               <h1>Because College</h1>
             </Header>
@@ -218,16 +159,7 @@ class App extends Component {
                         name="ACT"
                         floatingLabel
                         />
-                        {false &&
-                    <Select
-                        multi simpleValue
-                      name="form-field-name"
-                      value={this.state.filter.department}
-                      options={deptsList}
-                      onChange={this.logChange}
-                      placeholder="Select desired departments"
-                        />
-                    }
+                    
                     <Textfield
                         onChange={this.handleChange}
                         pattern="-?[0-9]*(\.[0-9]+)?"
