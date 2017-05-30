@@ -28,6 +28,7 @@ var radarChart = function () {
             totalAxes = null,
             radius = null,
             verticesTooltip = null,
+            svgLevel = null,
             axes = null,
             vertices = null,
             legend = null,

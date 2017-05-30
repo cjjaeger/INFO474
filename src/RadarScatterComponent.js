@@ -9,6 +9,7 @@ import { hashHistory } from 'react-router';
 
 class RadarScatterComponent extends Component {
   componentDidMount() {
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     this.radarScatter = RadarScatter();
     this.radar = radarChart();
     this.update();

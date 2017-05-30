@@ -18,9 +18,10 @@ ReactDOM.render(
     <Router history={hashHistory}>
       <Route path='/' component={App} >
         <IndexRoute component={Filter} />
+        <Route path='/viz/3'component={RadarScatterComponent}/>
         <Route path='/viz/1'component={DonutScatterComponent}/>
         <Route path='/viz/2'component={ScatterPlotComponent}/>
-        <Route path='/viz/3'component={RadarScatterComponent}/>
+        
       </Route>
     </Router>,
   document.getElementById('root')
