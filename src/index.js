@@ -11,6 +11,7 @@ import 'react-mdl/extra/material.js';
 import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-slider/src/css/bootstrap-slider.min.css";
 import 'react-select/dist/react-select.css';
+import MapComponent from './MapComponent.js';
 
 
 ReactDOM.render(
@@ -19,6 +20,7 @@ ReactDOM.render(
         <IndexRoute component={Filter} />
         <Route path='/viz/1'component={DonutScatterComponent}/>
         <Route path='/viz/2'component={ScatterPlotComponent}/>
+        <Route path='/map/' component={MapComponent} />
       </Route>
     </Router>,
   document.getElementById('root')
