@@ -20,7 +20,7 @@ ReactDOM.render(
         <IndexRoute component={Filter} />
         <Route path='/viz/1'component={DonutScatterComponent}/>
         <Route path='/viz/2'component={ScatterPlotComponent}/>
-        <Route path='/map/' component={MapComponent} />
+        <Route path='/map' component={MapComponent} />
       </Route>
     </Router>,
   document.getElementById('root')
