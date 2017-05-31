@@ -58,13 +58,13 @@ class MapComponent extends Component {
         };
 
         legend.addTo(this.map);
-
       }
 
       // The sort is so that smaller schools are on top on the map, making
       // them hoverable.
       // We exclude University of Guam because it is too far away.
       var mapData = this.props.data
+        .filter(d => d['2014.student.size'] !== null)
         .sort((a, b) => b['2014.student.size'] - a['2014.student.size'])
         .filter(d => d['name'] !== 'University of Guam')
         .filter(d => d['location.lat'] !== 0 || d['location.lon'] !== 0);
@@ -77,7 +77,7 @@ class MapComponent extends Component {
         [latMax, lonMax]
       ]);
 
-      this.circleMarkers.forEach(function(circleMarker) {
+      this.circleMarkers.forEach(circleMarker => {
         this.map.removeLayer(circleMarker);
       });
 
