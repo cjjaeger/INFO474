@@ -55,11 +55,10 @@ var DonutScatter = function() {
 
             // g element for markers
             gEnter.append('g')
-            .attr('transform', 'translate(' +  margin.left + ',' + margin.top + ')')
-            .attr('height', chartHeight)
-            .attr('width', chartWidth)
-                    .attr('class', 'chartG');
-
+                .attr('transform', 'translate(' +  margin.left + ',' + margin.top + ')')
+                .attr('height', chartHeight)
+                .attr('width', chartWidth)
+                .attr('class', 'chartG');
 
             // Append axes to the gEnter element
             gEnter.append('g')
@@ -261,7 +260,13 @@ var DonutScatter = function() {
               // Use the .enter() method to get entering elements, and assign initial position
               gs.enter().append('g')
                   .attr('class', 'donut')
-                  .on('mouseover', d => {
+                  .attr('opacity', 0)
+                  .merge(gs)
+                  .on('mouseover', function(d) {
+                    ele.select('.chartG').selectAll('g.donut').each(function() {
+                      this.enclosed = false;
+                    });
+                    this.enclosed = true;
                     ele.select('.chartG').selectAll('circle.enclosing-circle')
                       .data([d])
                       .enter()
@@ -281,8 +286,6 @@ var DonutScatter = function() {
                     // Exterior callback
                     onHover(d);
                   })
-                  .attr('opacity', 0)
-                  .merge(gs)
                   .attr('transform', (d) => {
                     return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
                   })
@@ -290,12 +293,36 @@ var DonutScatter = function() {
                   .transition()
                   .duration(1500)
                   .delay(function(d, i) {
-                    return (Math.random() * 500) + 500;
+                    return (i / data.length) * 4000;
                   })
                   .attr('opacity', 1);
 
               // Use the .exit() and .remove() methods to remove elements that are no longer in the data
               gs.exit().remove();
+
+              var enclosingCircles = ele.select('.chartG').selectAll('g.donut').filter(function() {
+                return this.enclosed;
+              }).each(function(d) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle')
+                  .data([d])
+                  .enter()
+                    .append('circle')
+                    .attr('class', 'enclosing-circle')
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]))
+                  .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                    .attr('fill', 'none')
+                    .attr('stroke-width', 1)
+                    .attr('stroke', 'red')
+                    .attr('r', 8)
+                    .transition().duration(200)
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]));
+              });
+
+              if (enclosingCircles.size() === 0) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle').remove();
+              }
             }
         });
     };
