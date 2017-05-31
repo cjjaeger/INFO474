@@ -9,7 +9,6 @@ import { hashHistory } from 'react-router';
 
 class RadarScatterComponent extends Component {
   componentDidMount() {
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     this.radarScatter = RadarScatter();
     this.radar = radarChart();
     this.update();
@@ -32,12 +31,12 @@ class RadarScatterComponent extends Component {
         .xAxisTickFormat(d3.format('$.2s'))
         .yAxisTickFormat(d3.format('$.2s'))
         .radarIntro(d => {
-          var aianPercent = d.axes.filter(x => x.name === 'aian')[0].value;
-          var asianPercent = d.axes.filter(x => x.name === 'asian')[0].value;
-          var blackPercent = d.axes.filter(x => x.name === 'black')[0].value;
-          var hispanicPercent = d.axes.filter(x => x.name === 'hispanic')[0].value;
-          var whitePercent = d.axes.filter(x => x.name === 'white')[0].value;
-          var nhpiPercent = d.axes.filter(x => x.name === 'nhpi')[0].value;
+          var aianPercent = d.radarData[0].axes.filter(x => x.axis === 'aian')[0].value;
+          var asianPercent = d.radarData[0].axes.filter(x => x.axis === 'asian')[0].value;
+          var blackPercent = d.radarData[0].axes.filter(x => x.axis === 'black')[0].value;
+          var hispanicPercent = d.radarData[0].axes.filter(x => x.axis === 'hispanic')[0].value;
+          var whitePercent = d.radarData[0].axes.filter(x => x.axis === 'white')[0].value;
+          var nhpiPercent = d.radarData[0].axes.filter(x => x.axis === 'nhpi')[0].value;
 
           return {
             label: `At ${d.name}, ${Math.round(aianPercent).toLocaleString()}% of American Indian. ${Math.round(asianPercent).toLocaleString()}% of Asian. ${Math.round(blackPercent).toLocaleString()}% of Black. ${Math.round(hispanicPercent).toLocaleString()}% of Hispanic. ${Math.round(whitePercent).toLocaleString()}% of White. ${Math.round(nhpiPercent).toLocaleString()}% of Pacific Islander.`,
@@ -56,7 +55,7 @@ class RadarScatterComponent extends Component {
             title: "Median Income"
           };
         })
-        .onHover(this.updateLargeRadar.bind(this));;
+        .onHover(this.updateLargeRadar.bind(this));
 
     var chartData = this.props.data.filter(function(d) {
       return d['2014.student.size'] !== null &&
@@ -80,36 +79,42 @@ class RadarScatterComponent extends Component {
       return {
         id: element.id,
         name: element.name,
-        axes: [
+        radarData: [
           {
-            name: 'aian',
-            value: aian
-          },
-          {
-            name: 'asian',
-            value: asian
-          },
-          {
-            name: 'black',
-            value: black
-          },
-          {
-            name: 'hispanic',
-            value: hispanic
-          },
-          {
-            name: 'white',
-            value: white
-          },
-          {
-            name: 'nhpi',
-            value: nhpi
+            className: element.name,
+            axes: [
+              {
+                axis: 'aian',
+                value: aian
+              },
+              {
+                axis: 'asian',
+                value: asian
+              },
+              {
+                axis: 'black',
+                value: black
+              },
+              {
+                axis: 'hispanic',
+                value: hispanic
+              },
+              {
+                axis: 'white',
+                value: white
+              },
+              {
+                axis: 'nhpi',
+                value: nhpi
+              }
+            ]
           }
         ],
         studentSize: element['2014.student.size'],
         medianIncome: element['2014.student.avg_dependent_income.2014dollars']
       };
     });
+    console.log(chartData);
 
     // Call d3 update
     d3.select(this.root)
@@ -120,7 +125,8 @@ class RadarScatterComponent extends Component {
   updateLargeRadar(d) {
     this.radar
       .width(300)
-      .height(400);
+      .height(400)
+      .firstSlice('radarData');
 
       d3.select(this.largeRadarRoot)
         .data([d])
@@ -134,7 +140,8 @@ class RadarScatterComponent extends Component {
 
   render() {
     return (
-      <div id="radar-scatter" ref={ node => this.root = node }>
+      <div>
+      <div id="radar-scatter" ref={ node => this.root = node } />
       <svg id="large-radar" width="300" height="400" ref={ node => this.largeRadarRoot = node }></svg>
       <Button onClick={this.filterMap} raised colored>Next</Button>
       </div>

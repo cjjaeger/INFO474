@@ -6,9 +6,9 @@ var radarChart = function () {
         var width = 1200,
             height = 1200,
             maxValue = 0,
-            level = 3,
+            level = 4,
             levelScale = 0.8,
-            labelScale = 1.1,
+            labelScale = 0.5,
             factor = 1,
             radians = 2 * Math.PI,
             paddingX = width,
@@ -33,15 +33,18 @@ var radarChart = function () {
             vertices = null,
             legend = null,
             over = "ontouchstart" in window ? "touchstart" : "mouseover",
-            out = "ontouchstart" in window ? "touchend" : "mouseout";
+            out = "ontouchstart" in window ? "touchend" : "mouseout",
+            firstSlice;
 
         var chart = function(section){
             var drawWidth = width - margin.left - margin.right;
             var drawHeight = height - margin.top - margin.bottom;
 
             section.each(function(data){
-                console.log("data is");
-                console.log(data);
+                if(firstSlice){
+                    data = data[firstSlice];
+                }
+
                 var ele = d3.select(this);
                 var svg = ele.selectAll("svg").data([data]);
 
@@ -337,9 +340,19 @@ var radarChart = function () {
             color = value;
             return chart;
         };
+
+         chart.firstSlice = function(value) {
+            if (!arguments.length) return firstSlice;
+            firstSlice = value;
+            return chart;
+        };
+
         return chart
 
+
 };
+
+export default radarChart;
 
 // var radarChart = function () {
         

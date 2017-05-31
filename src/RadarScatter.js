@@ -100,7 +100,8 @@ var RadarScatter = function() {
 
               let radar = radarChart()
                           .width(200)
-                          .height(200);
+                          .height(200)
+                          .firstSlice('radarData');
 
               var radarIntroAnnotation = d3a.annotation()
                 .type(d3a.annotationCalloutCircle)
@@ -228,7 +229,8 @@ var RadarScatter = function() {
 
               let radar = radarChart()
                 .width(10)
-                .height(10);
+                .height(10)
+                .firstSlice('radarData');
 
               // Use the .enter() method to get entering elements, and assign initial position
               gs.enter().append('g')
