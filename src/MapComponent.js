@@ -130,7 +130,7 @@ class MapComponent extends Component {
                 <div>
                     <Count maxNumber={this.state.public} duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
                     <Count maxNumber={this.state.private} duration='8' textInfo='Private Universities' />
-                    <br />
+                    <br/>
                     <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 50 Universities in the US' />
                 </div>
                 <div id="map" style={ {width: '100%', height: '500px'} }>
