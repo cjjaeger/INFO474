@@ -40,89 +40,91 @@ class App extends Component {
         this.satFilter = this.satFilter.bind(this);
         this.actFilter = this.actFilter.bind(this);
         this.rankingFilter = this.rankingFilter.bind(this);
-
     }
+
     componentWillMount() {
         var childState = Object.assign({}, this.state);
         this.child = React.cloneElement(this.props.children, childState);
     }
-    componentWillReceiveProps(props){
+
+    componentWillReceiveProps(props) {
         var childState = Object.assign({}, this.state);
         this.child = React.cloneElement(this.props.children, childState);
     }
-    setZip(event){
 
+    setZip(event) {
         this.handleChange(event);
     }
-    changeValue(e){
+
+    changeValue(e) {
         this.state.filter.tuition = e.target.value;
     }
-    applyFilter(e){
+
+    applyFilter(e) {
         e.preventDefault();
-        if(/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.filter.zip)){
+        var zipPromise;
+        if ( /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.filter.zip)) {
             var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ encodeURIComponent(this.state.filter.zip);
-            fetch(url) //download the data
-            .then(function(res) { return res.json(); })
-            .then((datas) =>{
-                return this.setZipLocation(datas.results);
-            })
-            .then(this.satFilter)
+            
+            zipPromise = fetch(url) //download the data
+                .then(function(res) { return res.json(); })
+                .then((datas) =>{
+                    return this.setZipLocation(datas.results);
+                });
+           
+        } else {
+            //this.tuitionFilter(this.rankingFilter(this.actFilter(this.satFilter(data))));
+            zipPromise = Promise.resolve(data); 
+           
+        }
+         zipPromise.then(this.satFilter)
             .then(this.actFilter)
             .then(this.rankingFilter)
             .then(this.tuitionFilter);
-        }else{
-            this.tuitionFilter(this.rankingFilter(this.actFilter(this.satFilter(data))));
-        }
-    
     }
-    satFilter(datas){
 
-        if(this.state.filter.SAT !== ""){
+    satFilter(datas) {
+        if (this.state.filter.SAT !== "") {
             return datas.filter((obj)=>{
                 return this.state.filter.SAT>=obj["2014.admissions.sat_scores.average.overall"];
             });
-        }else{
+        } else {
             return datas;
         }
     }
-    actFilter(datas){
 
-        if(this.state.filter.ACT !== ""){
+    actFilter(datas) {
+        if (this.state.filter.ACT !== "") {
             return datas.filter((obj)=>{
                 return this.state.filter.ACT>=obj["2014.admissions.act_scores.midpoint.cumulative"];
             });
-        }else{
+        } else {
             return datas;
         }
-        
     }
-    rankingFilter(datas){
 
-        if((this.state.filter.ranking).length !== 0){
+    rankingFilter(datas) {
+        if ((this.state.filter.ranking).length !== 0) {
             var newData= datas.filter((obj)=>{
                 return this.state.filter.ranking >=obj["rank"] && obj["rank"] !== null ;
             });
             return newData;
-        }else{
+        } else {
             return datas;
         }
-
     }
-        
 
-    tuitionFilter(stuff){
-
-    var newData = stuff.filter((obj)=>{
+    tuitionFilter(lastData) {
+        var newData = lastData.filter((obj)=>{
                 return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
             });
         var childState = Object.assign({}, this.state);
         childState.data = newData;
         this.child = React.cloneElement(this.props.children, childState);
-            this.setState({"data": newData});
-
+        this.setState({"data": newData});
     }
 
-    distFrom( lat1,  lng1,  lat2,  lng2) {
+    distFrom(lat1, lng1, lat2, lng2) {
         var earthRadius = 3958.75; // miles (or 6371.0 kilometers)
         var dLat = this.toRad(lat2-lat1);
         var dLng = this.toRad(lng2-lng1);
@@ -134,16 +136,18 @@ class App extends Component {
         var dist = earthRadius * c;
         return dist;
     }
+
     toRad(Value) {
         /** Converts numeric degrees to radians */
         return Value * Math.PI / 180;
     }
-    setZipLocation(datas){
+
+    setZipLocation(datas) {
         this.state.filter.zipltlng = datas[0].geometry.location; //update state
         var stateFips = datas[0].address_components[3].short_name
         this.state.filter.zipState = stateData[stateFips] ; //update state
         var newData = data;
-        if(this.state.inArea){
+        if (this.state.inArea) {
            newData= data.filter((obj)=>{
             var radius = this.state.filter.radius;
             var dist = this.distFrom(obj["location.lat"], obj["location.lon"],this.state.filter.zipltlng["lat"],this.state.filter.zipltlng["lng"]);
@@ -152,7 +156,7 @@ class App extends Component {
         }
         
         var sent = newData.map((obj)=>{
-            if(obj["school.state_fips"]== this.state.filter.zipState){
+            if (obj["school.state_fips"]== this.state.filter.zipState) {
                 obj['2014.cost.tuition.out_of_state'] = obj["2014.cost.tuition.in_state"];
             }
             return obj;
@@ -167,13 +171,12 @@ class App extends Component {
         this.forceUpdate();
     }
 
-
-    handleCheck(event){
-        if(event.target.checked){
+    handleCheck(event) {
+        if (event.target.checked) {
             this.setState({
                 inArea:true
             });
-        }else{
+        } else {
             this.setState({
                 inArea:false
             });
@@ -249,7 +252,7 @@ class App extends Component {
                         change={this.changeValue}
                         slideStop={this.changeValue}
                         step={1000}
-                        max={53000}
+                        max={52000}
                         min={0}
                         reversed={false}
                         name="tuition"
