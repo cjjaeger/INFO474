@@ -85,7 +85,7 @@ class MapComponent extends Component {
 
       const sizeScale = d3.scaleLinear()
         .domain(d3.extent(mapData, d => d['2014.student.size']))
-        .range([0, 30]);
+        .range([5, 30]);
 
       mapData
         .forEach(d => {
