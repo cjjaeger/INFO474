@@ -101,6 +101,8 @@ var RadarScatter = function() {
               let radar = radarChart()
                           .width(200)
                           .height(200)
+                          // Center around the origin! (around the middle of the g)
+                          // .centerAroundOrigin(true)
                           .firstSlice('radarData');
 
               var radarIntroAnnotation = d3a.annotation()
@@ -196,9 +198,14 @@ var RadarScatter = function() {
                       radar
                         .width(10)
                         .height(10)
-                        .radarThickness(2)
-                        .showLabels(false)
-                        .showTooltip(false)
+                        // Center around the origin! (around the middle of the g)
+                        // .centerAroundOrigin(true)
+                        // Customize the chart for being tiny!
+                        // .lineThickness(1)
+                        // .showPoints(false)
+                        // .showTooltip(false)
+                        // .showLevelLabels(false)
+                        // ... or whatever you want to do
                     )
                     .on('end', renderCompleteChart);
 
@@ -230,6 +237,14 @@ var RadarScatter = function() {
               let radar = radarChart()
                 .width(10)
                 .height(10)
+                // Add centerAroundOrigin here!
+                // .centerAroundOrigin(true)
+                // Customize the chart for being tiny!
+                // .lineThickness(1)
+                // .showPoints(false)
+                // .showTooltip(false)
+                // .showLevelLabels(false)
+                // ... or whatever you want to do
                 .firstSlice('radarData');
 
               // Use the .enter() method to get entering elements, and assign initial position
