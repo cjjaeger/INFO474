@@ -1,7 +1,8 @@
 import * as d3 from 'd3';
+import * as d3legend from 'd3-svg-legend';
 
 // ScatterPlot
-var ScatterPlot = function() {
+var BubblePlot = function() {
     // Set default values
     var height = 500,
         width = 800,
@@ -22,6 +23,9 @@ var ScatterPlot = function() {
 
     // Function returned by ScatterPlot
     var chart = function(selection) {
+        function getRandomArbitrary(min, max) {
+            return Math.floor(Math.random() * ( max - min)) + min;
+        }
         // Height/width of the drawing area itself
         var chartHeight = height - margin.bottom - margin.top;
         var chartWidth = width - margin.left - margin.right;
@@ -37,7 +41,11 @@ var ScatterPlot = function() {
                 .append("svg")
                 .attr('width', width)
                 .attr("height", height);
-
+            var tooltip = d3.select("body")
+                .append("div")
+                .style("position", "absolute")
+                .style("z-index", "10")
+                .style("visibility", "hidden");
             // Title G
             svgEnter.append('text')
                 .attr('transform', 'translate(' + (margin.left + chartWidth / 2) + ',' + 20 + ')')
@@ -69,9 +77,9 @@ var ScatterPlot = function() {
                 .attr('class', 'title y');
 
             // Define xAxis and yAxis functions
-            var xAxis = d3.axisBottom().tickFormat(d3.format(".0%"));
+            var xAxis = d3.axisBottom();
 
-            var yAxis = d3.axisLeft().tickFormat(d3.format('$.2s'));
+            var yAxis = d3.axisLeft().tickFormat(d3.format('.2s'));
 
             // Calculate x and y scales
             var xMax = d3.max(data, (d) => +d.x) * 1.05;
@@ -97,6 +105,14 @@ var ScatterPlot = function() {
 
             // Use the .enter() method to get entering elements, and assign initial position
             circles.enter().append('circle')
+               .on("mouseover", function(d){
+                                return tooltip.html(d.name +" <br/> "+(d.radius*100).toFixed(2) +"% Acceptance Rate")
+                                .style("visibility", "visible");})
+                .on("mousemove", function(){
+                    return tooltip.style("top", (event.pageY-10)+"px")
+                    .style("left",(event.pageX+10)+"px");})
+                .on("mouseout", function(){
+                    return tooltip.style("visibility", "hidden");})
                 .attr('fill', function(d) {
                     return fill(cValue(d));
                 })
@@ -105,15 +121,12 @@ var ScatterPlot = function() {
                 .attr('cx', (d) => xScale(d.x))
                 // Transition properties of the + update selections
                 .merge(circles)
-                .attr('r', radius)
+                .attr('r', (d) =>d.radius*10)
                 .transition()
                 .duration(800)
                 .delay((d) => xScale(d.x) * 5)
-                .attr('cx', (d) => xScale(d.x))
-                .attr('cy', (d) => yScale(d.y));
-            // circles.sort((a,b)=>{
-            //     return a.radius -b.radius;
-            // });
+                .attr('cx', (d) => xScale(d.x) +getRandomArbitrary(-6,6))
+                .attr('cy', (d) => yScale(d.y)+getRandomArbitrary(-6,6));
 
             var legend = svgEnter.selectAll(".legend")
                 .data(fill.domain())
@@ -137,6 +150,27 @@ var ScatterPlot = function() {
                 .text(function(d) {
                     return d;
                 });
+            var array = data.map( (d) => {return d.radius;})
+            console.log(array);
+            var cirMax = d3.max(data, (d) => {return d.radius;})
+            var cirMin = d3.min(data, (d) => {return d.radius;})
+            var linearSize = d3.scaleLinear().domain([cirMin*100, cirMax*100]).range([cirMin*10, cirMax*10]);
+
+            var svg = d3.select("svg");
+
+            svg.append("g")
+            .attr("class", "legendSize")
+            .attr("transform", "translate("+(chartWidth+15)+",5 )");
+
+            var legendSize = d3legend.legendSize()
+            .scale(linearSize)
+            .shape('circle')
+            .shapePadding(15)
+            .labelOffset(10)
+            .orient('vertical');
+
+            svg.select(".legendSize")
+            .call(legendSize);
 
             // Use the .exit() and .remove() methods to remove elements that are no longer in the data
             circles.exit().remove();
@@ -182,4 +216,4 @@ var ScatterPlot = function() {
     return chart;
 };
 
-export default ScatterPlot;
+export default BubblePlot;

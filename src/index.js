@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Route, Router, hashHistory, IndexRoute} from 'react-router';
 import DonutScatterComponent from './DonutScatterComponent';
 import ScatterPlotComponent from './ScatterPlotComponent';
+import BubbleComponent from './BubbleComponent';
 import App from './App';
 import Filter from './Filter';
 import './index.css';
@@ -19,6 +20,7 @@ ReactDOM.render(
         <IndexRoute component={Filter} />
         <Route path='/viz/1'component={DonutScatterComponent}/>
         <Route path='/viz/2'component={ScatterPlotComponent}/>
+        <Route path='/viz/3'component={BubbleComponent}/>
       </Route>
     </Router>,
   document.getElementById('root')
