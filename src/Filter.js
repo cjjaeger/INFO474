@@ -15,7 +15,6 @@ class Filter extends Component {
   }
   setZipFilter(event){
     this.props.filter.handleCheck(event)
-    console.log(this.state);
   }
 
   filterMap(e){
@@ -24,7 +23,6 @@ class Filter extends Component {
   }
 
   render() {
-      console.log(this.props.filter);
     return (
       <div>
         <div className="center">

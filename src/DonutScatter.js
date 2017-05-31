@@ -86,19 +86,13 @@ var DonutScatter = function() {
             var yAxis = d3.axisLeft().tickFormat(yAxisTickFormat);
 
             // Calculate x and y scales
-            let xMax = d3.max(data, (d) => +d[xAccessor]);
-            let xMin = d3.min(data, (d) => +d[xAccessor]);
-            let xDomainMargin = (xMax - xMin) * 0.05;
-            xScale
-              .range([0, chartWidth])
-              .domain([xMin - xDomainMargin, xMax + xDomainMargin]);
+            let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.01;
+            let xMin = d3.min(data, (d) => +d[xAccessor])* .5;
+            xScale.range([0, chartWidth]).domain([xMin, xMax]);
 
-            let yMin = d3.min(data, (d) => +d[yAccessor]);
-            let yMax = d3.max(data, (d) => +d[yAccessor]);
-            let yDomainMargin = (yMax - yMin) * 0.05;
-            yScale
-              .range([chartHeight, 0])
-              .domain([yMin - yDomainMargin, yMax + yDomainMargin]);
+            var yMin = d3.min(data, (d) => +d[yAccessor]) * .5;
+            var yMax = d3.max(data, (d) => +d[yAccessor]) * 1.05;
+            yScale.range([chartHeight, 0]).domain([yMin, yMax]);
 
             if (!gEnter.empty()) {
               // This is the first render, run the intro!
