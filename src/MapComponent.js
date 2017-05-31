@@ -106,7 +106,7 @@ class MapComponent extends Component {
       });
       var findRank = _.countBy(this.props.data, function (d) {
           if (d['rank'] !== null) {
-              return d['rank'] <= 100;
+              return d['rank'] <= 50;
           }
       });
       this.setState({ public: findCount['false'], private: findCount['true'], ranked: findRank['true'], hasMap: true });
@@ -131,7 +131,7 @@ class MapComponent extends Component {
                     <Count maxNumber={this.state.public} duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
                     <Count maxNumber={this.state.private} duration='8' textInfo='Private Universities' />
                     <br />
-                    <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 100 Universities in the US' />
+                    <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 50 Universities in the US' />
                 </div>
                 <div id="map" style={ {width: '100%', height: '500px'} }>
                 </div>
