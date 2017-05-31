@@ -29,17 +29,17 @@ class MapComponent extends Component {
         this.map = null;
         this.circleMarkers = [];
     }
-    
+
     update() {
       if (!this.state.hasMap) {
         if (this.map) {
           this.map.remove();
         }
-        this.map = L.map('map').setView([40.706213526877455, -74.0044641494751], 7);
+        this.map = L.map('map');
         L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
           maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
         }).addTo(this.map);
-        
+
         var legend = L.control({position: 'bottomright'});
 
         legend.onAdd = function (map) {
@@ -60,25 +60,46 @@ class MapComponent extends Component {
         legend.addTo(this.map);
 
       }
-      
+
+      // The sort is so that smaller schools are on top on the map, making
+      // them hoverable.
+      // We exclude University of Guam because it is too far away.
+      var mapData = this.props.data
+        .sort((a, b) => b['2014.student.size'] - a['2014.student.size'])
+        .filter(d => d['name'] !== 'University of Guam')
+        .filter(d => d['location.lat'] !== 0 || d['location.lon'] !== 0);
+
+      var [latMin, latMax] = d3.extent(mapData, d => d['location.lat']);
+      var [lonMin, lonMax] = d3.extent(mapData, d => d['location.lon']);
+
+      this.map.fitBounds([
+        [latMin, lonMin],
+        [latMax, lonMax]
+      ]);
+
       this.circleMarkers.forEach(function(circleMarker) {
         this.map.removeLayer(circleMarker);
       });
-      
+
       this.circleMarkers = [];
-      
-      this.props.data.sort((a, b) => b['2014.student.size'] - a['2014.student.size']).forEach(d => {
-        this.circleMarkers.push(
-          L.circleMarker([d['location.lat'], d['location.lon']], {
-            radius: d['2014.student.size'] / 1000,
-            color: colorScale(d['school.ownership']),
-            fillOpacity: 0.5,
-            opacity: 0
-          })
-            .bindTooltip(d['school.name'])
-            .addTo(this.map)
-        );
-      });
+
+      const sizeScale = d3.scaleLinear()
+        .domain(d3.extent(mapData, d => d['2014.student.size']))
+        .range([0, 30]);
+
+      mapData
+        .forEach(d => {
+          this.circleMarkers.push(
+            L.circleMarker([d['location.lat'], d['location.lon']], {
+              radius: sizeScale(d['2014.student.size']),
+              color: colorScale(d['school.ownership']),
+              fillOpacity: 0.5,
+              opacity: 0
+            })
+              .bindTooltip(`${d['name']}<br>${d['2014.student.size'].toLocaleString()} students`)
+              .addTo(this.map)
+          );
+        });
 
       var findCount = _.countBy(this.props.data, function (d) {
           return d['school.ownership'] === "Private";
@@ -90,11 +111,11 @@ class MapComponent extends Component {
       });
       this.setState({ public: findCount['false'], private: findCount['true'], ranked: findRank['true'], hasMap: true });
     }
-    
+
     componentDidMount() {
       this.update();
     }
-    
+
     componentWillReceiveProps(props) {
       this.props = props;
       this.update();
@@ -103,12 +124,11 @@ class MapComponent extends Component {
     render() {
         return (
             <div style={sampleStyle}>
-                <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css" />
                 <div>
                     <span>For your filters, there are over <Count maxNumber={this.props.data.length} duration='8' textInfo='Universities' /></span>
                 </div>
                 <div>
-                    <Count maxNumber={this.state.public} duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>    
+                    <Count maxNumber={this.state.public} duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
                     <Count maxNumber={this.state.private} duration='8' textInfo='Private Universities' />
                     <br />
                     <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 100 Universities in the US' />
@@ -121,4 +141,3 @@ class MapComponent extends Component {
 }
 
 export default MapComponent;
-
