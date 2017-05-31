@@ -14,20 +14,20 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            "filter":{
-                "zip": "",
-                "inArea": false,
-                "radius": null,
-                "tuition":[0,53000],
-                "SAT":"",
-                "ACT":"",
-                "ranking": "",
-                "handleCheck": this.setZip = this.setZip.bind(this),
-                "zipltlng":{},
-                "zipState":""
-            }, 
-            "data":data
-        }
+            filter:{
+                zip: "",
+                inArea: false,
+                radius: null,
+                tuition:[0,53000],
+                SAT:"",
+                ACT:"",
+                ranking: "",
+                handleCheck: this.setZip = this.setZip.bind(this),
+                zipltlng:{},
+                zipState:""
+            },
+            data:data
+        };
         this.handleChange = this.handleChange.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
         this.setZip = this.setZip.bind(this);
@@ -65,17 +65,17 @@ class App extends Component {
         var zipPromise;
         if ( /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.filter.zip)) {
             var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ encodeURIComponent(this.state.filter.zip);
-            
+
             zipPromise = fetch(url) //download the data
                 .then(function(res) { return res.json(); })
                 .then((datas) =>{
                     return this.setZipLocation(datas.results);
                 });
-           
+
         } else {
             //this.tuitionFilter(this.rankingFilter(this.actFilter(this.satFilter(data))));
-            zipPromise = Promise.resolve(data); 
-           
+            zipPromise = Promise.resolve(data);
+
         }
          zipPromise.then(this.satFilter)
             .then(this.actFilter)
@@ -154,7 +154,7 @@ class App extends Component {
             return radius>= dist;
             });
         }
-        
+
         var sent = newData.map((obj)=>{
             if (obj["school.state_fips"]== this.state.filter.zipState) {
                 obj['2014.cost.tuition.out_of_state'] = obj["2014.cost.tuition.in_state"];
@@ -236,7 +236,7 @@ class App extends Component {
                         name="ACT"
                         floatingLabel
                         />
-                    
+
                     <Textfield
                         onChange={this.handleChange}
                         pattern="-?[0-9]*(\.[0-9]+)?"
