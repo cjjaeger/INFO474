@@ -20,6 +20,7 @@ class PreGraduation extends Component {
                         <br />
                         <br />
                         <div>Let's Check Out Those Universities Graduation Rate</div>
+                        <p>We'll compare with the median family income of students, because the two are very related.</p>
                     </header>
                     <Button onClick={() => hashHistory.push('/map')} className='anchorBL' raised colored>&lt;&lt; Back</Button>
                     <Button className='anchorBR' onClick={this.filterMap} className='anchorBR' raised ripple colored>Next &gt;&gt;</Button>
