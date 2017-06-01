@@ -130,10 +130,10 @@ class MapComponent extends Component {
                 <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
                     transitionAppearTimeout={1000}>
                 <div>
-                    <Count maxNumber={this.state.public} duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
-                    <Count maxNumber={this.state.private} duration='8' textInfo='Private Universities' />
+                    <Count maxNumber={this.state.public || 0 } duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
+                    <Count maxNumber={this.state.private || 0} duration='8' textInfo='Private Universities' />
                     <br/>
-                    <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 50 Universities in the US' />
+                    <Count maxNumber={this.state.ranked || 0} duration='8' textInfo='are in the Top 50 Universities in the US' />
                 </div>
                 <div id="map" style={ {width: '100%', height: '500px'} }>
                 </div>

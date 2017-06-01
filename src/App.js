@@ -69,6 +69,7 @@ class App extends Component {
 
     applyFilter(e) {
         e.preventDefault();
+        this.toggle();
         var zipPromise;
         if (/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.filter.zip)) {
             var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + encodeURIComponent(this.state.filter.zip);
