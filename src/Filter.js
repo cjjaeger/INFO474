@@ -17,11 +17,6 @@ class Filter extends Component {
     this.props.filter.handleCheck(event)
   }
 
-  filterMap(e){
-    e.preventDefault();
-    hashHistory.push('/viz/1');
-  }
-
   render() {
     return (
       <div>
@@ -42,7 +37,7 @@ class Filter extends Component {
             />
         </div>
         <div className="center">
-            <Button onClick={this.filterMap} raised colored>Next</Button>
+            <Button onClick={() => hashHistory.push('/map')} raised colored>Next</Button>
         </div>
       </div>
     );

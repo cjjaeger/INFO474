@@ -98,6 +98,12 @@ var ScatterPlot = function() {
             // Draw markers
             var circles = ele.select('.chartG').selectAll('circle').data(data, (d) => d.id);
 
+            var tooltip = d3.select("body")
+                .append("div")
+                .style("position", "absolute")
+                .style("z-index", "10")
+                .style("visibility", "hidden");
+
             // Use the .enter() method to get entering elements, and assign initial position
             circles.enter().append('circle')
                 .attr('fill', function(d) {
@@ -108,6 +114,17 @@ var ScatterPlot = function() {
                 .attr('cx', (d) => xScale(d.x))
                 // Transition properties of the + update selections
                 .merge(circles)
+                .on("mouseover", function(d) {
+                    tooltip.html(d.id +" <br/> " + Math.round(d.x * 100) + '% Graduation Rate')
+                      .style("visibility", "visible");
+                })
+                .on("mousemove", function() {
+                    tooltip.style("top", (d3.event.pageY - 10)+"px")
+                      .style("left",(d3.event.pageX + 10)+"px");}
+                )
+                .on("mouseout", function(){
+                    tooltip.style("visibility", "hidden");
+                })
                 .attr('r', radius)
                 .transition()
                 .duration(800)

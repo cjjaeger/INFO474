@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import './App.css';
 import { Switch } from 'react-mdl';
-import gaussian from 'gaussian'; 
-
+import gaussian from 'gaussian';
+import { Button } from 'react-mdl';
+import { hashHistory } from 'react-router';
 import BubblePlot from './BubblePlot';
 
 class BubbleComponent extends Component {
@@ -39,15 +40,15 @@ class BubbleComponent extends Component {
         var prepData = () => {
             if (this.state.plotType) {
                 chartData = this.props.data.filter(d => {
-                return d[xVar] != null && d[yVarLow2] != null && d[yVarLow1] != null && 
-                        d[yVarLow3] != null && d[yVarHigh1] != null && d[yVarHigh2] != null && 
-                        d[yVarHigh3] != null && 
+                return d[xVar] != null && d[yVarLow2] != null && d[yVarLow1] != null &&
+                        d[yVarLow3] != null && d[yVarHigh1] != null && d[yVarHigh2] != null &&
+                        d[yVarHigh3] != null &&
                         d.id != null && d['school.locale'] != null && d[r] != null && d["school.name"] != null;
                 });
-           
+
                 chartData = chartData.map(d => {
                     // console.log(d);
-                    
+
                     var y75 =(d[yVarHigh1] + d[yVarHigh2] + d[yVarHigh3]);
                     var y25 =(d[yVarLow2] + d[yVarLow1] + d[yVarLow3]);
                     var yVal = y75-y25;
@@ -57,7 +58,7 @@ class BubbleComponent extends Component {
                     } else {
                         var variance = ((Math.pow((d[xVar] -y75),2))+(Math.pow((d[xVar] -y25),2)))/2;
                         var distribution = gaussian(d[xVar] , variance);
-                        // Take a random sample using inverse transform sampling method. 
+                        // Take a random sample using inverse transform sampling method.
                         xVal = distribution.cdf(this.props.filter.SAT);
                     }
 
@@ -72,7 +73,7 @@ class BubbleComponent extends Component {
                 });
             } else {
                  chartData = this.props.data.filter(d => {
-                return d[xVar] != null && d[yVarLow] != null  && d[yVarHigh] != null && 
+                return d[xVar] != null && d[yVarLow] != null  && d[yVarHigh] != null &&
                         d.id != null && d['school.locale'] != null && d[r] != null && d["school.name"] != null;
                 });
                 chartData = chartData.map(d => {
@@ -85,7 +86,7 @@ class BubbleComponent extends Component {
                     } else {
                         var variance = ((Math.pow((d[xVar] -y75),2))+(Math.pow((d[xVar] -y25),2)))/2;
                         var distribution = gaussian(d[xVar] , variance);
-                        // Take a random sample using inverse transform sampling method. 
+                        // Take a random sample using inverse transform sampling method.
                         xVal = distribution.cdf(this.props.filter.ACT);
                     }
                     return {
@@ -109,22 +110,22 @@ class BubbleComponent extends Component {
             if (this.props.filter.SAT !=="") {
                 score = true;
                 xText ="Your Percentile"
-            } 
+            }
         } else {
             text = "ACT";
             if (this.props.filter.ACT !=="") {
                 score = true;
                 xText ="Your Percentile"
-            } 
+            }
         }
         // Define function to draw ScatterPlot
         var scatter = BubblePlot().xTitle(xText)
                                    .height(500)
                                    .width(800)
                                    .yTitle(text+' Score Range')
-                                   .scores(score) 
+                                   .scores(score)
                                    .sizeIntro(d => {
-                                 
+
                                     return {
                                         label: `At ${d.name}, the acceptance rate was ${(d.radius*100).toLocaleString()}%`,
                                         title: "Acceptance Rate"
@@ -174,11 +175,13 @@ class BubbleComponent extends Component {
         return (
         <div style={{"display":"flex", "flexDirection":"column"}}>
             <div style={{"marginLeft":"auto", "marginRight":"auto"}}>
-            <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
+              <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
             </div>
             <div id="bubble-plot" style={{"alignItems":"stretch","marginLeft":"auto", "marginRight":"auto"}} ref={ node => this.root = node }>
             </div>
-
+            <div className="center">
+                <Button onClick={() => hashHistory.push('/cost')} raised colored>Back</Button>
+            </div>
         </div>
         );
     }

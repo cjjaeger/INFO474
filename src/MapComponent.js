@@ -3,6 +3,8 @@ import Count from './Count.js';
 import _ from 'lodash';
 import * as L from 'leaflet';
 import * as d3 from 'd3';
+import { Button } from 'react-mdl';
+import { hashHistory } from 'react-router';
 import 'leaflet/dist/leaflet.css';
 import './MapComponent.css';
 
@@ -134,6 +136,10 @@ class MapComponent extends Component {
                     <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 50 Universities in the US' />
                 </div>
                 <div id="map" style={ {width: '100%', height: '500px'} }>
+                </div>
+                <div className="center">
+                    <Button onClick={() => hashHistory.push('/')} raised colored>Back</Button>
+                    <Button onClick={() => hashHistory.push('/graduation')} raised colored>Next</Button>
                 </div>
             </div>
         );
