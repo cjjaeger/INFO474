@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import './App.css';
+import './DonutScatterComponent.css';
 import DonutScatter from './DonutScatter';
 import donutChart from './DonutChart';
 import { Button } from 'react-mdl';
@@ -66,7 +67,7 @@ class DonutScatterComponent extends Component {
              x['receivedFinancialAid'] !== null &&
              x['receivedFullFinancialAid'] !== null &&
              x.roomAndBoardCost !== null &&
-             x.tuition !== null
+             x.tuition !== null;
     });
 
     chartData = chartData.map(function (element) {
@@ -147,7 +148,7 @@ class DonutScatterComponent extends Component {
       <div>
         <Select name='school-name' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
         <div id="donut-scatter" ref={node => this.donutScatterRoot = node}></div>
-        <svg id="large-donut" width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
+        <svg id="large-donut" style={{width: '25%'}} width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
         <Button onClick={this.filterMap} raised colored>Next</Button>
       </div>
     );
