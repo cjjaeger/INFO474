@@ -53,6 +53,7 @@ var radarChart = function () {
 
                 var ele = d3.select(this);
                 var svg = ele.selectAll("svg").data([data]);
+                            // .attr("transform", "translate(" + 80 + "," + 60 + ")");
 
                 var gEnter = svg.enter()
                                 .append("svg")
