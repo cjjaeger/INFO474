@@ -7,9 +7,6 @@ const fields = {
         'tuition.out_of_state',
         'tuition.in_state'
         ],
-        completion: [
-          'completion_rate_4yr_150nt_pooled'
-        ],
         admissions: [
             'admission_rate.overall',
             'sat_scores.midpoint.critical_reading',

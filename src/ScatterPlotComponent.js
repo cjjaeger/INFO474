@@ -13,7 +13,7 @@ class ScatterPlotComponent extends Component {
     }
 
     update() {
-        var xVar = '2014.completion.completion_rate_4yr_150nt_pooled';
+        var xVar = '2014.student.retention_rate.four_year.full_time';
         var yVar = '2014.student.avg_dependent_income.2014dollars';
         var chartData;
 
