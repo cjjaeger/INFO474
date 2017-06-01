@@ -63,10 +63,10 @@ class DonutScatterComponent extends Component {
   filterForUsage(data) {
     let chartData = data.filter(function (x) {
       return x['appliedFinancialAid'] !== null &&
-        x['receivedFinancialAid'] !== null &&
-        x['receivedFullFinancialAid'] !== null &&
-        x.roomAndBoardCost !== null &&
-        x['2014.cost.tuition.out_of_state'] !== null;
+             x['receivedFinancialAid'] !== null &&
+             x['receivedFullFinancialAid'] !== null &&
+             x.roomAndBoardCost !== null &&
+             x.tuition !== null
     });
 
     chartData = chartData.map(function (element) {
@@ -80,7 +80,7 @@ class DonutScatterComponent extends Component {
         id: element.id,
         name: element.name,
         roomAndBoardCost: element.roomAndBoardCost,
-        tuition: element['2014.cost.tuition.out_of_state'],
+        tuition: element.tuition,
         pieParts: [
           {
             name: 'none',
@@ -107,6 +107,13 @@ class DonutScatterComponent extends Component {
       .sliceVal('value')
       .sliceCat('name')
       .title(d.name)
+      .subTitle(`tuition: $${d.tuition.toLocaleString()}, room and board: $${d.roomAndBoardCost.toLocaleString()}`)
+      .margin({
+        top: 170,
+        bottom: 10,
+        left: 10,
+        right: 10
+      })
       .width(300)
       .height(400);
 

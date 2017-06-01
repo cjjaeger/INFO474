@@ -58,13 +58,13 @@ class MapComponent extends Component {
         };
 
         legend.addTo(this.map);
-
       }
 
       // The sort is so that smaller schools are on top on the map, making
       // them hoverable.
       // We exclude University of Guam because it is too far away.
       var mapData = this.props.data
+        .filter(d => d['2014.student.size'] !== null)
         .sort((a, b) => b['2014.student.size'] - a['2014.student.size'])
         .filter(d => d['name'] !== 'University of Guam')
         .filter(d => d['location.lat'] !== 0 || d['location.lon'] !== 0);
@@ -77,7 +77,7 @@ class MapComponent extends Component {
         [latMax, lonMax]
       ]);
 
-      this.circleMarkers.forEach(function(circleMarker) {
+      this.circleMarkers.forEach(circleMarker => {
         this.map.removeLayer(circleMarker);
       });
 
@@ -85,7 +85,7 @@ class MapComponent extends Component {
 
       const sizeScale = d3.scaleLinear()
         .domain(d3.extent(mapData, d => d['2014.student.size']))
-        .range([0, 30]);
+        .range([5, 30]);
 
       mapData
         .forEach(d => {
@@ -106,7 +106,7 @@ class MapComponent extends Component {
       });
       var findRank = _.countBy(this.props.data, function (d) {
           if (d['rank'] !== null) {
-              return d['rank'] <= 100;
+              return d['rank'] <= 50;
           }
       });
       this.setState({ public: findCount['false'], private: findCount['true'], ranked: findRank['true'], hasMap: true });
@@ -130,8 +130,8 @@ class MapComponent extends Component {
                 <div>
                     <Count maxNumber={this.state.public} duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
                     <Count maxNumber={this.state.private} duration='8' textInfo='Private Universities' />
-                    <br />
-                    <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 100 Universities in the US' />
+                    <br/>
+                    <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 50 Universities in the US' />
                 </div>
                 <div id="map" style={ {width: '100%', height: '500px'} }>
                 </div>

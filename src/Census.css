@@ -1,0 +1,50 @@
+  /*.test {
+    background-color: #4CAF50;
+  }*/
+.jumbo{
+    font-family: 'lato';
+    font-size: 3em;
+    font-weight: 900;
+}
+.center {
+    text-align: center;
+}
+
+.emphasis {
+    font-size: 1.5em;
+    color:#4CAF50;
+}
+.race{
+  display:flex !important;
+}
+.race:hover{
+  color:#4CAF50;
+}
+.main-appear{
+  opacity: .01;
+}
+.main-appear.main-appear-active {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+.anchorBR {
+  position:absolute;
+    bottom:5%;
+    right: 5%;
+    border-radius: 25px;
+}
+/*.main-enter {
+  opacity: 0.01;
+}
+.main-enter.main-enter-active {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+.main-leave {
+  opacity: 1;
+}
+
+.main-leave.main-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}*/
