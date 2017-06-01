@@ -75,9 +75,9 @@ class App extends Component {
         }
     
     }
-    satFilter(datas){
 
-        if(this.state.filter.SAT !== ""){
+    satFilter(datas){
+        if(this.state.filter.SAT !== "" && this.props.location.pathname !=="/selectivity"){
             return datas.filter((obj)=>{
                 return this.state.filter.SAT>=obj["2014.admissions.sat_scores.average.overall"];
             });
@@ -85,17 +85,17 @@ class App extends Component {
             return datas;
         }
     }
-    actFilter(datas){
 
-        if(this.state.filter.ACT !== ""){
+    actFilter(datas){
+        if(this.state.filter.ACT !== "" && this.props.location.pathname !=="/selectivity"){
             return datas.filter((obj)=>{
                 return this.state.filter.ACT>=obj["2014.admissions.act_scores.midpoint.cumulative"];
             });
         }else{
             return datas;
         }
-        
     }
+
     rankingFilter(datas){
 
         if((this.state.filter.ranking).length !== 0){

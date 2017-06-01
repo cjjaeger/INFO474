@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import './App.css';
 import { Switch } from 'react-mdl';
+import gaussian from 'gaussian'; 
 
 import BubblePlot from './BubblePlot';
 
@@ -43,11 +44,26 @@ class BubbleComponent extends Component {
                         d[yVarHigh3] != null && 
                         d.id != null && d['school.locale'] != null && d[r] != null && d["school.name"] != null;
                 });
+           
                 chartData = chartData.map(d => {
                     // console.log(d);
+                    
+                    var y75 =(d[yVarHigh1] + d[yVarHigh2] + d[yVarHigh3]);
+                    var y25 =(d[yVarLow2] + d[yVarLow1] + d[yVarLow3]);
+                    var yVal = y75-y25;
+                    var xVal;
+                    if (this.props.filter.SAT ==="") {
+                        xVal = d[xVar];
+                    } else {
+                        var variance = ((Math.pow((d[xVar] -y75),2))+(Math.pow((d[xVar] -y25),2)))/2;
+                        var distribution = gaussian(d[xVar] , variance);
+                        // Take a random sample using inverse transform sampling method. 
+                        xVal = distribution.cdf(this.props.filter.SAT);
+                    }
+
                     return {
-                        x: d[xVar],
-                        y:(d[yVarHigh1] + d[yVarHigh2] + d[yVarHigh3])-(d[yVarLow2] + d[yVarLow1] + d[yVarLow3]),
+                        x: xVal,
+                        y: yVal,
                         id: d.name,
                         location: d['school.locale'],
                         radius: d[r],
@@ -60,10 +76,21 @@ class BubbleComponent extends Component {
                         d.id != null && d['school.locale'] != null && d[r] != null && d["school.name"] != null;
                 });
                 chartData = chartData.map(d => {
-                    // console.log(d);
+                    var y75 =d[yVarHigh];
+                    var y25 =d[yVarLow];
+                    var yVal = y75-y25;
+                    var xVal;
+                    if (this.props.filter.ACT ==="") {
+                        xVal = d[xVar];
+                    } else {
+                        var variance = ((Math.pow((d[xVar] -y75),2))+(Math.pow((d[xVar] -y25),2)))/2;
+                        var distribution = gaussian(d[xVar] , variance);
+                        // Take a random sample using inverse transform sampling method. 
+                        xVal = distribution.cdf(this.props.filter.ACT);
+                    }
                     return {
-                        x: d[xVar],
-                        y:d[yVarHigh]- d[yVarLow],
+                        x: xVal,
+                        y: yVal,
                         id: d.name,
                         location: d['school.locale'],
                         radius: d[r],
@@ -75,16 +102,46 @@ class BubbleComponent extends Component {
 
         prepData();
         var text;
+        var score =false;
+        var xText ='Average';
         if (this.state.plotType) {
             text = "SAT";
+            if (this.props.filter.SAT !=="") {
+                score = true;
+                xText ="Your Percentile"
+            } 
         } else {
             text = "ACT";
+            if (this.props.filter.ACT !=="") {
+                score = true;
+                xText ="Your Percentile"
+            } 
         }
         // Define function to draw ScatterPlot
-        var scatter = BubblePlot().xTitle('Average')
-                                   .height(400)
-                                   .width(600)
-                                   .yTitle(text+' Score Range');
+        var scatter = BubblePlot().xTitle(xText)
+                                   .height(500)
+                                   .width(800)
+                                   .yTitle(text+' Score Range')
+                                   .scores(score) 
+                                   .sizeIntro(d => {
+                                 
+                                    return {
+                                        label: `At ${d.name}, the acceptance rate was ${(d.radius*100).toLocaleString()}%`,
+                                        title: "Acceptance Rate"
+                                    };
+                                    })
+                                    .xAxisIntro(d => {
+                                    return {
+                                        label: `${d.name} the average test score was ${(d.x).toLocaleString()} in 2014`,
+                                        title: "Average Score"
+                                    };
+                                    })
+                                    .yAxisIntro(d => {
+                                    return {
+                                        label: `At ${d.name}, the test score range was ${(d.y).toLocaleString()} in 2014`,
+                                        title: "Score Range"
+                                    };
+                                    });
         // Create chart
         var chart = d3.select(this.root)
             .datum(chartData)
@@ -115,8 +172,13 @@ class BubbleComponent extends Component {
             text = "ACT";
         }
         return (
-        <div className ="container" id="scatter-plot" ref={ node => this.root = node }>
-        <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
+        <div style={{"display":"flex", "flexDirection":"column"}}>
+            <div style={{"marginLeft":"auto", "marginRight":"auto"}}>
+            <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
+            </div>
+            <div id="bubble-plot" style={{"alignItems":"stretch","marginLeft":"auto", "marginRight":"auto"}} ref={ node => this.root = node }>
+            </div>
+
         </div>
         );
     }

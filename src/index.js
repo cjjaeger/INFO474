@@ -20,7 +20,7 @@ ReactDOM.render(
         <IndexRoute component={Filter} />
         <Route path='/viz/1'component={DonutScatterComponent}/>
         <Route path='/viz/2'component={ScatterPlotComponent}/>
-        <Route path='/viz/3'component={BubbleComponent}/>
+        <Route path='/selectivity'component={BubbleComponent}/>
       </Route>
     </Router>,
   document.getElementById('root')
