@@ -7,6 +7,7 @@ import { Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
 import 'leaflet/dist/leaflet.css';
 import './MapComponent.css';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 const sampleStyle = {
     'fontFamily': 'lato',
@@ -126,6 +127,8 @@ class MapComponent extends Component {
     render() {
         return (
             <div style={sampleStyle}>
+                <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+                    transitionAppearTimeout={1000}>
                 <div>
                     <span>For your filters, there are over <Count maxNumber={this.props.data.length} duration='8' textInfo='Universities' /></span>
                 </div>
@@ -141,6 +144,7 @@ class MapComponent extends Component {
                     <Button onClick={() => hashHistory.push('/')} raised colored>Back</Button>
                     <Button onClick={() => hashHistory.push('/graduation')} raised colored>Next</Button>
                 </div>
+                </CSSTransitionGroup>
             </div>
         );
     }

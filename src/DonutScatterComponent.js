@@ -8,6 +8,7 @@ import { Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
 import Select from 'react-select';
 import _ from 'lodash';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 class DonutScatterComponent extends Component {
   componentDidMount() {
@@ -20,7 +21,7 @@ class DonutScatterComponent extends Component {
     this.donutScatter.width(900)
       .height(500)
       .onIntroEnd(this.props.onDonutScatterIntroPlayed)
-       .introDisabled(this.props.donutScatterIntroPlayed)
+      .introDisabled(this.props.donutScatterIntroPlayed)
       .xTitle('Tuition')
       .yTitle('Room and Board')
       .xAccessor('tuition')
@@ -61,10 +62,10 @@ class DonutScatterComponent extends Component {
   filterForUsage(data) {
     let chartData = data.filter(function (x) {
       return x['appliedFinancialAid'] !== null &&
-             x['receivedFinancialAid'] !== null &&
-             x['receivedFullFinancialAid'] !== null &&
-             x.roomAndBoardCost !== null &&
-             x.tuition !== null;
+        x['receivedFinancialAid'] !== null &&
+        x['receivedFullFinancialAid'] !== null &&
+        x.roomAndBoardCost !== null &&
+        x.tuition !== null;
     });
 
     chartData = chartData.map(function (element) {
@@ -127,7 +128,7 @@ class DonutScatterComponent extends Component {
     this.update();
   }
   drawSelectedSchool(value) {
-    let getObject= this.filterForUsage(this.props.data);
+    let getObject = this.filterForUsage(this.props.data);
     let school = _.find(getObject, function (d) { return d['name'] === value.value });
     this.donutScatter.enclose(school);
     this.update();
@@ -143,13 +144,16 @@ class DonutScatterComponent extends Component {
 
     return (
       <div>
-        <Select name='school-name' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
-        <div id="donut-scatter" ref={node => this.donutScatterRoot = node}></div>
-        <svg id="large-donut" style={{width: '25%'}} width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
-        <div className="center">
+        <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+          transitionAppearTimeout={1000}>
+          <Select name='school-name' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
+          <div id="donut-scatter" ref={node => this.donutScatterRoot = node}></div>
+          <svg id="large-donut" style={{ width: '25%' }} width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
+          <div className="center">
             <Button onClick={() => hashHistory.push('/graduation')} raised colored>Back</Button>
             <Button onClick={() => hashHistory.push('/selectivity')} raised colored>Next</Button>
-        </div>
+          </div>
+        </CSSTransitionGroup>
       </div>
     );
   }

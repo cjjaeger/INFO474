@@ -5,6 +5,7 @@ import ScatterPlot from './ScatterPlot';
 import { Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
 import './ScatterPlotComponent.css';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 class ScatterPlotComponent extends Component {
     componentDidMount() {
@@ -19,8 +20,8 @@ class ScatterPlotComponent extends Component {
 
         var prepData = () => {
             chartData = this.props.data.filter(d => {
-              return d[xVar] != null && d[yVar] != null &&
-                     d.id != null && d['school.locale'] != null;
+                return d[xVar] != null && d[yVar] != null &&
+                    d.id != null && d['school.locale'] != null;
             });
             chartData = chartData.map(d => {
                 // console.log(d);
@@ -37,9 +38,9 @@ class ScatterPlotComponent extends Component {
 
         // Define function to draw ScatterPlot
         var scatter = ScatterPlot().xTitle('Graduation Rate')
-                                   .height(500)
-                                   .width(700)
-                                   .yTitle('Median Family Income');
+            .height(500)
+            .width(700)
+            .yTitle('Median Family Income');
 
         // Create chart
         var chart = d3.select(this.root)
@@ -55,13 +56,18 @@ class ScatterPlotComponent extends Component {
 
     render() {
         return (
-        <div style={{"display":"flex", "flexDirection":"column"}}>
-          <div id="scatter-plot" style={{"alignItems":"stretch","marginLeft":"auto", "marginRight":"auto"}} ref={ node => this.root = node }></div>
-          <div className="center">
-              <Button onClick={() => hashHistory.push('/map')} raised colored>Back</Button>
-              <Button onClick={() => hashHistory.push('/cost')} raised colored>Next</Button>
-          </div>
-        </div>
+            <div>
+                <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+                    transitionAppearTimeout={1000}>
+                    <div style={{ "display": "flex", "flexDirection": "column" }}>
+                        <div id="scatter-plot" style={{ "alignItems": "stretch", "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}></div>
+                        <div className="center">
+                            <Button onClick={() => hashHistory.push('/map')} className='anchorBR' raised colored>Back</Button>
+                            <Button onClick={() => hashHistory.push('/cost')} className='anchorBR' raised colored>Next</Button>
+                        </div>
+                    </div>
+                </CSSTransitionGroup>
+            </div>
         );
     }
 }
