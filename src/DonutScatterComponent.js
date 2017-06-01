@@ -24,6 +24,8 @@ class DonutScatterComponent extends Component {
   update() {
     this.donutScatter.width(900)
       .height(500)
+      .onIntroEnd(this.props.onDonutScatterIntroPlayed)
+       .introDisabled(this.props.donutScatterIntroPlayed)
       .xTitle('Tuition')
       .yTitle('Room and Board')
       .xAccessor('tuition')

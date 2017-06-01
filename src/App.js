@@ -22,14 +22,18 @@ class App extends Component {
                 SAT:"",
                 ACT:"",
                 ranking: "",
-                handleCheck: this.setZip = this.setZip.bind(this),
+                handleCheck: this.setZip.bind(this),
                 zipltlng:{},
                 zipState:""
             },
             data: data.map(obj => {
                 obj.tuition = obj['2014.cost.tuition.out_of_state'];
                 return obj;
-            })
+            }),
+            donutScatterIntroPlayed: false,
+            onDonutScatterIntroPlayed: () => {
+              this.setState({donutScatterIntroPlayed: true});
+            }
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleCheck = this.handleCheck.bind(this);

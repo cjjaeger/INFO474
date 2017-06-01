@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import './App.css';
 import ScatterPlot from './ScatterPlot';
+import { Button } from 'react-mdl';
+import { hashHistory } from 'react-router';
 import './ScatterPlotComponent.css';
 
 class ScatterPlotComponent extends Component {
@@ -53,7 +55,9 @@ class ScatterPlotComponent extends Component {
 
     render() {
         return (
-        <div id="scatter-plot" style={{width: '100%', height: '100%'}} ref={ node => this.root = node }>
+        <div>
+          <div id="scatter-plot" style={{width: '100%', height: '100%'}} ref={ node => this.root = node }></div>
+          <Button onClick={() => hashHistory.push('/viz/1')} raised colored>Back</Button>
         </div>
         );
     }
