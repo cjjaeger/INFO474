@@ -177,7 +177,7 @@ class BubbleComponent extends Component {
             <div style={{"marginLeft":"auto", "marginRight":"auto"}}>
               <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
             </div>
-            <div id="bubble-plot" style={{"alignItems":"stretch","marginLeft":"auto", "marginRight":"auto"}} ref={ node => this.root = node }>
+            <div id="bubble-plot" style={{"alignItems":"stretch", "width": "65%", "marginLeft":"auto", "marginRight":"auto"}} ref={ node => this.root = node }>
             </div>
             <div className="center">
                 <Button onClick={() => hashHistory.push('/cost')} raised colored>Back</Button>
