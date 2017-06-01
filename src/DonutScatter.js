@@ -270,28 +270,39 @@ var DonutScatter = function() {
                   .attr('opacity', 0)
                   .merge(gs)
                   .on('mouseover', function(d) {
-                    ele.select('.chartG').selectAll('g.donut').each(function() {
-                      this.enclosed = false;
-                    });
-                    this.enclosed = true;
-                    ele.select('.chartG').selectAll('circle.enclosing-circle')
-                      .data([d])
-                      .enter()
-                        .append('circle')
-                        .attr('class', 'enclosing-circle')
-                        .attr('cx', xScale(d[xAccessor]))
-                        .attr('cy', yScale(d[yAccessor]))
-                      .merge(ele.select('.chartG').select('circle.enclosing-circle'))
-                        .attr('fill', 'none')
-                        .attr('stroke-width', 1)
-                        .attr('stroke', 'red')
-                        .attr('r', 8)
-                        .transition().duration(200)
-                        .attr('cx', xScale(d[xAccessor]))
-                        .attr('cy', yScale(d[yAccessor]));
+                    this.mousedOut = false;
+                    var self = this;
+                    setTimeout(() => {
+                      if (self.mousedOut) {
+                        return;
+                      }
 
-                    // Exterior callback
-                    onHover(d);
+                      ele.select('.chartG').selectAll('g.donut').each(function() {
+                        self.enclosed = false;
+                      });
+                      self.enclosed = true;
+                      ele.select('.chartG').selectAll('circle.enclosing-circle')
+                        .data([d])
+                        .enter()
+                          .append('circle')
+                          .attr('class', 'enclosing-circle')
+                          .attr('cx', xScale(d[xAccessor]))
+                          .attr('cy', yScale(d[yAccessor]))
+                        .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                          .attr('fill', 'none')
+                          .attr('stroke-width', 1)
+                          .attr('stroke', 'red')
+                          .attr('r', 8)
+                          .transition().duration(200)
+                          .attr('cx', xScale(d[xAccessor]))
+                          .attr('cy', yScale(d[yAccessor]));
+
+                      // Exterior callback
+                      onHover(d);
+                    }, 50);
+                  })
+                  .on('mouseout', function(d) {
+                    this.mousedOut = true;
                   })
                   .attr('transform', (d) => {
                     return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
