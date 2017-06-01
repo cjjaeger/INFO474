@@ -38,9 +38,9 @@ class ScatterPlotComponent extends Component {
 
         // Define function to draw ScatterPlot
         var scatter = ScatterPlot().xTitle('Graduation Rate')
-            .height(500)
-            .width(700)
-            .yTitle('Median Family Income');
+                                   .height(400)
+                                   .width(700)
+                                   .yTitle('Median Family Income');
 
         // Create chart
         var chart = d3.select(this.root)
