@@ -18,6 +18,7 @@ function donutChart() {
         sliceVal,
         sliceCat,
         title,
+        subTitle,
         showTooltip = true, // Boolean for tooltip
         showLabels = true; // Boolean for labels;
 
@@ -65,6 +66,11 @@ function donutChart() {
                     .enter()
                     .append('text');
 
+                var chartSubTitle = svg.selectAll('text.subtitle')
+                    .data([data])
+                    .enter()
+                    .append('text');
+
                 // Append tooltip text and style
                 // http://bl.ocks.org/nnattawat/9368297
                 var tooltip = svg.selectAll('text.donut-tooltip')
@@ -80,6 +86,7 @@ function donutChart() {
                     .attr('class', 'chart-g');
 
                 var existingTitle = svg.select('text.title');
+                var existingSubTitle = svg.select('text.subtitle');
                 var existingTooltip = svg.select('text.donut-tooltip');
                 var existingChartG = svg.select('g.chart-g');
 
@@ -89,6 +96,7 @@ function donutChart() {
                   g = g.transition(context);
 
                   existingTitle = existingTitle.transition(context);
+                  existingSubTitle = existingSubTitle.transition(context);
                   existingTooltip = existingTooltip.transition(context);
                   existingChartG = existingChartG.transition(context);
                 }
@@ -98,6 +106,12 @@ function donutChart() {
                     .attr('text-anchor', 'middle')
                     .merge(existingTitle)
                     .text(title);
+
+                chartSubTitle = chartSubTitle
+                    .attr('class', 'subtitle')
+                    .attr('text-anchor', 'middle')
+                    .merge(existingSubTitle)
+                    .text(subTitle);
 
                 tooltip = tooltip
                     .attr('class', 'donut-tooltip')
@@ -112,6 +126,9 @@ function donutChart() {
                 if (centerAroundOrigin) {
                   chartTitle
                     .attr('transform', 'translate(0,' + -(30 + height/2) + ')');
+
+                  chartSubTitle
+                    .attr('transform', 'translate(0,' + -(15 + height/2) + ')');
                 } else {
                   g
                     .attr('transform', 'translate(' + width/2 + "," + height/2 + ')');
@@ -121,6 +138,9 @@ function donutChart() {
 
                   chartTitle
                     .attr('transform', 'translate(' + ((width - margin.left)/2) + ',' + 30 + ')')
+
+                  chartSubTitle
+                    .attr('transform', 'translate(' + ((width - margin.left)/2) + ',' + 50 + ')')
                 }
 
                 // Enter paths
@@ -270,6 +290,14 @@ function donutChart() {
         if(!arguments.length) {return title;}
         title = value;
         return chart;
+    };
+
+    chart.subTitle = function(value) {
+      if (!arguments.length) {
+        return subTitle;
+      }
+      subTitle = value;
+      return chart;
     };
 
     // Color accessor

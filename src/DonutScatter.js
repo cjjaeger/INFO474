@@ -23,6 +23,7 @@ var DonutScatter = function() {
         donutIntro,
         xAxisIntro,
         yAxisIntro,
+        manuallyEnclosed,
         radius = (d) => 5,
         margin = {
             left: 70,
@@ -51,6 +52,7 @@ var DonutScatter = function() {
                             .append("svg")
                             .attr('width', width)
                             .attr("height", height)
+                            .attr('viewBox', `0 0 ${width} ${height}`)
                             .append("g");
 
             // g element for markers
@@ -87,7 +89,7 @@ var DonutScatter = function() {
 
             // Calculate x and y scales
             let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.01;
-            let xMin = d3.min(data, (d) => +d[xAccessor]) -1000;
+            let xMin = d3.min(data, (d) => +d[xAccessor])* .5;
             xScale.range([0, chartWidth]).domain([xMin, xMax]);
 
             var yMin = d3.min(data, (d) => +d[yAccessor]) * .5;
@@ -260,7 +262,13 @@ var DonutScatter = function() {
               // Use the .enter() method to get entering elements, and assign initial position
               gs.enter().append('g')
                   .attr('class', 'donut')
-                  .on('mouseover', d => {
+                  .attr('opacity', 0)
+                  .merge(gs)
+                  .on('mouseover', function(d) {
+                    ele.select('.chartG').selectAll('g.donut').each(function() {
+                      this.enclosed = false;
+                    });
+                    this.enclosed = true;
                     ele.select('.chartG').selectAll('circle.enclosing-circle')
                       .data([d])
                       .enter()
@@ -280,8 +288,6 @@ var DonutScatter = function() {
                     // Exterior callback
                     onHover(d);
                   })
-                  .attr('opacity', 0)
-                  .merge(gs)
                   .attr('transform', (d) => {
                     return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
                   })
@@ -295,6 +301,40 @@ var DonutScatter = function() {
 
               // Use the .exit() and .remove() methods to remove elements that are no longer in the data
               gs.exit().remove();
+
+              if (manuallyEnclosed) {
+                ele.select('.chartG').selectAll('g.donut').data([manuallyEnclosed], d => d.id).each(function() {
+                  ele.select('.chartG').selectAll('g.donut').each(function() {
+                    this.enclosed = false;
+                  });
+                  this.enclosed = true;
+                });
+                manuallyEnclosed = null;
+              }
+
+              var enclosingCircles = ele.select('.chartG').selectAll('g.donut').filter(function() {
+                return this.enclosed;
+              }).each(function(d) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle')
+                  .data([d])
+                  .enter()
+                    .append('circle')
+                    .attr('class', 'enclosing-circle')
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]))
+                  .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                    .attr('fill', 'none')
+                    .attr('stroke-width', 1)
+                    .attr('stroke', 'red')
+                    .attr('r', 8)
+                    .transition().duration(200)
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]));
+              });
+
+              if (enclosingCircles.size() === 0) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle').remove();
+              }
             }
         });
     };
@@ -302,6 +342,11 @@ var DonutScatter = function() {
     chart.onHover = function(value) {
       if (!arguments.length) return onHover;
       onHover = value;
+      return chart;
+    };
+
+    chart.enclose = function(value) {
+      manuallyEnclosed = value;
       return chart;
     };
 
