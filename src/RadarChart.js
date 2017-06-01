@@ -3,8 +3,8 @@ import './RadarCSS.css';
 
 var radarChart = function () {
         
-        var width = 1200,
-            height = 1200,
+        var width = 1000,
+            height = 1000,
             maxValue = 0,
             level = 4,
             levelScale = 0.8,
@@ -78,10 +78,10 @@ var radarChart = function () {
                     });
                 }));
 
-                width = width * levelScale;
-                height = height * levelScale;
-                paddingX = width * levelScale;
-                paddingY = width * levelScale;
+                // width = width * levelScale;
+                // height = height * levelScale;
+                // paddingX = width * levelScale;
+                // paddingY = width * levelScale;
 
                 /****************************************  components  ************************************************/
                 allAxis = (data[0].axes.map(function(i, j){
@@ -116,7 +116,7 @@ var radarChart = function () {
                         
                 if (centerAroundOrigin) {
                   gEnter
-                    .attr('transform', 'translate(0,' + (-(50 + drawHeight/2)) + ')');
+                    .attr('transform', 'translate(0,' + ((-drawHeight/2)-50) + ')');
                 } else {
                     console.log("  !!!");
                 //   verticesTooltip
