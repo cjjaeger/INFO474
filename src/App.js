@@ -89,7 +89,7 @@ class App extends Component {
     }
 
     satFilter(datas) {
-        if (this.state.filter.SAT !== "") {
+        if (this.state.filter.SAT !== "" && this.props.location.pathname !=="/selectivity") {
             return datas.filter((obj)=>{
                 return this.state.filter.SAT>=obj["2014.admissions.sat_scores.average.overall"];
             });
@@ -99,7 +99,7 @@ class App extends Component {
     }
 
     actFilter(datas) {
-        if (this.state.filter.ACT !== "") {
+        if (this.state.filter.ACT !== "" && this.props.location.pathname !=="/selectivity") {
             return datas.filter((obj)=>{
                 return this.state.filter.ACT>=obj["2014.admissions.act_scores.midpoint.cumulative"];
             });

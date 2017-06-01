@@ -114,6 +114,9 @@ var ScatterPlot = function() {
                 .delay((d) => xScale(d.x) * 5)
                 .attr('cx', (d) => xScale(d.x))
                 .attr('cy', (d) => yScale(d.y));
+            // circles.sort((a,b)=>{
+            //     return a.radius -b.radius;
+            // });
 
             var legend = svgEnter.selectAll(".legend")
                 .data(fill.domain())
