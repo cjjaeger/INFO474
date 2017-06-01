@@ -124,6 +124,8 @@ class DonutScatterComponent extends Component {
   drawSelectedSchool(value) {
     let getObject= this.filterForUsage(this.props.data);
     let school = _.find(getObject, function (d) { return d['name'] === value.value });
+    this.donutScatter.enclose(school);
+    this.update();
     this.updateLargeDonut(school);
   }
 
