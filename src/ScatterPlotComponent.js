@@ -37,8 +37,8 @@ class ScatterPlotComponent extends Component {
 
         // Define function to draw ScatterPlot
         var scatter = ScatterPlot().xTitle('Graduation Rate')
-                                   .height(700)
-                                   .width(900)
+                                   .height(500)
+                                   .width(700)
                                    .yTitle('Median Family Income');
 
         // Create chart
@@ -55,9 +55,12 @@ class ScatterPlotComponent extends Component {
 
     render() {
         return (
-        <div>
-          <div id="scatter-plot" style={{width: '100%', height: '100%'}} ref={ node => this.root = node }></div>
-          <Button onClick={() => hashHistory.push('/viz/1')} raised colored>Back</Button>
+        <div style={{"display":"flex", "flexDirection":"column"}}>
+          <div id="scatter-plot" style={{"alignItems":"stretch","marginLeft":"auto", "marginRight":"auto"}} ref={ node => this.root = node }></div>
+          <div className="center">
+              <Button onClick={() => hashHistory.push('/map')} raised colored>Back</Button>
+              <Button onClick={() => hashHistory.push('/cost')} raised colored>Next</Button>
+          </div>
         </div>
         );
     }

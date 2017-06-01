@@ -21,11 +21,12 @@ ReactDOM.render(
     <Router history={hashHistory}>
       <Route path='/' component={App} >
         <IndexRoute component={Filter} />
-        <Route path='/viz/1'component={DonutScatterComponent}/>
-        <Route path='/viz/2'component={ScatterPlotComponent}/>
-        <Route path='/selectivity'component={BubbleComponent}/>
         <Route path='/map' component={MapComponent} />
-        <Route path='/pre-viz'component={Census}/> 
+        <Route path='/graduation' component={ScatterPlotComponent}/>
+        <Route path='/cost' component={DonutScatterComponent}/>
+        <Route path='/selectivity' component={BubbleComponent}/>
+        {/*This isn't shown yet, it accompanies the radar*/}
+        <Route path='/pre-viz' component={Census}/>
       </Route>
     </Router>,
   document.getElementById('root')

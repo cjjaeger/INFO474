@@ -106,13 +106,11 @@ var BubblePlot = function() {
             var yMax = d3.max(data, (d) => +d.y) * 1.05;
             yScale.range([chartHeight, 0]).domain([yMin, yMax]);
 
-           
+
 
              if (!svgEnter.empty()) {
               // This is the first render, run the intro!
               var firstCollege = data[Math.floor(Math.random() * data.length)];
-
-         
 
               var donutIntroAnnotation = d3a.annotation()
                 .type(d3a.annotationCalloutCircle)
@@ -245,14 +243,16 @@ var BubblePlot = function() {
                 .attr('cx', (d) => xScale(d.x))
                 // Transition properties of the + update selections
                 .merge(circles)
-                 .on("mouseover", function(d){
-                                return tooltip.html(d.name +" <br/> "+(d.radius*100).toFixed(2) +"% Acceptance Rate"+" <br/> "+d.x)
-                                .style("visibility", "visible");})
-                .on("mousemove", function(){
-                    return tooltip.style("top", (event.pageY-10)+"px")
-                    .style("left",(event.pageX+10)+"px");})
+                .on("mouseover", function(d){
+                    tooltip.html(d.name +" <br/> "+(d.radius*100).toFixed(2) +"% Acceptance Rate"+" <br/> " + d.x.toFixed(2))
+                      .style("visibility", "visible");})
+                .on("mousemove", function() {
+                    tooltip.style("top", (d3.event.pageY - 10)+"px")
+                      .style("left",(d3.event.pageX + 10)+"px");}
+                )
                 .on("mouseout", function(){
-                    return tooltip.style("visibility", "hidden");})
+                    tooltip.style("visibility", "hidden");
+                })
                 .attr('r', (d) =>d.radius*10)
                 .transition()
                 .duration(800)

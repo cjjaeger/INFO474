@@ -16,11 +16,6 @@ class DonutScatterComponent extends Component {
     this.update();
   }
 
-  filterMap(e) {
-    e.preventDefault();
-    hashHistory.push('/viz/2');
-  }
-
   update() {
     this.donutScatter.width(900)
       .height(500)
@@ -151,7 +146,10 @@ class DonutScatterComponent extends Component {
         <Select name='school-name' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
         <div id="donut-scatter" ref={node => this.donutScatterRoot = node}></div>
         <svg id="large-donut" style={{width: '25%'}} width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
-        <Button onClick={this.filterMap} raised colored>Next</Button>
+        <div className="center">
+            <Button onClick={() => hashHistory.push('/graduation')} raised colored>Back</Button>
+            <Button onClick={() => hashHistory.push('/selectivity')} raised colored>Next</Button>
+        </div>
       </div>
     );
   }
