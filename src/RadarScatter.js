@@ -102,7 +102,7 @@ var RadarScatter = function() {
                           .width(200)
                           .height(200)
                           // Center around the origin! (around the middle of the g)
-                          // .centerAroundOrigin(true)
+                          .centerAroundOrigin(true)
                           .firstSlice('radarData');
 
               var radarIntroAnnotation = d3a.annotation()
@@ -199,12 +199,13 @@ var RadarScatter = function() {
                         .width(10)
                         .height(10)
                         // Center around the origin! (around the middle of the g)
-                        // .centerAroundOrigin(true)
+                        .centerAroundOrigin(true)
                         // Customize the chart for being tiny!
-                        // .lineThickness(1)
-                        // .showPoints(false)
-                        // .showTooltip(false)
-                        // .showLevelLabels(false)
+                        .lineThickness(1)
+                        .showVertice(false)
+                        .showTooltip(false)
+                        .showLevelLabel(false)
+                        .showAxesLabel(false)
                         // ... or whatever you want to do
                     )
                     .on('end', renderCompleteChart);
@@ -238,12 +239,13 @@ var RadarScatter = function() {
                 .width(10)
                 .height(10)
                 // Add centerAroundOrigin here!
-                // .centerAroundOrigin(true)
+                .centerAroundOrigin(true)
                 // Customize the chart for being tiny!
-                // .lineThickness(1)
-                // .showPoints(false)
-                // .showTooltip(false)
-                // .showLevelLabels(false)
+                .lineThickness(0.5)
+                .showVertice(false)
+                .showTooltip(false)
+                .showLevelLabel(false)
+                .showAxesLabel(false)
                 // ... or whatever you want to do
                 .firstSlice('radarData');
 
