@@ -4,8 +4,10 @@ import './App.css';
 import './DonutScatterComponent.css';
 import DonutScatter from './DonutScatter';
 import donutChart from './DonutChart';
-import {Button } from 'react-mdl';
+import { Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
+import Select from 'react-select';
+import _ from 'lodash';
 
 class DonutScatterComponent extends Component {
   componentDidMount() {
@@ -14,44 +16,53 @@ class DonutScatterComponent extends Component {
     this.update();
   }
 
-  filterMap(e){
+  filterMap(e) {
     e.preventDefault();
     hashHistory.push('/viz/2');
   }
 
   update() {
     this.donutScatter.width(900)
-        .height(500)
-        .xTitle('Tuition')
-        .yTitle('Room and Board')
-        .xAccessor('tuition')
-        .yAccessor('roomAndBoardCost')
-        .xAxisTickFormat(d3.format('$.2s'))
-        .yAxisTickFormat(d3.format('$.2s'))
-        .donutIntro(d => {
-          var partialPercent = d.pieParts.filter(x => x.name === 'partial')[0].value;
-          var fullPercent = d.pieParts.filter(x => x.name === 'full')[0].value;
+      .height(500)
+      .xTitle('Tuition')
+      .yTitle('Room and Board')
+      .xAccessor('tuition')
+      .yAccessor('roomAndBoardCost')
+      .xAxisTickFormat(d3.format('$.2s'))
+      .yAxisTickFormat(d3.format('$.2s'))
+      .donutIntro(d => {
+        var partialPercent = d.pieParts.filter(x => x.name === 'partial')[0].value;
+        var fullPercent = d.pieParts.filter(x => x.name === 'full')[0].value;
 
-          return {
-            label: `At ${d.name}, ${Math.round(partialPercent + fullPercent).toLocaleString()}% of applicants receive financial aid. ${Math.round(fullPercent).toLocaleString()}% of applicants receive enough to fully cover their need.`,
-            title: "Financial Aid"
-          };
-        })
-        .xAxisIntro(d => {
-          return {
-            label: `${d.name} costs $${Math.round(d.tuition).toLocaleString()} per year.`,
-            title: "Tuition"
-          };
-        })
-        .yAxisIntro(d => {
-          return {
-            label: `At ${d.name}, it costs $${Math.round(d.roomAndBoardCost).toLocaleString()} per year to live on campus.`,
-            title: "Room and Board"
-          };
-        })
-        .onHover(this.updateLargeDonut.bind(this));
+        return {
+          label: `At ${d.name}, ${Math.round(partialPercent + fullPercent).toLocaleString()}% of applicants receive financial aid. ${Math.round(fullPercent).toLocaleString()}% of applicants receive enough to fully cover their need.`,
+          title: "Financial Aid"
+        };
+      })
+      .xAxisIntro(d => {
+        return {
+          label: `${d.name} costs $${Math.round(d.tuition).toLocaleString()} per year.`,
+          title: "Tuition"
+        };
+      })
+      .yAxisIntro(d => {
+        return {
+          label: `At ${d.name}, it costs $${Math.round(d.roomAndBoardCost).toLocaleString()} per year to live on campus.`,
+          title: "Room and Board"
+        };
+      })
+      .onHover(this.updateLargeDonut.bind(this));
 
-    var chartData = this.props.data.filter(function(x) {
+    var chartData = this.filterForUsage(this.props.data);
+
+    // Call d3 update
+    d3.select(this.donutScatterRoot)
+      .datum(chartData)
+      .call(this.donutScatter);
+  }
+
+  filterForUsage(data) {
+    let chartData = data.filter(function (x) {
       return x['appliedFinancialAid'] !== null &&
              x['receivedFinancialAid'] !== null &&
              x['receivedFullFinancialAid'] !== null &&
@@ -59,7 +70,7 @@ class DonutScatterComponent extends Component {
              x.tuition !== null;
     });
 
-    chartData = chartData.map(function(element) {
+    chartData = chartData.map(function (element) {
       var receivedFullPercent = element['receivedFullFinancialAid'] / 100;
       var appliedPercent = element['appliedFinancialAid'] / 100;
       var receivedPercent = element['receivedFinancialAid'] / 100;
@@ -87,14 +98,11 @@ class DonutScatterComponent extends Component {
         ]
       };
     });
-
-    // Call d3 update
-    d3.select(this.donutScatterRoot)
-        .datum(chartData)
-        .call(this.donutScatter);
+    return chartData;
   }
 
   updateLargeDonut(d) {
+    console.log("large :", d);
     this.donut
       .firstSlice('pieParts')
       .sliceVal('value')
@@ -121,12 +129,26 @@ class DonutScatterComponent extends Component {
     this.props = props;
     this.update();
   }
+  drawSelectedSchool(value) {
+    let getObject= this.filterForUsage(this.props.data);
+    let school = _.find(getObject, function (d) { return d['name'] === value.value });
+    this.donutScatter.enclose(school);
+    this.update();
+    this.updateLargeDonut(school);
+  }
 
   render() {
+    var filteredSchool = this.filterForUsage(this.props.data);
+    var schoolChoices = filteredSchool.map(function (d) {
+      let name = d['name'];
+      return { value: name, label: name };
+    });
+
     return (
       <div>
-        <div id="donut-scatter" ref={ node => this.donutScatterRoot = node }></div>
-        <svg id="large-donut" style={{width: '25%'}} width="300" height="400" viewBox="0 0 300 400" ref={ node => this.largeDonutRoot = node }></svg>
+        <Select name='school-name' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
+        <div id="donut-scatter" ref={node => this.donutScatterRoot = node}></div>
+        <svg id="large-donut" style={{width: '25%'}} width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
         <Button onClick={this.filterMap} raised colored>Next</Button>
       </div>
     );
