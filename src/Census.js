@@ -23,14 +23,14 @@ class Census extends Component {
 
     }
     filterMap(e){
-    e.preventDefault();
-    hashHistory.push('/viz/2');
-  }
-    
+      e.preventDefault();
+      hashHistory.push('/viz/2');
+    }
+
     render() {
 
         var origins = Object.keys(this.state.race).map((value, i) =>
-            <div className='jumbo center col-md-4 race test' key={i} value={value} 
+            <div className='jumbo center col-md-4 race test' key={i} value={value}
             data-tip={this.state.race[value]}>{value}</div>);
         return (
             <div className = 'test'>
@@ -48,4 +48,4 @@ class Census extends Component {
         );
     }
 }
-export default Census
+export default Census;
