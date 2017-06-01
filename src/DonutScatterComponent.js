@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import './App.css';
+import './DonutScatterComponent.css';
 import DonutScatter from './DonutScatter';
 import donutChart from './DonutChart';
 import {Button } from 'react-mdl';
@@ -125,7 +126,7 @@ class DonutScatterComponent extends Component {
     return (
       <div>
         <div id="donut-scatter" ref={ node => this.donutScatterRoot = node }></div>
-        <svg id="large-donut" width="300" height="400" ref={ node => this.largeDonutRoot = node }></svg>
+        <svg id="large-donut" style={{width: '25%'}} width="300" height="400" viewBox="0 0 300 400" ref={ node => this.largeDonutRoot = node }></svg>
         <Button onClick={this.filterMap} raised colored>Next</Button>
       </div>
     );

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import './App.css';
 import ScatterPlot from './ScatterPlot';
+import './ScatterPlotComponent.css';
 
 class ScatterPlotComponent extends Component {
     componentDidMount() {
@@ -52,7 +53,7 @@ class ScatterPlotComponent extends Component {
 
     render() {
         return (
-        <div id="scatter-plot" ref={ node => this.root = node }>
+        <div id="scatter-plot" style={{width: '100%', height: '100%'}} ref={ node => this.root = node }>
         </div>
         );
     }
