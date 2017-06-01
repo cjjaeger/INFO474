@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import './App.css';
 import DonutScatter from './DonutScatter';
 import donutChart from './DonutChart';
-import {Button } from 'react-mdl';
+import { Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
 
 class DonutScatterComponent extends Component {
@@ -13,7 +13,7 @@ class DonutScatterComponent extends Component {
     this.update();
   }
 
-  filterMap(e){
+  filterMap(e) {
     e.preventDefault();
     hashHistory.push('/viz/2');
   }
@@ -21,6 +21,8 @@ class DonutScatterComponent extends Component {
   update() {
     this.donutScatter.width(900)
         .height(500)
+        .onIntroEnd(this.props.onDonutScatterIntroPlayed)
+        .introDisabled(this.props.donutScatterIntroPlayed)
         .xTitle('Tuition')
         .yTitle('Room and Board')
         .xAccessor('tuition')

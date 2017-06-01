@@ -20,6 +20,8 @@ var DonutScatter = function() {
         yAxisTickFormat = d3.format(".0"),
         fill = 'green',
         onHover = () => null,
+        onIntroEnd = () => null,
+        introDisabled = false,
         donutIntro,
         xAxisIntro,
         yAxisIntro,
@@ -94,7 +96,7 @@ var DonutScatter = function() {
             var yMax = d3.max(data, (d) => +d[yAccessor]) * 1.05;
             yScale.range([chartHeight, 0]).domain([yMin, yMax]);
 
-            if (!gEnter.empty()) {
+            if (!gEnter.empty() && !introDisabled) {
               // This is the first render, run the intro!
               var firstCollege = data[Math.floor(Math.random() * data.length)];
 
@@ -212,7 +214,10 @@ var DonutScatter = function() {
                         .showLabels(false)
                         .showTooltip(false)
                     )
-                    .on('end', renderCompleteChart);
+                    .on('end', () => {
+                      onIntroEnd();
+                      renderCompleteChart();
+                    });
 
               // Update axes
               xAxis.scale(xScale);
@@ -327,9 +332,21 @@ var DonutScatter = function() {
         });
     };
 
+    chart.introDisabled = function(value) {
+      if (!arguments.length) return introDisabled;
+      introDisabled = value;
+      return chart;
+    };
+
     chart.onHover = function(value) {
       if (!arguments.length) return onHover;
       onHover = value;
+      return chart;
+    };
+
+    chart.onIntroEnd = function(value) {
+      if (!arguments.length) return onIntroEnd;
+      onIntroEnd = value;
       return chart;
     };
 
