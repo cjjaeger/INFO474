@@ -7,7 +7,7 @@ var radarChart = function () {
             height = 1000,
             maxValue = 0,
             level = 4,
-            levelScale = 0.8,
+            levelScale = 0.4,
             labelScale = 0.5,
             factor = 1,
             radians = 2 * Math.PI,
@@ -40,7 +40,9 @@ var radarChart = function () {
             showVertice = true,
             showTooltip = true,
             showLevelLabel = true,
-            showAxesLabel = true;
+            showAxesLabel = true,
+            showLevel = true,
+            showAxes = true;
 
         var chart = function(section){
             var drawWidth = width - margin.left - margin.right;
@@ -52,18 +54,21 @@ var radarChart = function () {
                 }
 
                 var ele = d3.select(this);
-                var svg = ele.selectAll("svg").data([data]);
+                var g = ele.selectAll("g").data([data]);
                             // .attr("transform", "translate(" + 80 + "," + 60 + ")");
 
-                var gEnter = svg.enter()
-                                .append("svg")
+                var gEnter = g.enter()
+                                .append("g")
                                 .attr("width", width)
-                                .attr("height", height);
+                                .attr("height", height)
+                                .attr('height', drawHeight)
+                                .attr('width', drawWidth)
+                                .attr("class", "chartG");
 
-                gEnter.append("g")
-                        .attr('height', drawHeight)
-                        .attr('width', drawWidth)
-                        .attr("class", "chartG");
+                // gEnter.append("g")
+                //         .attr('height', drawHeight)
+                //         .attr('width', drawWidth)
+                //         .attr("class", "chartG");
                         // .attr("transform", "translate(" + 80 + "," + 60 + ")");
 
                 data = data.map(function(datum) {
@@ -117,7 +122,7 @@ var radarChart = function () {
                         
                 if (centerAroundOrigin) {
                   gEnter
-                    .attr('transform', 'translate(0,' + ((-drawHeight/2)-50) + ')');
+                    .attr('transform', 'translate(' + ((-width/2)) + ',' + ((-height/2)) + ')');
                 } else {
                     console.log("  !!!");
                 //   verticesTooltip
@@ -144,28 +149,33 @@ var radarChart = function () {
                 /****************************************  level  ************************************************/
                 // console.log("level is ");
                 // console.log(level);
+            
+                if(showLevel) {
+                    for(var eachLevel=0; eachLevel<level; eachLevel++) {
+                        var levelFactor = radius * ((eachLevel + 1) / level);
 
-                for(var eachLevel=0; eachLevel<level; eachLevel++) {
-                    var levelFactor = radius * ((eachLevel + 1) / level);
-
-                    svgLevel.data(allAxis).enter()
-                        .append("line")
-                        .attr("class", "levelLines")
-                        .attr("x1", function(d, i) { 
-                            return levelFactor * (1 - Math.sin(i * radians / totalAxes)); 
-                        })
-                        .attr("y1", function(d, i) { 
-                            return levelFactor * (1 - Math.cos(i * radians / totalAxes)); 
-                        })
-                        .attr("x2", function(d, i) { 
-                            return levelFactor * (1 - Math.sin((i + 1) * radians / totalAxes)); 
-                        })
-                        .attr("y2", function(d, i) { 
-                            return levelFactor * (1 - Math.cos((i + 1) * radians / totalAxes)); 
-                        })
-                        .attr("transform", "translate(" + (width / 2 - levelFactor) + ", " + (height / 2 - levelFactor) + ")")
-                        .attr("stroke", "gray")
-                        .attr("stroke-width", lineThickness + "px");
+                        svgLevel.data(allAxis).enter()
+                            .append("line")
+                            .attr("class", "levelLines")
+                            .attr("x1", function(d, i) { 
+                                return levelFactor * (1 - Math.sin(i * radians / totalAxes)); 
+                            })
+                            .attr("y1", function(d, i) { 
+                                return levelFactor * (1 - Math.cos(i * radians / totalAxes)); 
+                            })
+                            .attr("x2", function(d, i) { 
+                                return levelFactor * (1 - Math.sin((i + 1) * radians / totalAxes)); 
+                            })
+                            .attr("y2", function(d, i) { 
+                                return levelFactor * (1 - Math.cos((i + 1) * radians / totalAxes)); 
+                            })
+                            .attr("transform", "translate(" + (width / 2 - levelFactor) + ", " + (height / 2 - levelFactor) + ")")
+                            .attr("stroke", "gray")
+                            .attr("stroke-width", lineThickness + "px");
+                    }
+                }else {
+                    var levelHide = svgLevel.selectAll(' .levelLines');
+                    levelHide.remove();
                 }
 
                 /****************************************  level label  ************************************************/
@@ -195,18 +205,23 @@ var radarChart = function () {
                 }
 
                 /****************************************  axes  ************************************************/
-                axes.data(allAxis).enter()
-                    .append("line")
-                    .attr("class", "axisLines")
-                    .attr("x1", width / 2)
-                    .attr("y1", height / 2)
-                    .attr("x2", function(d, i) { 
-                        return width / 2 * (1 - Math.sin(i * radians / totalAxes)); 
-                    })
-                    .attr("y2", function(d, i) { 
-                        return height / 2 * (1 - Math.cos(i * radians / totalAxes)); 
-                    })
-                    .attr("stroke", "grey");
+                if(showAxes) {
+                    axes.data(allAxis).enter()
+                        .append("line")
+                        .attr("class", "axisLines")
+                        .attr("x1", width / 2)
+                        .attr("y1", height / 2)
+                        .attr("x2", function(d, i) { 
+                            return width / 2 * (1 - Math.sin(i * radians / totalAxes)); 
+                        })
+                        .attr("y2", function(d, i) { 
+                            return height / 2 * (1 - Math.cos(i * radians / totalAxes)); 
+                        })
+                        .attr("stroke", "grey");
+                }else {
+                    var axesHide = axes.selectAll(' .axisLines');
+                    axesHide.remove();
+                }
 
                 /****************************************  axes label  ************************************************/
                 if(showAxesLabel) {  
@@ -437,6 +452,30 @@ var radarChart = function () {
                 return showAxesLabel;
             }
             showAxesLabel = value;
+            return chart;
+        }
+        
+        chart.margin = function(value) {
+            if(!arguments.length) {
+                return margin;
+            }
+            margin = value;
+            return chart;
+        }
+
+        chart.showLevel = function(value) {
+            if(!arguments.length) {
+                return showLevel;
+            }
+            showLevel = value;
+            return chart;
+        }
+
+        chart.showAxes = function(value) {
+            if(!arguments.length) {
+                return showAxes;
+            }
+            showAxes = value;
             return chart;
         }
 

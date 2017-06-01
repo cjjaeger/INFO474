@@ -125,7 +125,7 @@ class RadarScatterComponent extends Component {
   updateLargeRadar(d) {
     this.radar
       .width(300)
-      .height(400)
+      .height(300)
       .firstSlice('radarData');
 
       d3.select(this.largeRadarRoot)

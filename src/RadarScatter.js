@@ -196,8 +196,8 @@ var RadarScatter = function() {
                     })
                     .call(
                       radar
-                        .width(10)
-                        .height(10)
+                        .width(15)
+                        .height(15)
                         // Center around the origin! (around the middle of the g)
                         .centerAroundOrigin(true)
                         // Customize the chart for being tiny!
@@ -206,6 +206,14 @@ var RadarScatter = function() {
                         .showTooltip(false)
                         .showLevelLabel(false)
                         .showAxesLabel(false)
+                        .showLevel(false)
+                        .showAxes(false)
+                        .margin({
+                          top: 0,
+                          bottom: 0,
+                          left: 0,
+                          right: 0
+                        })
                         // ... or whatever you want to do
                     )
                     .on('end', renderCompleteChart);
@@ -236,8 +244,8 @@ var RadarScatter = function() {
               let gs = ele.select('.chartG').selectAll('g.radar').data(data, d => d.id);
 
               let radar = radarChart()
-                .width(10)
-                .height(10)
+                .width(15)
+                .height(15)
                 // Add centerAroundOrigin here!
                 .centerAroundOrigin(true)
                 // Customize the chart for being tiny!
@@ -246,6 +254,14 @@ var RadarScatter = function() {
                 .showTooltip(false)
                 .showLevelLabel(false)
                 .showAxesLabel(false)
+                .showLevel(false)
+                .showAxes(false)
+                .margin({
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0
+                })
                 // ... or whatever you want to do
                 .firstSlice('radarData');
 
