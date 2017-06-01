@@ -17,7 +17,7 @@ class App extends Component {
             filter:{
                 zip: "",
                 inArea: false,
-                radius: null,
+                radius: 150,
                 tuition:[0,53000],
                 SAT:"",
                 ACT:"",
@@ -216,6 +216,7 @@ class App extends Component {
                     <Checkbox
                         label="Only show colleges in your area"
                         onChange={this.handleCheck}
+                        value={this.state.filter.inArea}
                         name="inArea"
                         />
                     {this.state.inArea &&
@@ -227,6 +228,7 @@ class App extends Component {
                        style={{width: '200px'}}
                        name="radius"
                        floatingLabel
+                       value={this.state.filter.radius}
                        />
                     }
                     <Textfield
@@ -236,6 +238,7 @@ class App extends Component {
                         label="SAT Score"
                         style={{width: '200px'}}
                         name="SAT"
+                        value={this.state.filter.SAT}
                         floatingLabel
                         />
 
@@ -246,6 +249,7 @@ class App extends Component {
                         label="ACT Score"
                         style={{width: '200px'}}
                         name="ACT"
+                        value={this.state.filter.ACT}
                         floatingLabel
                         />
 
@@ -256,6 +260,7 @@ class App extends Component {
                         label="Lowest College Ranking"
                         style={{width: '200px'}}
                         name="ranking"
+                        value={this.state.filter.ranking}
                         floatingLabel
                         />
                     <ControlLabel>Tuition Range:</ControlLabel>
