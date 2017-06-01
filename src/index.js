@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Route, Router, hashHistory, IndexRoute} from 'react-router';
 import DonutScatterComponent from './DonutScatterComponent';
 import ScatterPlotComponent from './ScatterPlotComponent';
+import Census from './Census';
 import App from './App';
 import Filter from './Filter';
 import './index.css';
@@ -12,6 +13,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-slider/src/css/bootstrap-slider.min.css";
 import 'react-select/dist/react-select.css';
 import MapComponent from './MapComponent.js';
+import './Census.css';
 
 
 ReactDOM.render(
@@ -21,6 +23,7 @@ ReactDOM.render(
         <Route path='/viz/1'component={DonutScatterComponent}/>
         <Route path='/viz/2'component={ScatterPlotComponent}/>
         <Route path='/map' component={MapComponent} />
+        <Route path='/pre-viz'component={Census}/> 
       </Route>
     </Router>,
   document.getElementById('root')
