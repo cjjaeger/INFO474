@@ -26,7 +26,10 @@ class App extends Component {
                 zipltlng:{},
                 zipState:""
             },
-            data:data
+            data: data.map(obj => {
+                obj.tuition = obj['2014.cost.tuition.out_of_state'];
+                return obj;
+            })
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
@@ -73,9 +76,11 @@ class App extends Component {
                 });
 
         } else {
-            //this.tuitionFilter(this.rankingFilter(this.actFilter(this.satFilter(data))));
-            zipPromise = Promise.resolve(data);
-
+            // When we don't have a zip, assume out of state
+            zipPromise = Promise.resolve(data.map(obj => {
+                obj.tuition = obj['2014.cost.tuition.out_of_state'];
+                return obj;
+            }));
         }
          zipPromise.then(this.satFilter)
             .then(this.actFilter)
@@ -116,7 +121,7 @@ class App extends Component {
 
     tuitionFilter(lastData) {
         var newData = lastData.filter((obj)=>{
-                return obj['2014.cost.tuition.out_of_state'] >= this.state.filter.tuition[0] && obj['2014.cost.tuition.out_of_state'] <= this.state.filter.tuition[1];
+                return obj.tuition >= this.state.filter.tuition[0] && obj.tuition <= this.state.filter.tuition[1];
             });
         var childState = Object.assign({}, this.state);
         childState.data = newData;
@@ -145,7 +150,7 @@ class App extends Component {
     setZipLocation(datas) {
         this.state.filter.zipltlng = datas[0].geometry.location; //update state
         var stateFips = datas[0].address_components[3].short_name
-        this.state.filter.zipState = stateData[stateFips] ; //update state
+        this.state.filter.zipState = parseInt(stateData[stateFips], 10); //update state
         var newData = data;
         if (this.state.inArea) {
            newData= data.filter((obj)=>{
@@ -155,9 +160,12 @@ class App extends Component {
             });
         }
 
-        var sent = newData.map((obj)=>{
-            if (obj["school.state_fips"]== this.state.filter.zipState) {
-                obj['2014.cost.tuition.out_of_state'] = obj["2014.cost.tuition.in_state"];
+        var sent = newData.map(obj => {
+            console.log(this.state.filter.zipState);
+            if (obj["school.state_fips"] === this.state.filter.zipState) {
+                obj.tuition = obj['2014.cost.tuition.in_state'];
+            } else {
+                obj.tuition = obj['2014.cost.tuition.out_of_state'];
             }
             return obj;
         });

@@ -55,7 +55,7 @@ class DonutScatterComponent extends Component {
              x['receivedFinancialAid'] !== null &&
              x['receivedFullFinancialAid'] !== null &&
              x.roomAndBoardCost !== null &&
-             x['2014.cost.tuition.out_of_state'] !== null;
+             x.tuition !== null;
     });
 
     chartData = chartData.map(function(element) {
@@ -69,7 +69,7 @@ class DonutScatterComponent extends Component {
         id: element.id,
         name: element.name,
         roomAndBoardCost: element.roomAndBoardCost,
-        tuition: element['2014.cost.tuition.out_of_state'],
+        tuition: element.tuition,
         pieParts: [
           {
             name: 'none',
