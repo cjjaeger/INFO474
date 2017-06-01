@@ -311,7 +311,6 @@ var DonutScatter = function() {
                 manuallyEnclosed = null;
               }
 
-
               var enclosingCircles = ele.select('.chartG').selectAll('g.donut').filter(function() {
                 return this.enclosed;
               }).each(function(d) {
