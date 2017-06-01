@@ -130,9 +130,6 @@ class MapComponent extends Component {
                 <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
                     transitionAppearTimeout={1000}>
                 <div>
-                    <span>For your filters, there are over <Count maxNumber={this.props.data.length} duration='8' textInfo='Universities' /></span>
-                </div>
-                <div>
                     <Count maxNumber={this.state.public} duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
                     <Count maxNumber={this.state.private} duration='8' textInfo='Private Universities' />
                     <br/>
@@ -141,8 +138,8 @@ class MapComponent extends Component {
                 <div id="map" style={ {width: '100%', height: '500px'} }>
                 </div>
                 <div className="center">
-                    <Button onClick={() => hashHistory.push('/')} raised colored>Back</Button>
-                    <Button onClick={() => hashHistory.push('/graduation')} raised colored>Next</Button>
+                    <Button onClick={() => hashHistory.push('/pre-map')} raised ripple colored>&lt;&lt; Back</Button>
+                    <Button onClick={() => hashHistory.push('/pre-graduation')} raised ripple colored>Next &gt;&gt;</Button>
                 </div>
                 </CSSTransitionGroup>
             </div>

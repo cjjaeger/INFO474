@@ -1,7 +1,14 @@
+* {
+  font-family: 'Lato','Roboto', 'Helvetica', 'Arial', sans-serif;
+}
 .App {
   text-align: center;
 }
 
+.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--colored {
+  border-radius: 25px;
+  text-align: center;
+}
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;

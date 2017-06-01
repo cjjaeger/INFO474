@@ -150,8 +150,8 @@ class DonutScatterComponent extends Component {
           <div id="donut-scatter" ref={node => this.donutScatterRoot = node}></div>
           <svg id="large-donut" style={{ width: '25%' }} width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
           <div className="center">
-            <Button onClick={() => hashHistory.push('/graduation')} raised colored>Back</Button>
-            <Button onClick={() => hashHistory.push('/selectivity')} raised colored>Next</Button>
+            <Button onClick={() => hashHistory.push('/pre-cost')} raised colored>&lt;&lt; Back</Button>
+            <Button onClick={() => hashHistory.push('/pre-selectivity')} raised colored>Next &gt;&gt;</Button>
           </div>
         </CSSTransitionGroup>
       </div>

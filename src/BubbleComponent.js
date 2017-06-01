@@ -183,7 +183,7 @@ class BubbleComponent extends Component {
                         <div id="bubble-plot" style={{ "alignItems": "stretch", "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}>
                         </div>
                         <div className="center">
-                            <Button onClick={() => hashHistory.push('/cost')} raised colored>Back</Button>
+                            <Button onClick={() => hashHistory.push('/pre-selectivity')} raised ripple colored>&lt;&lt; Back</Button>
                         </div>
                     </div>
                 </CSSTransitionGroup>

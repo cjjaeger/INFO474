@@ -62,8 +62,8 @@ class ScatterPlotComponent extends Component {
                     <div style={{ "display": "flex", "flexDirection": "column" }}>
                         <div id="scatter-plot" style={{ "alignItems": "stretch", "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}></div>
                         <div className="center">
-                            <Button onClick={() => hashHistory.push('/map')} className='anchorBR' raised colored>Back</Button>
-                            <Button onClick={() => hashHistory.push('/cost')} className='anchorBR' raised colored>Next</Button>
+                            <Button onClick={() => hashHistory.push('/map')} raised ripple colored>&lt;&lt; Back</Button>
+                            <Button onClick={() => hashHistory.push('/pre-cost')} raised ripple colored>Next &gt;&gt;</Button>
                         </div>
                     </div>
                 </CSSTransitionGroup>
