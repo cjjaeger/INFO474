@@ -25,6 +25,7 @@ var DonutScatter = function() {
         donutIntro,
         xAxisIntro,
         yAxisIntro,
+        manuallyEnclosed,
         radius = (d) => 5,
         margin = {
             left: 70,
@@ -53,6 +54,7 @@ var DonutScatter = function() {
                             .append("svg")
                             .attr('width', width)
                             .attr("height", height)
+                            .attr('viewBox', `0 0 ${width} ${height}`)
                             .append("g");
 
             // g element for markers
@@ -305,6 +307,16 @@ var DonutScatter = function() {
               // Use the .exit() and .remove() methods to remove elements that are no longer in the data
               gs.exit().remove();
 
+              if (manuallyEnclosed) {
+                ele.select('.chartG').selectAll('g.donut').data([manuallyEnclosed], d => d.id).each(function() {
+                  ele.select('.chartG').selectAll('g.donut').each(function() {
+                    this.enclosed = false;
+                  });
+                  this.enclosed = true;
+                });
+                manuallyEnclosed = null;
+              }
+
               var enclosingCircles = ele.select('.chartG').selectAll('g.donut').filter(function() {
                 return this.enclosed;
               }).each(function(d) {
@@ -347,6 +359,11 @@ var DonutScatter = function() {
     chart.onIntroEnd = function(value) {
       if (!arguments.length) return onIntroEnd;
       onIntroEnd = value;
+      return chart;
+    };
+
+    chart.enclose = function(value) {
+      manuallyEnclosed = value;
       return chart;
     };
 

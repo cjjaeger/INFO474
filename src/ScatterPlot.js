@@ -36,7 +36,8 @@ var ScatterPlot = function() {
             var svgEnter = svg.enter()
                 .append("svg")
                 .attr('width', width)
-                .attr("height", height);
+                .attr("height", height)
+                .attr('viewBox', `0 0 ${width} ${height}`);
 
             // Title G
             svgEnter.append('text')
@@ -61,11 +62,13 @@ var ScatterPlot = function() {
             // Add a title g for the x axis
             svgEnter.append('text')
                 .attr('transform', 'translate(' + (margin.left + chartWidth / 2) + ',' + (chartHeight + margin.top + 40) + ')')
+                .attr('text-anchor', 'middle')
                 .attr('class', 'title x');
 
             // Add a title g for the y axis
             svgEnter.append('text')
                 .attr('transform', 'translate(' + (margin.left - 40) + ',' + (margin.top + chartHeight / 2) + ') rotate(-90)')
+                .attr('text-anchor', 'middle')
                 .attr('class', 'title y');
 
             // Define xAxis and yAxis functions
@@ -111,6 +114,9 @@ var ScatterPlot = function() {
                 .delay((d) => xScale(d.x) * 5)
                 .attr('cx', (d) => xScale(d.x))
                 .attr('cy', (d) => yScale(d.y));
+            // circles.sort((a,b)=>{
+            //     return a.radius -b.radius;
+            // });
 
             var legend = svgEnter.selectAll(".legend")
                 .data(fill.domain())
