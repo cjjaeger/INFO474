@@ -219,10 +219,10 @@ class App extends Component {
     render() {
         return (
             <Layout fixedHeader>
-                <Header>
+                <Header style={{position: 'relative'}}>
                     <h1>Because College</h1>
                     {this.props.location.pathname !== '/' &&
-                        <IconButton onClick={this.toggle} name='build' style={{ position: 'absolute', bottom: '92.5%', right: '5%' }} />}
+                        <IconButton onClick={this.toggle} name='build' style={{ position: 'absolute', left: '20px' }} />}
                 </Header>
                 <Drawer title="Filter">
                     <form role="form">
