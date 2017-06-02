@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Route, Router, hashHistory, IndexRoute} from 'react-router';
 import DonutScatterComponent from './DonutScatterComponent';
 import ScatterPlotComponent from './ScatterPlotComponent';
+import RadarScatterComponent from './RadarScatterComponent';
 import BubbleComponent from './BubbleComponent';
 import Census from './Census';
 import App from './App';
@@ -27,14 +28,14 @@ ReactDOM.render(
         <IndexRoute component={Filter} />
         <Route path='/pre-map' component={PreMap} />
         <Route path='/map' component={MapComponent} />
+        <Route path='/pre-culture' component={Census}/>
+        <Route path='/culture'component={RadarScatterComponent}/>
         <Route path='/pre-graduation' component={PreGraduation} />
         <Route path='/graduation' component={ScatterPlotComponent}/>
         <Route path='/pre-cost' component={PreCost}/>
         <Route path='/cost' component={DonutScatterComponent}/>
         <Route path='/pre-selectivity' component={PreSelectivity}/>
         <Route path='/selectivity' component={BubbleComponent}/>
-        {/*This isn't shown yet, it accompanies the radar*/}
-        <Route path='/pre-viz' component={Census}/>
       </Route>
     </Router>,
   document.getElementById('root')

@@ -68,7 +68,7 @@ class DonutScatterComponent extends Component {
         x.tuition !== null;
     });
 
-    chartData = chartData.map(function (element) {
+    chartData = chartData.map(function(element) {
       var receivedFullPercent = element['receivedFullFinancialAid'] / 100;
       var appliedPercent = element['appliedFinancialAid'] / 100;
       var receivedPercent = element['receivedFinancialAid'] / 100;
@@ -146,7 +146,7 @@ class DonutScatterComponent extends Component {
       <div>
         <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
           transitionAppearTimeout={1000}>
-          <Select name='school-name' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
+          <Select name='school-name' placeholder='Search Schools' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
           <div id="donut-scatter" ref={node => this.donutScatterRoot = node}></div>
           <svg id="large-donut" style={{ width: '25%' }} width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
           <div className="center">

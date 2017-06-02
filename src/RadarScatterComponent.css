@@ -1,0 +1,10 @@
+#radar-scatter svg {
+  width: 100%;
+  height: 100%;
+}
+
+#large-radar-title {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+}

@@ -33,6 +33,10 @@ class App extends Component {
             donutScatterIntroPlayed: false,
             onDonutScatterIntroPlayed: () => {
                 this.setState({ donutScatterIntroPlayed: true });
+            },
+            radarScatterIntroPlayed: false,
+            onRadarScatterIntroPlayed: () => {
+                this.setState({ radarScatterIntroPlayed: true });
             }
         };
         this.handleChange = this.handleChange.bind(this);
@@ -52,6 +56,17 @@ class App extends Component {
     componentWillMount() {
         var childState = Object.assign({}, this.state);
         this.child = React.cloneElement(this.props.children, childState);
+
+        ['aian', 'asian', 'black', 'hispanic', 'white', 'nhpi'].forEach(function(race) {
+          var sortedData = data.sort((a, b) => {
+            return a['2014.student.demographics.race_ethnicity.' + race] -
+                   b['2014.student.demographics.race_ethnicity.' + race];
+          });
+
+          for (var i = 0; i < sortedData.length; i++) {
+            sortedData[i][race + 'percentile'] = i / sortedData.length;
+          }
+        });
     }
 
     componentWillReceiveProps(props) {

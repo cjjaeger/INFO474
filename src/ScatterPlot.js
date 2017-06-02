@@ -116,7 +116,7 @@ var ScatterPlot = function () {
                     return d.location;
                 })
                 .attr('cy', chartHeight)
-                .style('opacity', .3)
+                .style('opacity', .4)
                 .attr('cx', (d) => xScale(d.x))
                 // Transition properties of the + update selections
                 .merge(circles)

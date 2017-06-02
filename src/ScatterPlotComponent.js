@@ -61,7 +61,7 @@ class ScatterPlotComponent extends Component {
                     <div style={{width: '100%'}}>
                         <div id="scatter-plot" style={{ "alignItems": "stretch","width":"65%" , "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}></div>
                         <div className="center">
-                            <Button onClick={() => hashHistory.push('/map')} raised ripple colored>&lt;&lt; Back</Button>
+                            <Button onClick={() => hashHistory.push('/culture')} raised ripple colored>&lt;&lt; Back</Button>
                             <Button onClick={() => hashHistory.push('/pre-cost')} raised ripple colored>Next &gt;&gt;</Button>
                         </div>
                     </div>

@@ -3,3 +3,4 @@ public/data/college-scorecard-data.json filter=lfs diff=lfs merge=lfs -text
 public/data/merged-data.json filter=lfs diff=lfs merge=lfs -text
 public/data/us-news-data.json filter=lfs diff=lfs merge=lfs -text
 public/data/us-news-ids.json filter=lfs diff=lfs merge=lfs -text
+public/data/state-abbr-to-fips.json filter=lfs diff=lfs merge=lfs -text

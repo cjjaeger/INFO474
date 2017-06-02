@@ -42,7 +42,7 @@ class Census extends Component {
                     </header>
                     {origins}
                     <ReactTooltip place='bottom' className='emphasis' multiline/>
-                    <Button className='anchorBR' onClick={this.filterMap} raised ripple colored>Next >></Button>
+                    <Button className='anchorBR' onClick={() => hashHistory.push('/culture')} raised ripple colored>Next >></Button>
                 </CSSTransitionGroup>
             </div>
         );
