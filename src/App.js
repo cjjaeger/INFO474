@@ -17,10 +17,10 @@ class App extends Component {
             filter: {
                 zip: "",
                 inArea: false,
-                radius: null,
-                tuition: [0, 53000],
-                SAT: "",
-                ACT: "",
+                radius: 150,
+                tuition:[0, 53000],
+                SAT:"",
+                ACT:"",
                 ranking: "",
                 handleCheck: this.setZip.bind(this),
                 zipltlng: {},
@@ -221,50 +221,55 @@ class App extends Component {
                             value={this.state.filter.zip}
                             floatingLabel
                         />
-                        <Checkbox
-                            label="Only show colleges in your area"
-                            onChange={this.handleCheck}
-                            name="inArea"
+                    <Checkbox
+                        label="Only show colleges in your area"
+                        onChange={this.handleCheck}
+                        value={this.state.filter.inArea}
+                        name="inArea"
                         />
-                        {this.state.inArea &&
-                            <Textfield
-                                onChange={this.handleChange}
-                                pattern="-?[0-9]*(\.[0-9]+)?"
-                                error="Input is not a number!"
-                                label="Radius in miles"
-                                style={{ width: '200px' }}
-                                name="radius"
-                                floatingLabel
-                            />
-                        }
-                        <Textfield
-                            onChange={this.handleChange}
-                            pattern="-?[0-9]*(\.[0-9]+)?"
-                            error="Input is not a number!"
-                            label="SAT Score"
-                            style={{ width: '200px' }}
-                            name="SAT"
-                            floatingLabel
-                        />
-
-                        <Textfield
-                            onChange={this.handleChange}
-                            pattern="-?[0-9]*(\.[0-9]+)?"
-                            error="Input is not a number!"
-                            label="ACT Score"
-                            style={{ width: '200px' }}
-                            name="ACT"
-                            floatingLabel
+                    {this.state.inArea &&
+                    <Textfield
+                       onChange={this.handleChange}
+                       pattern="-?[0-9]*(\.[0-9]+)?"
+                       error="Input is not a number!"
+                       label="Radius in miles"
+                       style={{width: '200px'}}
+                       name="radius"
+                       floatingLabel
+                       value={this.state.filter.radius}
+                       />
+                    }
+                    <Textfield
+                        onChange={this.handleChange}
+                        pattern="-?[0-9]*(\.[0-9]+)?"
+                        error="Input is not a number!"
+                        label="SAT Score"
+                        style={{width: '200px'}}
+                        name="SAT"
+                        value={this.state.filter.SAT}
+                        floatingLabel
                         />
 
-                        <Textfield
-                            onChange={this.handleChange}
-                            pattern="-?[0-9]*(\.[0-9]+)?"
-                            error="Input is not a number!"
-                            label="Lowest College Ranking"
-                            style={{ width: '200px' }}
-                            name="ranking"
-                            floatingLabel
+                    <Textfield
+                        onChange={this.handleChange}
+                        pattern="-?[0-9]*(\.[0-9]+)?"
+                        error="Input is not a number!"
+                        label="ACT Score"
+                        style={{width: '200px'}}
+                        name="ACT"
+                        value={this.state.filter.ACT}
+                        floatingLabel
+                        />
+
+                    <Textfield
+                        onChange={this.handleChange}
+                        pattern="-?[0-9]*(\.[0-9]+)?"
+                        error="Input is not a number!"
+                        label="Lowest College Ranking"
+                        style={{width: '200px'}}
+                        name="ranking"
+                        value={this.state.filter.ranking}
+                        floatingLabel
                         />
                         <ControlLabel>Tuition Range:</ControlLabel>
                         <ReactBootstrapSlider
