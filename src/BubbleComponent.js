@@ -173,21 +173,19 @@ class BubbleComponent extends Component {
             text = "ACT";
         }
         return (
-            <div>
-                <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
-                    transitionAppearTimeout={1000}>
-                    <div style={{ "display": "flex", "flexDirection": "column" }}>
-                        <div style={{ "marginLeft": "auto", "marginRight": "auto" }}>
-                            <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
-                        </div>
-                        <div id="bubble-plot" style={{ "alignItems": "stretch", "width":"65%", "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}>
-                        </div>
-                        <div className="center">
-                            <Button onClick={() => hashHistory.push('/pre-selectivity')} raised ripple colored>&lt;&lt; Back</Button>
-                        </div>
+            <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+                transitionAppearTimeout={1000}>
+                <div style={{width: '100%'}}>
+                    <div style={{ "marginLeft": "auto", "marginRight": "auto", width: '90px' }}>
+                        <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
                     </div>
-                </CSSTransitionGroup>
-            </div>
+                    <div id="bubble-plot" style={{ "width":"65%", "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}>
+                    </div>
+                    <div className="center">
+                        <Button onClick={() => hashHistory.push('/pre-selectivity')} raised ripple colored>&lt;&lt; Back</Button>
+                    </div>
+                </div>
+            </CSSTransitionGroup>
         );
     }
 }

@@ -58,7 +58,7 @@ class ScatterPlotComponent extends Component {
         return (
                 <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
                     transitionAppearTimeout={1000}>
-                    <div style={{ "display": "flex", "flexDirection": "column" }}>
+                    <div style={{width: '100%'}}>
                         <div id="scatter-plot" style={{ "alignItems": "stretch","width":"65%" , "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}></div>
                         <div className="center">
                             <Button onClick={() => hashHistory.push('/map')} raised ripple colored>&lt;&lt; Back</Button>

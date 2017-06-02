@@ -13,20 +13,16 @@ class PreMap extends Component {
     }
     render() {
         return (
-            <div className = 'test'>
-                <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
-                    transitionAppearTimeout={1000}>
-                    <header className='jumbo center'>
-                        <br />
-                        <br />
-                        <div>
-                    <span>For your filters, there are <Count maxNumber={this.props.data.length} duration='8' styleClass='emphasis' textInfo='Universities' /></span>
-                        </div>
-                    </header>
-                    <Button onClick={() => hashHistory.push('/')} className='anchorBL' raised  ripple colored>&lt;&lt; Back</Button>
-                    <Button className='anchorBR' onClick={this.filterMap} className='anchorBR' raised ripple colored>Next &gt;&gt;</Button>
-                </CSSTransitionGroup>
-            </div>
+              <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+                  transitionAppearTimeout={1000}>
+                  <header className='jumbo center'>
+                      <div>
+                        <span>For your filters, there are <Count maxNumber={this.props.data.length} duration='8' styleClass='emphasis' textInfo='Universities' /></span>
+                      </div>
+                  </header>
+                  <Button onClick={() => hashHistory.push('/')} className='anchorBL' raised  ripple colored>&lt;&lt; Back</Button>
+                  <Button className='anchorBR' onClick={this.filterMap} className='anchorBR' raised ripple colored>Next &gt;&gt;</Button>
+              </CSSTransitionGroup>
         );
     }
 }

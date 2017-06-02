@@ -13,7 +13,9 @@ const sampleStyle = {
     'fontFamily': 'lato',
     'fontSize': '2em',
     'fontWeight': '900',
-    'textAlign': 'center'
+    'textAlign': 'center',
+    'marginTop': '30px',
+    'width': '100%'
 }
 const spanStyle = {
     'color':'#4CAF50'

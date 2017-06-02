@@ -12,20 +12,15 @@ class PreSelectivity extends Component {
     }
     render() {
         return (
-            <div className = 'test'>
-                <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
-                    transitionAppearTimeout={1000}>
-                    <header className='jumbo center'>
-                        <br />
-                        <br />
-                        <br />
-                        <div>Let's Take a Look at How <span className='emphasis'>Selective</span> They Are</div>
-                        <p>Enter your test scores (in the filter drawer) to see how you compare with current students at these colleges.</p>
-                    </header>
-                    <Button onClick={() => hashHistory.push('/cost')} className='anchorBL' raised ripple colored>&lt;&lt; Back</Button>
-                    <Button className='anchorBR' onClick={this.filterMap} className='anchorBR' raised ripple colored>Next &gt;&gt;</Button>
-                </CSSTransitionGroup>
-            </div>
+              <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+                  transitionAppearTimeout={1000}>
+                  <header className='jumbo center'>
+                      <div>Let's Take a Look at How <span className='emphasis'>Selective</span> They Are</div>
+                      <p>Enter your test scores (in the filter drawer) to see how you compare with current students at these colleges.</p>
+                  </header>
+                  <Button onClick={() => hashHistory.push('/cost')} className='anchorBL' raised ripple colored>&lt;&lt; Back</Button>
+                  <Button className='anchorBR' onClick={this.filterMap} className='anchorBR' raised ripple colored>Next &gt;&gt;</Button>
+              </CSSTransitionGroup>
         );
     }
 }

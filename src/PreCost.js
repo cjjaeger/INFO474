@@ -16,9 +16,6 @@ class PreCost extends Component {
                 <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
                     transitionAppearTimeout={1000}>
                     <header className='jumbo center'>
-                        <br />
-                        <br />
-                        <br />
                         <div>Now, Are They The <span className='emphasis'>Best Bang For Your Bucks?</span></div>
                     </header>
                     <Button onClick={() => hashHistory.push('/graduation')} className='anchorBL' raised ripple colored>&lt;&lt; Back</Button>

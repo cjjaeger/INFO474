@@ -9,6 +9,13 @@
   border-radius: 25px;
   text-align: center;
 }
+
+#root .mdl-layout__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
