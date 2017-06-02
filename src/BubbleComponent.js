@@ -100,18 +100,18 @@ class BubbleComponent extends Component {
         var chartData = this.filterForUsage(this.props.data);
         var text;
         var score = false;
-        var xText = 'Average';
+        var xText = 'Average Score';
         if (this.state.plotType) {
             text = "SAT";
             if (this.props.filter.SAT !== "") {
                 score = true;
-                xText = "Your Percentile"
+                xText = "(<< better) Your Percentile (worse >>)"
             }
         } else {
             text = "ACT";
             if (this.props.filter.ACT !== "") {
                 score = true;
-                xText = "Your Percentile"
+                xText = "(<< better) Your Percentile (worse >>)"
             }
         }
         // Define function to draw ScatterPlot
