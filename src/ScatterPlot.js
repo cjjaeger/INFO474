@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 // ScatterPlot
-var ScatterPlot = function() {
+var ScatterPlot = function () {
     // Set default values
     var height = 500,
         width = 800,
@@ -18,16 +18,16 @@ var ScatterPlot = function() {
             right: 10,
         },
         fill = d3.scaleOrdinal().range(d3.schemeCategory10),
-        cValue = function(d) { return d.location; };
+        cValue = function (d) { return d.location; };
 
     // Function returned by ScatterPlot
-    var chart = function(selection) {
+    var chart = function (selection) {
         // Height/width of the drawing area itself
         var chartHeight = height - margin.bottom - margin.top;
         var chartWidth = width - margin.left - margin.right;
 
         // Iterate through selections, in case there are multiple
-        selection.each(function(data) {
+        selection.each(function (data) {
             // Use the data-join to create the svg (if necessary)
             var ele = d3.select(this);
             var svg = ele.selectAll("svg").data([data]);
@@ -106,23 +106,27 @@ var ScatterPlot = function() {
 
             // Use the .enter() method to get entering elements, and assign initial position
             circles.enter().append('circle')
-                .attr('fill', function(d) {
+                .attr('fill', function (d) {
                     return fill(cValue(d));
+                })
+                .attr('class', function (d) {
+                    return d.location;
                 })
                 .attr('cy', chartHeight)
                 .style('opacity', .3)
                 .attr('cx', (d) => xScale(d.x))
                 // Transition properties of the + update selections
                 .merge(circles)
-                .on("mouseover", function(d) {
-                    tooltip.html(d.id +" <br/> " + Math.round(d.x * 100) + '% Graduation Rate')
-                      .style("visibility", "visible");
+                .on("mouseover", function (d) {
+                    tooltip.html(d.id + " <br/> " + Math.round(d.x * 100) + '% Graduation Rate')
+                        .style("visibility", "visible");
                 })
-                .on("mousemove", function() {
-                    tooltip.style("top", (d3.event.pageY - 10)+"px")
-                      .style("left",(d3.event.pageX + 10)+"px");}
+                .on("mousemove", function () {
+                    tooltip.style("top", (d3.event.pageY - 10) + "px")
+                        .style("left", (d3.event.pageX + 10) + "px");
+                }
                 )
-                .on("mouseout", function(){
+                .on("mouseout", function () {
                     tooltip.style("visibility", "hidden");
                 })
                 .attr('r', radius)
@@ -139,7 +143,11 @@ var ScatterPlot = function() {
                 .data(fill.domain())
                 .enter().append("g")
                 .attr("class", "legend")
-                .attr("transform", function(d, i) { return "translate(-80," + i * 20 + ")"; });
+                .attr("transform", function (d, i) { return "translate(-80," + i * 20 + ")"; })
+                .on('click', function (d, i) {
+                    let className = d3.selectAll("."+d);
+                    className.style('opacity') === '0.3' ? className.style("opacity",0): className.style("opacity",0.3);
+                });              
 
             // draw legend colored rectangles
             legend.append("rect")
@@ -154,7 +162,7 @@ var ScatterPlot = function() {
                 .attr("y", 9)
                 .attr("dy", ".35em")
                 .style("text-anchor", "end")
-                .text(function(d) {
+                .text(function (d) {
                     return d;
                 });
 
@@ -164,36 +172,36 @@ var ScatterPlot = function() {
     };
 
     // Getter/setter methods to change locally scoped options
-    chart.height = function(value) {
+    chart.height = function (value) {
         if (!arguments.length) return height;
         height = value;
         return chart;
     };
 
-    chart.width = function(value) {
+    chart.width = function (value) {
         if (!arguments.length) return width;
         width = value;
         return chart;
     };
 
-    chart.fill = function(value) {
+    chart.fill = function (value) {
         if (!arguments.length) return fill;
         fill = value;
         return chart;
     };
 
-    chart.xTitle = function(value) {
+    chart.xTitle = function (value) {
         if (!arguments.length) return xTitle;
         xTitle = value;
         return chart;
     };
 
-    chart.yTitle = function(value) {
+    chart.yTitle = function (value) {
         if (!arguments.length) return yTitle;
         yTitle = value;
         return chart;
     };
-    chart.radius = function(value) {
+    chart.radius = function (value) {
         if (!arguments.length) return radius;
         radius = value;
         return chart;
