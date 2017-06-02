@@ -164,9 +164,9 @@ var ScatterPlot = function () {
                 .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; })
                 .on('click', function (d, i) {
                     let colorSquare = d3.select(this).select('rect');
-                    colorSquare.style('opacity') === '1' ? colorSquare.style('opacity', 0.3) : colorSquare.style('opacity', 1);
+                    colorSquare.style('opacity') === '1' ? colorSquare.style('opacity', 0.4) : colorSquare.style('opacity', 1);
                     let className = ele.selectAll("." + d);
-                    className.style('opacity') === '0.3' ? className.style("opacity", 0) : className.style("opacity", 0.3);
+                    className.style('opacity') === '0.4' ? className.style("opacity", 0) : className.style("opacity", 0.4);
                 });
 
             // draw legend colored rectangles

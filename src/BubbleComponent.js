@@ -185,7 +185,7 @@ class BubbleComponent extends Component {
         return (
             <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
                 transitionAppearTimeout={1000}>
-                <div style={{width: '100%'}}>
+                <div style={{width: '100%', marginTop: '30px'}}>
                   <Select name='school-name' placeholder='Search Schools' value='' options={schoolChoices} onChange={this.showSelected.bind(this)} />
                     <div style={{ "marginLeft": "auto", "marginRight": "auto", width: '90px' }}>
                         <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
