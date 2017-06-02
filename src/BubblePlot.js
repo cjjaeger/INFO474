@@ -23,6 +23,7 @@ var BubblePlot = function() {
             top: 30,
             right: 10,
         },
+        manuallyHover = null,
         fill = d3.scaleOrdinal().range(d3.schemeCategory10),
         cValue = function(d) { return d.location; };
 
@@ -48,14 +49,28 @@ var BubblePlot = function() {
                 .attr("height", height)
                 .attr('viewBox', `0 0 ${width} ${height}`);
 
+            d3.select('body > .bubble-tooltip').remove();
             var tooltip = d3.select("body")
                 .append("div")
+                .attr('class', 'bubble-tooltip')
                 .style('background', 'white')
                 .style('padding', '5px')
                 .style('border-radius', '5px')
                 .style("position", "absolute")
                 .style("z-index", "10")
                 .style("visibility", "hidden");
+
+            if (manuallyHover) {
+              var svgNodeRect = svg.merge(svgEnter).node().getBoundingClientRect();
+              var offsetLeft = svgNodeRect.left;
+              var offsetTop = svgNodeRect.top;
+              tooltip.html(manuallyHover.name +" <br/> "+(manuallyHover.radius*100).toFixed(2) +"% Acceptance Rate"+" <br/> " + manuallyHover.x.toFixed(2))
+                .style("visibility", "visible");
+              tooltip.style("top", (((yScale(manuallyHover.y) + margin.top) / height) * svgNodeRect.height + offsetTop + 2) + "px")
+                  .style("left", (((xScale(manuallyHover.x) + margin.left) / width) * svgNodeRect.width + offsetLeft + 2) + "px");
+              manuallyHover = null;
+            }
+
             // Title G
             svgEnter.append('text')
                 .attr('transform', 'translate(' + (margin.left + chartWidth / 2) + ',' + 20 + ')')
@@ -109,7 +124,9 @@ var BubblePlot = function() {
             var yMax = d3.max(data, (d) => +d.y) * 1.05;
             yScale.range([chartHeight, 0]).domain([yMin, yMax]);
 
-
+            var cirMax = d3.max(data, (d) => {return d.radius;})
+            var cirMin = d3.min(data, (d) => {return d.radius;})
+            var linearSize = d3.scaleLinear().domain([cirMin*100, cirMax*100]).range([2, 10]);
 
              if (!svgEnter.empty()) {
               // This is the first render, run the intro!
@@ -120,7 +137,7 @@ var BubblePlot = function() {
                 .annotations([{
                   note: sizeIntro(firstCollege),
                   subject: {
-                    radius: 105
+                    radius: linearSize(firstCollege.radius * 100)
                   },
                   x: chartWidth / 2,
                   y: chartHeight / 2,
@@ -163,9 +180,23 @@ var BubblePlot = function() {
                     .attr('cx', (chartWidth / 2))
                     .attr('cy',(chartHeight / 2));
 
+              svgEnter.append("g")
+              .attr("class", "legendSize")
+              .attr("transform", "translate("+(chartWidth+15)+",5 )");
+
+              var legendSize = d3legend.legendSize()
+              .scale(linearSize)
+              .shape('circle')
+              .shapePadding(15)
+              .labelOffset(10)
+              .orient('vertical');
+
+              d3.select('svg').select(".legendSize")
+              .call(legendSize);
+
               chartG.selectAll('circle')
                   .data([firstCollege], d => d.id)
-                  .attr('r', 100)
+                  .attr('r', linearSize(firstCollege.radius * 100))
                      .attr('fill', function(d) {
                     return fill(cValue(d));
                     })
@@ -209,7 +240,6 @@ var BubblePlot = function() {
                       chartG.select('.annotations')
                         .remove();
                     })
-                    .attr('r', firstCollege.radius*10)
                     .on('end', renderCompleteChart);
 
               // Update axes
@@ -259,7 +289,7 @@ var BubblePlot = function() {
                 .on("mouseout", function(){
                     tooltip.style("visibility", "hidden");
                 })
-                .attr('r', (d) =>d.radius*10)
+                .attr('r', (d) =>linearSize(d.radius * 100))
                 .transition()
                 .duration(800)
                 .delay((d) => xScale(d.x) * 5)
@@ -296,14 +326,8 @@ var BubblePlot = function() {
                     return d;
                 });
             var array = data.map( (d) => {return d.radius;})
-            console.log(array);
-            var cirMax = d3.max(data, (d) => {return d.radius;})
-            var cirMin = d3.min(data, (d) => {return d.radius;})
-            var linearSize = d3.scaleLinear().domain([cirMin*100, cirMax*100]).range([cirMin*10, cirMax*10]);
 
-            var svg = d3.select("svg");
-
-            svg.append("g")
+            svgEnter.append("g")
             .attr("class", "legendSize")
             .attr("transform", "translate("+(chartWidth+15)+",5 )");
 
@@ -314,7 +338,7 @@ var BubblePlot = function() {
             .labelOffset(10)
             .orient('vertical');
 
-            svg.select(".legendSize")
+            d3.select('svg').select(".legendSize")
             .call(legendSize);
 
             // Use the .exit() and .remove() methods to remove elements that are no longer in the data
@@ -334,6 +358,11 @@ var BubblePlot = function() {
         if (!arguments.length) return width;
         width = value;
         return chart;
+    };
+
+    chart.showTooltipOf = function(value) {
+      manuallyHover = value;
+      return chart;
     };
 
     chart.fill = function(value) {

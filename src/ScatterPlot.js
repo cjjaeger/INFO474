@@ -17,6 +17,7 @@ var ScatterPlot = function () {
             top: 30,
             right: 50,
         },
+        manuallyHover = null,
         fill = d3.scaleOrdinal().range(d3.schemeCategory10),
         cValue = function (d) { return d.location; };
 
@@ -98,14 +99,27 @@ var ScatterPlot = function () {
             // Draw markers
             var circles = ele.select('.chartG').selectAll('circle').data(data, (d) => d.id);
 
+            d3.select('body > .scatter-tooltip').remove();
             var tooltip = d3.select("body")
                 .append("div")
+                .attr('class', 'scatter-tooltip')
                 .style('background', 'white')
                 .style('padding', '5px')
                 .style('border-radius', '5px')
                 .style("position", "absolute")
                 .style("z-index", "10")
                 .style("visibility", "hidden");
+
+            if (manuallyHover) {
+              var svgNodeRect = svg.merge(svgEnter).node().getBoundingClientRect();
+              var offsetLeft = svgNodeRect.left;
+              var offsetTop = svgNodeRect.top;
+              tooltip.html(manuallyHover.id + " <br/> " + Math.round(manuallyHover.x * 100) + '% Graduation Rate')
+                  .style("visibility", "visible");
+              tooltip.style("top", (((yScale(manuallyHover.y) + margin.top) / height) * svgNodeRect.height + offsetTop + 2) + "px")
+                  .style("left", (((xScale(manuallyHover.x) + margin.left) / width) * svgNodeRect.width + offsetLeft + 2) + "px");
+              manuallyHover = null;
+            }
 
             // Use the .enter() method to get entering elements, and assign initial position
             circles.enter().append('circle')
@@ -211,6 +225,11 @@ var ScatterPlot = function () {
         if (!arguments.length) return radius;
         radius = value;
         return chart;
+    };
+
+    chart.showTooltipOf = function(value) {
+      manuallyHover = value;
+      return chart;
     };
 
     return chart;
