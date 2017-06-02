@@ -11,7 +11,7 @@ var RadarScatter = function() {
         xAccessor = 'x',
         yAccessor = 'y',
         nameAccessor = 'name',
-        xScale = d3.scaleLinear(),
+        xScale = d3.scaleLog(),
         yScale = d3.scaleLinear(),
         xTitle = 'X Axis Title',
         yTitle = 'Y Axis Title',
@@ -196,8 +196,8 @@ var RadarScatter = function() {
                     })
                     .call(
                       radar
-                        .width(15)
-                        .height(15)
+                        .width(30)
+                        .height(30)
                         // Center around the origin! (around the middle of the g)
                         .centerAroundOrigin(true)
                         // Customize the chart for being tiny!
@@ -244,8 +244,8 @@ var RadarScatter = function() {
               let gs = ele.select('.chartG').selectAll('g.radar').data(data, d => d.id);
 
               let radar = radarChart()
-                .width(15)
-                .height(15)
+                .width(30)
+                .height(30)
                 // Add centerAroundOrigin here!
                 .centerAroundOrigin(true)
                 // Customize the chart for being tiny!

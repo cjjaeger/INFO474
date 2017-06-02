@@ -121,10 +121,10 @@ var radarChart = function () {
 
                         
                 if (centerAroundOrigin) {
-                  gEnter
-                    .attr('transform', 'translate(' + ((-width/2)) + ',' + ((-height/2)) + ')');
-                } else {
-                    console.log("  !!!");
+                    gEnter.attr('transform', 'translate(' + ((-width/2)) + ',' + ((-height/2)) + ')');
+                }
+                // } else {
+                //     console.log("  !!!");
                 //   verticesTooltip
                 //     .attr('transform', 'translate(' + width/2 + "," + height/2 + ')');
 
@@ -136,7 +136,7 @@ var radarChart = function () {
                 
                 //   vertices
                 //     .attr('transform', 'translate(' + width/2 + "," + height/2 + ')');
-                }
+                // }
                 /****************************************  coordinates  ************************************************/
                 data.forEach(function(group) {
                     group.axes.forEach(function(d, i) {
@@ -309,7 +309,7 @@ var radarChart = function () {
                     });
                     return verticesString;
                 })
-                .attr("stroke-width", "2px")
+                .attr("stroke-width", "0.8px")
                 .attr("stroke", function(d, i) { 
                     return color(i); 
                 })

@@ -24,7 +24,7 @@ class RadarScatterComponent extends Component {
     this.radarScatter
         .width(900)
         .height(700)
-        .xTitle('Student Number')
+        .xTitle('Log 10(Student Number)')
         .yTitle('Median household income')
         .xAccessor('studentSize')
         .yAccessor('medianIncome')
