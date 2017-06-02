@@ -243,6 +243,32 @@ class App extends Component {
                         onChange={this.handleChange}
                         pattern="-?[0-9]*(\.[0-9]+)?"
                         error="Input is not a number!"
+                        label="Lowest College Ranking"
+                        style={{width: '200px'}}
+                        name="ranking"
+                        value={this.state.filter.ranking}
+                        floatingLabel
+                        />
+                    <ControlLabel>Tuition Range:</ControlLabel>
+                    <ReactBootstrapSlider
+                        value={this.state.filter.tuition}
+                        change={this.changeValue}
+                        slideStop={this.changeValue}
+                        step={1000}
+                        max={52000}
+                        min={0}
+                        reversed={false}
+                        name="tuition"
+                        />
+                    <hr></hr>
+                    <p>
+                      If you input your test score(s), we'll only show colleges where
+                      you'd be above the 25th percentile.
+                    </p>
+                    <Textfield
+                        onChange={this.handleChange}
+                        pattern="-?[0-9]*(\.[0-9]+)?"
+                        error="Input is not a number!"
                         label="SAT Score"
                         style={{width: '200px'}}
                         name="SAT"
@@ -260,39 +286,17 @@ class App extends Component {
                         value={this.state.filter.ACT}
                         floatingLabel
                         />
-
-                    <Textfield
-                        onChange={this.handleChange}
-                        pattern="-?[0-9]*(\.[0-9]+)?"
-                        error="Input is not a number!"
-                        label="Lowest College Ranking"
-                        style={{width: '200px'}}
-                        name="ranking"
-                        value={this.state.filter.ranking}
-                        floatingLabel
-                        />
-                        <ControlLabel>Tuition Range:</ControlLabel>
-                        <ReactBootstrapSlider
-                            value={this.state.filter.tuition}
-                            change={this.changeValue}
-                            slideStop={this.changeValue}
-                            step={1000}
-                            max={52000}
-                            min={0}
-                            reversed={false}
-                            name="tuition"
-                        />
-                        <div id="filterButton">
-                            <Button onClick={this.applyFilter} raised colored>Apply Filter</Button>
-                        </div>
-                    </form>
-                </Drawer>
-                <Content >
-                    {this.child}
-                </Content>
-            </Layout>
-        );
-    }
+                    <div id="filterButton">
+                        <Button onClick={this.applyFilter} raised colored>Apply Filter</Button>
+                    </div>
+                </form>
+            </Drawer>
+            <Content >
+                {this.child}
+            </Content>
+        </Layout>
+      );
+  }
 }
 
 export default App;
