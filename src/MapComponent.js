@@ -76,6 +76,7 @@ class MapComponent extends Component {
                 this.update();
               };
               level.style.width = '100%';
+              level.style.cursor = 'pointer';
               level.innerHTML =
                   '<i style="background:' + colorScale(types[i]) + '"></i> ' +
                   types[i];
