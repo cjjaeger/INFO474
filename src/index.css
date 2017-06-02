@@ -14,6 +14,10 @@ label.control-label , span.mdl-checkbox__label{
 }
 #filterButton{
     margin-top: 20px;
+    text-align: center;
+}
+.zip-box{
+    margin-top: 50px;
 }
 form{
     padding-left: 10px;
@@ -26,13 +30,16 @@ form{
 #large-donut{
     display: inline;
 }
-.mdl-layout .mdl-layout__drawer-button::before{
+/*Uncomment if would like to show refine*/
+/*.mdl-layout .mdl-layout__drawer-button::before{
   content: "Refine";
-}
+}*/
 .mdl-layout .mdl-layout__drawer-button{
   font-size: 10pt;
   width: 50px;
+  display: none;
 }
-.mdl-layout .mdl-layout__drawer-button .material-icons{
-    display: none;
+#bubble-plot svg {
+  width: 100%;
+  height: 100%;
 }

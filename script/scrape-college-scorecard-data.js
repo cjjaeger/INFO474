@@ -7,13 +7,24 @@ const fields = {
         'tuition.out_of_state',
         'tuition.in_state'
         ],
+        completion: [
+          'completion_rate_4yr_150nt_pooled'
+        ],
         admissions: [
             'admission_rate.overall',
             'sat_scores.midpoint.critical_reading',
             'sat_scores.midpoint.math',
             'sat_scores.midpoint.writing',
+            'sat_scores.25th_percentile.math',
+            'sat_scores.25th_percentile.critical_reading',
+            'sat_scores.25th_percentile.writing',
+            'sat_scores.75th_percentile.math',
+            'sat_scores.75th_percentile.critical_reading',
+            'sat_scores.75th_percentile.writing',
             'sat_scores.average.overall',
-            'act_scores.midpoint.cumulative'
+            'act_scores.midpoint.cumulative',
+            'act_scores.25th_percentile.cumulative',
+            'act_scores.75th_percentile.cumulative'
         ],
         aid: [
             'pell_grant_rate',

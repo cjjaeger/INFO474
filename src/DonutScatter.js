@@ -20,9 +20,12 @@ var DonutScatter = function() {
         yAxisTickFormat = d3.format(".0"),
         fill = 'green',
         onHover = () => null,
+        onIntroEnd = () => null,
+        introDisabled = false,
         donutIntro,
         xAxisIntro,
         yAxisIntro,
+        manuallyEnclosed,
         radius = (d) => 5,
         margin = {
             left: 70,
@@ -51,6 +54,7 @@ var DonutScatter = function() {
                             .append("svg")
                             .attr('width', width)
                             .attr("height", height)
+                            .attr('viewBox', `0 0 ${width} ${height}`)
                             .append("g");
 
             // g element for markers
@@ -86,15 +90,21 @@ var DonutScatter = function() {
             var yAxis = d3.axisLeft().tickFormat(yAxisTickFormat);
 
             // Calculate x and y scales
-            let xMax = d3.max(data, (d) => +d[xAccessor]) * 1.01;
-            let xMin = d3.min(data, (d) => +d[xAccessor]) * .5;
-            xScale.range([0, chartWidth]).domain([xMin, xMax]);
+            let xMax = d3.max(data, (d) => +d[xAccessor]);
+            let xMin = d3.min(data, (d) => +d[xAccessor]);
+            let xDomainMargin = (xMax - xMin) * 0.05;
+            xScale
+              .range([0, chartWidth])
+              .domain([xMin - xDomainMargin, xMax + xDomainMargin]);
 
-            var yMin = d3.min(data, (d) => +d[yAccessor]) * .5;
-            var yMax = d3.max(data, (d) => +d[yAccessor]) * 1.05;
-            yScale.range([chartHeight, 0]).domain([yMin, yMax]);
+            let yMin = d3.min(data, (d) => +d[yAccessor]);
+            let yMax = d3.max(data, (d) => +d[yAccessor]);
+            let yDomainMargin = (yMax - yMin) * 0.05;
+            yScale
+              .range([chartHeight, 0])
+              .domain([yMin - yDomainMargin, yMax + yDomainMargin]);
 
-            if (!gEnter.empty()) {
+            if (!gEnter.empty() && !introDisabled) {
               // This is the first render, run the intro!
               var firstCollege = data[Math.floor(Math.random() * data.length)];
 
@@ -212,7 +222,10 @@ var DonutScatter = function() {
                         .showLabels(false)
                         .showTooltip(false)
                     )
-                    .on('end', renderCompleteChart);
+                    .on('end', () => {
+                      onIntroEnd();
+                      renderCompleteChart();
+                    });
 
               // Update axes
               xAxis.scale(xScale);
@@ -260,28 +273,43 @@ var DonutScatter = function() {
               // Use the .enter() method to get entering elements, and assign initial position
               gs.enter().append('g')
                   .attr('class', 'donut')
-                  .on('mouseover', d => {
-                    ele.select('.chartG').selectAll('circle.enclosing-circle')
-                      .data([d])
-                      .enter()
-                        .append('circle')
-                        .attr('class', 'enclosing-circle')
-                        .attr('cx', xScale(d[xAccessor]))
-                        .attr('cy', yScale(d[yAccessor]))
-                      .merge(ele.select('.chartG').select('circle.enclosing-circle'))
-                        .attr('fill', 'none')
-                        .attr('stroke-width', 1)
-                        .attr('stroke', 'red')
-                        .attr('r', 8)
-                        .transition().duration(200)
-                        .attr('cx', xScale(d[xAccessor]))
-                        .attr('cy', yScale(d[yAccessor]));
-
-                    // Exterior callback
-                    onHover(d);
-                  })
                   .attr('opacity', 0)
                   .merge(gs)
+                  .on('mouseover', function(d) {
+                    this.mousedOut = false;
+                    var self = this;
+                    setTimeout(() => {
+                      if (self.mousedOut) {
+                        return;
+                      }
+
+                      ele.select('.chartG').selectAll('g.donut').each(function() {
+                        self.enclosed = false;
+                      });
+                      self.enclosed = true;
+                      ele.select('.chartG').selectAll('circle.enclosing-circle')
+                        .data([d])
+                        .enter()
+                          .append('circle')
+                          .attr('class', 'enclosing-circle')
+                          .attr('cx', xScale(d[xAccessor]))
+                          .attr('cy', yScale(d[yAccessor]))
+                        .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                          .attr('fill', 'none')
+                          .attr('stroke-width', 1)
+                          .attr('stroke', 'red')
+                          .attr('r', 8)
+                          .transition().duration(200)
+                          .attr('cx', xScale(d[xAccessor]))
+                          .attr('cy', yScale(d[yAccessor]));
+
+                      // Exterior callback
+                      onHover(d);
+                    }, 50);
+                  })
+                  .on('mouseout', function(d) {
+                    this.mousedOut = true;
+                  })
                   .attr('transform', (d) => {
                     return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
                   })
@@ -295,13 +323,64 @@ var DonutScatter = function() {
 
               // Use the .exit() and .remove() methods to remove elements that are no longer in the data
               gs.exit().remove();
+
+              if (manuallyEnclosed) {
+                ele.select('.chartG').selectAll('g.donut').data([manuallyEnclosed], d => d.id).each(function() {
+                  ele.select('.chartG').selectAll('g.donut').each(function() {
+                    this.enclosed = false;
+                  });
+                  this.enclosed = true;
+                });
+                manuallyEnclosed = null;
+              }
+
+              var enclosingCircles = ele.select('.chartG').selectAll('g.donut').filter(function() {
+                return this.enclosed;
+              }).each(function(d) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle')
+                  .data([d])
+                  .enter()
+                    .append('circle')
+                    .attr('class', 'enclosing-circle')
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]))
+                  .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                    .attr('fill', 'none')
+                    .attr('stroke-width', 1)
+                    .attr('stroke', 'red')
+                    .attr('r', 8)
+                    .transition().duration(200)
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]));
+              });
+
+              if (enclosingCircles.size() === 0) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle').remove();
+              }
             }
         });
+    };
+
+    chart.introDisabled = function(value) {
+      if (!arguments.length) return introDisabled;
+      introDisabled = value;
+      return chart;
     };
 
     chart.onHover = function(value) {
       if (!arguments.length) return onHover;
       onHover = value;
+      return chart;
+    };
+
+    chart.onIntroEnd = function(value) {
+      if (!arguments.length) return onIntroEnd;
+      onIntroEnd = value;
+      return chart;
+    };
+
+    chart.enclose = function(value) {
+      manuallyEnclosed = value;
       return chart;
     };
 

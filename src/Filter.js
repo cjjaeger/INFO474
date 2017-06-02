@@ -15,20 +15,14 @@ class Filter extends Component {
   }
   setZipFilter(event){
     this.props.filter.handleCheck(event)
-    console.log(this.state);
-  }
-
-  filterMap(e){
-    e.preventDefault();
-    hashHistory.push('/viz/1');
   }
 
   render() {
-      console.log(this.props.filter);
     return (
       <div>
-        <div className="center">
-        <div className="alert alert-info" role="alert">
+        <div className="center App">
+          <h1>Explore My Choices</h1>
+        <div className="alert alert-info zip-box" role="alert">
             Enter in your zip code so we can customize the colleges we show to you!
         </div>
         </div>
@@ -44,7 +38,7 @@ class Filter extends Component {
             />
         </div>
         <div className="center">
-            <Button onClick={this.filterMap} raised colored>Next</Button>
+            <Button onClick={() => hashHistory.push('/pre-map')} raised ripple colored>Let's Begin</Button>
         </div>
       </div>
     );
