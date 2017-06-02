@@ -19,7 +19,7 @@ class PreSelectivity extends Component {
                         <br />
                         <br />
                         <br />
-                        <div>Let's Take a Look at How <span className='emphasis'>Selectivity</span> They Are</div>
+                        <div>Let's Take a Look at How <span className='emphasis'>Selective</span> They Are</div>
                         <p>Enter your test scores (in the filter drawer) to see how you compare with current students at these colleges.</p>
                     </header>
                     <Button onClick={() => hashHistory.push('/cost')} className='anchorBL' raised ripple colored>&lt;&lt; Back</Button>

@@ -20,7 +20,7 @@ class PreMap extends Component {
                         <br />
                         <br />
                         <div>
-                    <span>For your filters, there are over <Count maxNumber={this.props.data.length} duration='8' styleClass='emphasis' textInfo='Universities' /></span>
+                    <span>For your filters, there are <Count maxNumber={this.props.data.length} duration='8' styleClass='emphasis' textInfo='Universities' /></span>
                         </div>
                     </header>
                     <Button onClick={() => hashHistory.push('/')} className='anchorBL' raised  ripple colored>&lt;&lt; Back</Button>
