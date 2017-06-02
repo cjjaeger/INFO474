@@ -15,7 +15,7 @@ var ScatterPlot = function () {
             left: 70,
             bottom: 50,
             top: 30,
-            right: 10,
+            right: 50,
         },
         fill = d3.scaleOrdinal().range(d3.schemeCategory10),
         cValue = function (d) { return d.location; };
@@ -143,11 +143,13 @@ var ScatterPlot = function () {
                 .data(fill.domain())
                 .enter().append("g")
                 .attr("class", "legend")
-                .attr("transform", function (d, i) { return "translate(-80," + i * 20 + ")"; })
+                .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; })
                 .on('click', function (d, i) {
-                    let className = d3.selectAll("."+d);
-                    className.style('opacity') === '0.3' ? className.style("opacity",0): className.style("opacity",0.3);
-                });              
+                    let colorSquare = d3.select(this).select('rect');
+                    colorSquare.style('opacity') === '1' ? colorSquare.style('opacity', 0.3) : colorSquare.style('opacity', 1);
+                    let className = ele.selectAll("." + d);
+                    className.style('opacity') === '0.3' ? className.style("opacity", 0) : className.style("opacity", 0.3);
+                });
 
             // draw legend colored rectangles
             legend.append("rect")

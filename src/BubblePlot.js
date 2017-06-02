@@ -267,8 +267,10 @@ var BubblePlot = function() {
                 .data(fill.domain())
                 .enter().append("g")
                 .attr("class", "legend")
-                .attr("transform", function(d, i) { return "translate(-80," + i * 20 + ")"; })
+                .attr("transform", function(d, i) { return "translate(-90," + i * 20 + ")"; })
                 .on('click', function (d, i) {
+                    let colorSquare = d3.select(this).select('rect');
+                    colorSquare.style('opacity') === '1' ? colorSquare.style('opacity', 0.3) : colorSquare.style('opacity', 1);
                     let className = d3.selectAll("."+d);
                     className.style('opacity') === '0.3' ? className.style("opacity",0): className.style("opacity",0.3);
                 });
