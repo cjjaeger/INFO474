@@ -146,6 +146,7 @@ var ScatterPlot = function () {
                 .data(fill.domain())
                 .enter().append("g")
                 .attr("class", "legend")
+                .style('cursor', 'pointer')
                 .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; })
                 .on('click', function (d, i) {
                     let colorSquare = d3.select(this).select('rect');
