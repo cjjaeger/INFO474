@@ -160,7 +160,7 @@ class MapComponent extends Component {
       let getObject = this.filterForUsage(this.props.data);
       let school = _.find(getObject, function (d) { return d['name'] === value.value });
 
-      this.map.setView([school['location.lat'], school['location.lon']], 15)
+      this.map.setView([school['location.lat'], school['location.lon']], 15);
     }
 
     render() {
