@@ -50,6 +50,9 @@ var BubblePlot = function() {
 
             var tooltip = d3.select("body")
                 .append("div")
+                .style('background', 'white')
+                .style('padding', '5px')
+                .style('border-radius', '5px')
                 .style("position", "absolute")
                 .style("z-index", "10")
                 .style("visibility", "hidden");
