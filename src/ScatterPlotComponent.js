@@ -5,6 +5,7 @@ import ScatterPlot from './ScatterPlot';
 import { Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
 import './ScatterPlotComponent.css';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 class ScatterPlotComponent extends Component {
     componentDidMount() {
@@ -19,8 +20,8 @@ class ScatterPlotComponent extends Component {
 
         var prepData = () => {
             chartData = this.props.data.filter(d => {
-              return d[xVar] != null && d[yVar] != null &&
-                     d.id != null && d['school.locale'] != null;
+                return d[xVar] != null && d[yVar] != null &&
+                    d.id != null && d['school.locale'] != null;
             });
             chartData = chartData.map(d => {
                 // console.log(d);
@@ -55,13 +56,16 @@ class ScatterPlotComponent extends Component {
 
     render() {
         return (
-        <div style={{"display":"flex", "flexDirection":"column"}}>
-          <div id="scatter-plot" style={{"alignItems":"stretch", "width": "65%", "marginLeft":"auto", "marginRight":"auto"}} ref={ node => this.root = node }></div>
-          <div className="center">
-              <Button onClick={() => hashHistory.push('/map')} raised colored>Back</Button>
-              <Button onClick={() => hashHistory.push('/cost')} raised colored>Next</Button>
-          </div>
-        </div>
+                <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+                    transitionAppearTimeout={1000}>
+                    <div style={{width: '100%'}}>
+                        <div id="scatter-plot" style={{ "alignItems": "stretch","width":"65%" , "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}></div>
+                        <div className="center">
+                            <Button onClick={() => hashHistory.push('/map')} raised ripple colored>&lt;&lt; Back</Button>
+                            <Button onClick={() => hashHistory.push('/pre-cost')} raised ripple colored>Next &gt;&gt;</Button>
+                        </div>
+                    </div>
+                </CSSTransitionGroup>
         );
     }
 }

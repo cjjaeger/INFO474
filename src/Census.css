@@ -33,6 +33,14 @@
     right: 5%;
     border-radius: 25px;
 }
+.anchorBL {
+  position:absolute;
+    bottom:5%;
+    right: 90%;
+    border-radius: 25px;
+}
+
+
 /*.main-enter {
   opacity: 0.01;
 }
