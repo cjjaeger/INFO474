@@ -21,7 +21,7 @@ class Filter extends Component {
     return (
       <div>
         <div className="center App">
-          <h1>Explore My Choices</h1>
+          <h1>Explore Your Choices</h1>
         <div className="alert alert-info zip-box" role="alert">
             Enter in your zip code so we can customize the colleges we show to you!
         </div>

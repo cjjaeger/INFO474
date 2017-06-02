@@ -18,6 +18,7 @@ class PreMap extends Component {
                   <header className='jumbo center'>
                       <div>
                         <span>For your filters, there are <Count maxNumber={this.props.data.length} duration='8' styleClass='emphasis' textInfo='Universities' /></span>
+                        <p>Use the filter button in the header to narrow them down!</p>
                       </div>
                   </header>
                   <Button onClick={() => hashHistory.push('/')} className='anchorBL' raised  ripple colored>&lt;&lt; Back</Button>
