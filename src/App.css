@@ -1,5 +1,19 @@
+* {
+  font-family: 'Lato','Roboto', 'Helvetica', 'Arial', sans-serif;
+}
 .App {
   text-align: center;
+}
+
+.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--colored {
+  border-radius: 25px;
+  text-align: center;
+}
+
+#root .mdl-layout__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .App-logo {

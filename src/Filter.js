@@ -20,8 +20,9 @@ class Filter extends Component {
   render() {
     return (
       <div>
-        <div className="center">
-        <div className="alert alert-info" role="alert">
+        <div className="center App">
+          <h1>Explore My Choices</h1>
+        <div className="alert alert-info zip-box" role="alert">
             Enter in your zip code so we can customize the colleges we show to you!
         </div>
         </div>
@@ -37,7 +38,7 @@ class Filter extends Component {
             />
         </div>
         <div className="center">
-            <Button onClick={() => hashHistory.push('/map')} raised colored>Next</Button>
+            <Button onClick={() => hashHistory.push('/pre-map')} raised ripple colored>Let's Begin</Button>
         </div>
       </div>
     );
