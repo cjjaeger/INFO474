@@ -5,7 +5,9 @@ import RadarScatter from './RadarScatter';
 import radarChart from './RadarChart';
 import {Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
-
+import { CSSTransitionGroup } from 'react-transition-group';
+import Select from 'react-select';
+import './RadarScatterComponent.css';
 
 class RadarScatterComponent extends Component {
   componentDidMount() {
@@ -24,11 +26,11 @@ class RadarScatterComponent extends Component {
     this.radarScatter
         .width(900)
         .height(700)
-        .xTitle('Log 5(Student Number)')
+        .xTitle('Number of Students (log scale)')
         .yTitle('Median household income')
         .xAccessor('studentSize')
         .yAccessor('medianIncome')
-        .xAxisTickFormat(d3.format('$.2s'))
+        .xAxisTickFormat(d3.format('.2s'))
         .yAxisTickFormat(d3.format('$.2s'))
         .radarIntro(d => {
           var aianPercent = d.radarData[0].axes.filter(x => x.axis === 'aian')[0].value;
@@ -40,7 +42,7 @@ class RadarScatterComponent extends Component {
 
           return {
             label: `At ${d.name}, ${Math.round(aianPercent).toLocaleString()}% of American Indian. ${Math.round(asianPercent).toLocaleString()}% of Asian. ${Math.round(blackPercent).toLocaleString()}% of Black. ${Math.round(hispanicPercent).toLocaleString()}% of Hispanic. ${Math.round(whitePercent).toLocaleString()}% of White. ${Math.round(nhpiPercent).toLocaleString()}% of Pacific Islander.`,
-            title: "Race Ethnicity"
+            title: "Race/Ethnicity"
           };
         })
         .xAxisIntro(d => {
@@ -61,21 +63,21 @@ class RadarScatterComponent extends Component {
       return d['2014.student.size'] !== null &&
              d['2014.student.avg_dependent_income.2014dollars'] !== null &&
              d['school.locale'] !== null &&
-             d['2014.student.demographics.race_ethnicity.aian'] !== null &&
-             d['2014.student.demographics.race_ethnicity.asian'] !== null && 
-             d['2014.student.demographics.race_ethnicity.black'] !== null &&
-             d['2014.student.demographics.race_ethnicity.hispanic'] !== null &&
-             d['2014.student.demographics.race_ethnicity.white'] !== null &&
-             d['2014.student.demographics.race_ethnicity.nhpi'] !== null;
+             d['aianpercentile'] !== null &&
+             d['asianpercentile'] !== null &&
+             d['blackpercentile'] !== null &&
+             d['hispanicpercentile'] !== null &&
+             d['whitepercentile'] !== null &&
+             d['nhpipercentile'] !== null;
     });
 
     chartData = chartData.map(function(element) {
-      var aian = element['2014.student.demographics.race_ethnicity.aian'] * 100;
-      var asian = element['2014.student.demographics.race_ethnicity.asian'] * 100;
-      var black = element['2014.student.demographics.race_ethnicity.black'] * 100;
-      var hispanic = element['2014.student.demographics.race_ethnicity.hispanic'] * 100;
-      var white = element['2014.student.demographics.race_ethnicity.white'] * 100;
-      var nhpi = element['2014.student.demographics.race_ethnicity.nhpi'] * 100;
+      var aian = element['aianpercentile'] * 100;
+      var asian = element['asianpercentile'] * 100;
+      var black = element['blackpercentile'] * 100;
+      var hispanic = element['hispanicpercentile'] * 100;
+      var white = element['whitepercentile'] * 100;
+      var nhpi = element['nhpipercentile'] * 100;
       return {
         id: element.id,
         name: element.name,
@@ -139,11 +141,19 @@ class RadarScatterComponent extends Component {
   }
 
   render() {
+    /*onChange={this.drawSelectedSchool.bind(this)}*/
     return (
       <div>
-      <div id="radar-scatter" ref={ node => this.root = node } />
-      <svg id="large-radar" width="300" height="400" ref={ node => this.largeRadarRoot = node }></svg>
-      <Button onClick={this.filterMap} raised colored>Next</Button>
+        <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+          transitionAppearTimeout={1000}>
+          <Select name='school-name' value='' options={[]} />
+          <div id="radar-scatter" style={{display: 'inline-block', width: '75%'}} ref={ node => this.root = node } />
+          <svg id="large-radar" style={{width: '25%', display: 'inline-block'}} width="300" height="300" viewBox="0 0 300 300" ref={ node => this.largeRadarRoot = node }></svg>
+          <div className="center">
+            <Button onClick={() => hashHistory.push('/pre-cost')} raised colored>&lt;&lt; Back</Button>
+            <Button onClick={() => hashHistory.push('/pre-selectivity')} raised colored>Next &gt;&gt;</Button>
+          </div>
+        </CSSTransitionGroup>
       </div>
     );
   }
@@ -179,6 +189,3 @@ export default RadarScatterComponent;
 
 //     });
 // });
-
-
-

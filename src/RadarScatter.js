@@ -50,6 +50,7 @@ var RadarScatter = function() {
                             .append("svg")
                             .attr('width', width)
                             .attr("height", height)
+                            .attr('viewBox', `0 0 ${width} ${height}`)
                             .append("g");
 
             // g element for markers
@@ -101,6 +102,13 @@ var RadarScatter = function() {
               let radar = radarChart()
                           .width(200)
                           .height(200)
+                          .margin({
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0
+                          })
+                          .maxValue(100)
                           // Center around the origin! (around the middle of the g)
                           .centerAroundOrigin(true)
                           .firstSlice('radarData');
@@ -196,8 +204,8 @@ var RadarScatter = function() {
                     })
                     .call(
                       radar
-                        .width(30)
-                        .height(30)
+                        .width(10)
+                        .height(10)
                         // Center around the origin! (around the middle of the g)
                         .centerAroundOrigin(true)
                         // Customize the chart for being tiny!
@@ -244,8 +252,9 @@ var RadarScatter = function() {
               let gs = ele.select('.chartG').selectAll('g.radar').data(data, d => d.id);
 
               let radar = radarChart()
-                .width(30)
-                .height(30)
+                .width(10)
+                .height(10)
+                .maxValue(100)
                 // Add centerAroundOrigin here!
                 .centerAroundOrigin(true)
                 // Customize the chart for being tiny!
