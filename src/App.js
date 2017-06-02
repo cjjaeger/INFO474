@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Layout, Header, Drawer, Content, Textfield, Checkbox, Button } from 'react-mdl';
+import { Layout, Header, Drawer, Content, Textfield, Checkbox, Button,IconButton } from 'react-mdl';
 import { ControlLabel } from 'react-bootstrap';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Select from 'react-select';
@@ -14,17 +14,17 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filter:{
+            filter: {
                 zip: "",
                 inArea: false,
                 radius: 150,
-                tuition:[0,53000],
+                tuition:[0, 53000],
                 SAT:"",
                 ACT:"",
                 ranking: "",
                 handleCheck: this.setZip.bind(this),
-                zipltlng:{},
-                zipState:""
+                zipltlng: {},
+                zipState: ""
             },
             data: data.map(obj => {
                 obj.tuition = obj['2014.cost.tuition.out_of_state'];
@@ -32,7 +32,7 @@ class App extends Component {
             }),
             donutScatterIntroPlayed: false,
             onDonutScatterIntroPlayed: () => {
-              this.setState({donutScatterIntroPlayed: true});
+                this.setState({ donutScatterIntroPlayed: true });
             }
         };
         this.handleChange = this.handleChange.bind(this);
@@ -69,13 +69,14 @@ class App extends Component {
 
     applyFilter(e) {
         e.preventDefault();
+        this.toggle();
         var zipPromise;
-        if ( /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.filter.zip)) {
-            var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ encodeURIComponent(this.state.filter.zip);
+        if (/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.filter.zip)) {
+            var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + encodeURIComponent(this.state.filter.zip);
 
             zipPromise = fetch(url) //download the data
-                .then(function(res) { return res.json(); })
-                .then((datas) =>{
+                .then(function (res) { return res.json(); })
+                .then((datas) => {
                     return this.setZipLocation(datas.results);
                 });
 
@@ -86,16 +87,16 @@ class App extends Component {
                 return obj;
             }));
         }
-         zipPromise.then(this.satFilter)
+        zipPromise.then(this.satFilter)
             .then(this.actFilter)
             .then(this.rankingFilter)
             .then(this.tuitionFilter);
     }
 
     satFilter(datas) {
-        if (this.state.filter.SAT !== "" && this.props.location.pathname !=="/selectivity") {
-            return datas.filter((obj)=>{
-                return this.state.filter.SAT>=obj["2014.admissions.sat_scores.average.overall"];
+        if (this.state.filter.SAT !== "" && this.props.location.pathname !== "/selectivity") {
+            return datas.filter((obj) => {
+                return this.state.filter.SAT >= obj["2014.admissions.sat_scores.average.overall"];
             });
         } else {
             return datas;
@@ -103,9 +104,9 @@ class App extends Component {
     }
 
     actFilter(datas) {
-        if (this.state.filter.ACT !== "" && this.props.location.pathname !=="/selectivity") {
-            return datas.filter((obj)=>{
-                return this.state.filter.ACT>=obj["2014.admissions.act_scores.midpoint.cumulative"];
+        if (this.state.filter.ACT !== "" && this.props.location.pathname !== "/selectivity") {
+            return datas.filter((obj) => {
+                return this.state.filter.ACT >= obj["2014.admissions.act_scores.midpoint.cumulative"];
             });
         } else {
             return datas;
@@ -114,8 +115,8 @@ class App extends Component {
 
     rankingFilter(datas) {
         if ((this.state.filter.ranking).length !== 0) {
-            var newData= datas.filter((obj)=>{
-                return this.state.filter.ranking >=obj["rank"] && obj["rank"] !== null ;
+            var newData = datas.filter((obj) => {
+                return this.state.filter.ranking >= obj["rank"] && obj["rank"] !== null;
             });
             return newData;
         } else {
@@ -124,24 +125,24 @@ class App extends Component {
     }
 
     tuitionFilter(lastData) {
-        var newData = lastData.filter((obj)=>{
-                return obj.tuition >= this.state.filter.tuition[0] && obj.tuition <= this.state.filter.tuition[1];
-            });
+        var newData = lastData.filter((obj) => {
+            return obj.tuition >= this.state.filter.tuition[0] && obj.tuition <= this.state.filter.tuition[1];
+        });
         var childState = Object.assign({}, this.state);
         childState.data = newData;
         this.child = React.cloneElement(this.props.children, childState);
-        this.setState({"data": newData});
+        this.setState({ "data": newData });
     }
 
     distFrom(lat1, lng1, lat2, lng2) {
         var earthRadius = 3958.75; // miles (or 6371.0 kilometers)
-        var dLat = this.toRad(lat2-lat1);
-        var dLng = this.toRad(lng2-lng1);
+        var dLat = this.toRad(lat2 - lat1);
+        var dLng = this.toRad(lng2 - lng1);
         var sindLat = Math.sin(dLat / 2);
         var sindLng = Math.sin(dLng / 2);
         var a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-                * Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2));
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            * Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2));
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var dist = earthRadius * c;
         return dist;
     }
@@ -157,10 +158,10 @@ class App extends Component {
         this.state.filter.zipState = parseInt(stateData[stateFips], 10); //update state
         var newData = data;
         if (this.state.inArea) {
-           newData= data.filter((obj)=>{
-            var radius = this.state.filter.radius;
-            var dist = this.distFrom(obj["location.lat"], obj["location.lon"],this.state.filter.zipltlng["lat"],this.state.filter.zipltlng["lng"]);
-            return radius>= dist;
+            newData = data.filter((obj) => {
+                var radius = this.state.filter.radius;
+                var dist = this.distFrom(obj["location.lat"], obj["location.lon"], this.state.filter.zipltlng["lat"], this.state.filter.zipltlng["lng"]);
+                return radius >= dist;
             });
         }
 
@@ -173,7 +174,7 @@ class App extends Component {
             }
             return obj;
         });
-         return sent;
+        return sent;
     }
 
     handleChange(event) {
@@ -186,32 +187,39 @@ class App extends Component {
     handleCheck(event) {
         if (event.target.checked) {
             this.setState({
-                inArea:true
+                inArea: true
             });
         } else {
             this.setState({
-                inArea:false
+                inArea: false
             });
         }
     }
+    toggle() {
+        var d = document.querySelector('.mdl-layout');
+        d.MaterialLayout.toggleDrawer();
+    }
+
 
     render() {
         return (
-        <Layout fixedHeader>
-            <Header>
-              <h1>Because College</h1>
-            </Header>
-            <Drawer title="Filter">
-                <form role="form">
-                    <Textfield
-                        onChange={this.handleChange}
-                        pattern="-?[0-9]*(\.[0-9]+)?"
-                        error="Input is not a number!"
-                        label="Zip Code"
-                        style={{width: '200px'}}
-                        name="zip"
-                        value={this.state.filter.zip}
-                        floatingLabel
+            <Layout fixedHeader>
+                <Header>
+                    <h1>Because College</h1>
+                    {this.props.location.pathname !== '/' &&
+                        <IconButton onClick={this.toggle} name='build' style={{ position: 'absolute', bottom: '92.5%', right: '5%' }} />}
+                </Header>
+                <Drawer title="Filter">
+                    <form role="form">
+                        <Textfield
+                            onChange={this.handleChange}
+                            pattern="-?[0-9]*(\.[0-9]+)?"
+                            error="Input is not a number!"
+                            label="Zip Code"
+                            style={{ width: '200px' }}
+                            name="zip"
+                            value={this.state.filter.zip}
+                            floatingLabel
                         />
                     <Checkbox
                         label="Only show colleges in your area"
@@ -263,28 +271,28 @@ class App extends Component {
                         value={this.state.filter.ranking}
                         floatingLabel
                         />
-                    <ControlLabel>Tuition Range:</ControlLabel>
-                    <ReactBootstrapSlider
-                        value={this.state.filter.tuition}
-                        change={this.changeValue}
-                        slideStop={this.changeValue}
-                        step={1000}
-                        max={52000}
-                        min={0}
-                        reversed={false}
-                        name="tuition"
+                        <ControlLabel>Tuition Range:</ControlLabel>
+                        <ReactBootstrapSlider
+                            value={this.state.filter.tuition}
+                            change={this.changeValue}
+                            slideStop={this.changeValue}
+                            step={1000}
+                            max={52000}
+                            min={0}
+                            reversed={false}
+                            name="tuition"
                         />
-                    <div id="filterButton">
-                        <Button onClick={this.applyFilter} raised colored>Apply Filter</Button>
-                    </div>
-                </form>
-            </Drawer>
-            <Content >
-                {this.child}
-            </Content>
-        </Layout>
-      );
-  }
+                        <div id="filterButton">
+                            <Button onClick={this.applyFilter} raised colored>Apply Filter</Button>
+                        </div>
+                    </form>
+                </Drawer>
+                <Content >
+                    {this.child}
+                </Content>
+            </Layout>
+        );
+    }
 }
 
 export default App;

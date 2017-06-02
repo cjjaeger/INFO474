@@ -7,12 +7,15 @@ import { Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
 import 'leaflet/dist/leaflet.css';
 import './MapComponent.css';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 const sampleStyle = {
     'fontFamily': 'lato',
     'fontSize': '2em',
     'fontWeight': '900',
-    'textAlign': 'center'
+    'textAlign': 'center',
+    'marginTop': '30px',
+    'width': '100%'
 }
 const spanStyle = {
     'color':'#4CAF50'
@@ -126,21 +129,21 @@ class MapComponent extends Component {
     render() {
         return (
             <div style={sampleStyle}>
+                <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
+                    transitionAppearTimeout={1000}>
                 <div>
-                    <span>For your filters, there are over <Count maxNumber={this.props.data.length} duration='8' textInfo='Universities' /></span>
-                </div>
-                <div>
-                    <Count maxNumber={this.state.public} duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
-                    <Count maxNumber={this.state.private} duration='8' textInfo='Private Universities' />
+                    <Count maxNumber={this.state.public || 0 } duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
+                    <Count maxNumber={this.state.private || 0} duration='8' textInfo='Private Universities' />
                     <br/>
-                    <Count maxNumber={this.state.ranked} duration='8' textInfo='are in the Top 50 Universities in the US' />
+                    <Count maxNumber={this.state.ranked || 0} duration='8' textInfo='are in the Top 50 Universities in the US' />
                 </div>
                 <div id="map" style={ {width: '100%', height: '500px'} }>
                 </div>
                 <div className="center">
-                    <Button onClick={() => hashHistory.push('/')} raised colored>Back</Button>
-                    <Button onClick={() => hashHistory.push('/graduation')} raised colored>Next</Button>
+                    <Button onClick={() => hashHistory.push('/pre-map')} raised ripple colored>&lt;&lt; Back</Button>
+                    <Button onClick={() => hashHistory.push('/pre-graduation')} raised ripple colored>Next &gt;&gt;</Button>
                 </div>
+                </CSSTransitionGroup>
             </div>
         );
     }
