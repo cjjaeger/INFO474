@@ -6,16 +6,19 @@ import * as d3 from 'd3';
 import { Button } from 'react-mdl';
 import { hashHistory } from 'react-router';
 import 'leaflet/dist/leaflet.css';
+import Select from 'react-select';
 import './MapComponent.css';
 import { CSSTransitionGroup } from 'react-transition-group';
 
-const sampleStyle = {
+const containerStyle = {
+    'marginTop': '100px',
+    'width': '100%'
+}
+const textDivStyle = {
     'fontFamily': 'lato',
     'fontSize': '2em',
     'fontWeight': '900',
-    'textAlign': 'center',
-    'marginTop': '30px',
-    'width': '100%'
+    'textAlign': 'center'
 }
 const spanStyle = {
     'color':'#4CAF50'
@@ -32,6 +35,7 @@ class MapComponent extends Component {
             hasMap: false
         }
         this.map = null;
+        this.typesFilteredOut = [];
         this.circleMarkers = [];
     }
 
@@ -47,16 +51,36 @@ class MapComponent extends Component {
 
         var legend = L.control({position: 'bottomright'});
 
-        legend.onAdd = function (map) {
+        legend.onAdd = (map) => {
 
             var div = L.DomUtil.create('div', 'info legend'),
                 types = ['Private', 'Public'];
 
             // loop through our density intervals and generate a label with a colored square for each interval
             for (var i = 0; i < types.length; i++) {
-                div.innerHTML +=
-                    '<div style="width:100%"><i style="background:' + colorScale(types[i]) + '"></i> ' +
-                    types[i] + '</div><br>';
+              let level = L.DomUtil.create('div');
+              level.isEnabled = true;
+              level.typeRepresenting = types[i];
+              level.onclick = () => {
+                level.isEnabled = !level.isEnabled;
+                let colorPatch = level.querySelector('i');
+                level.isEnabled ? colorPatch.style.opacity = 1 : colorPatch.style.opacity = 0.3;
+                if (!level.isEnabled) {
+                  this.typesFilteredOut.push(level.typeRepresenting);
+                } else {
+                  var index = this.typesFilteredOut.indexOf(level.typeRepresenting);
+                  if (index > -1) {
+                    this.typesFilteredOut.splice(index, 1);
+                  }
+                }
+                this.update();
+              };
+              level.style.width = '100%';
+              level.innerHTML =
+                  '<i style="background:' + colorScale(types[i]) + '"></i> ' +
+                  types[i];
+              div.appendChild(level);
+              div.appendChild(L.DomUtil.create('br'));
             }
 
             return div;
@@ -65,14 +89,7 @@ class MapComponent extends Component {
         legend.addTo(this.map);
       }
 
-      // The sort is so that smaller schools are on top on the map, making
-      // them hoverable.
-      // We exclude University of Guam because it is too far away.
-      var mapData = this.props.data
-        .filter(d => d['2014.student.size'] !== null)
-        .sort((a, b) => b['2014.student.size'] - a['2014.student.size'])
-        .filter(d => d['name'] !== 'University of Guam')
-        .filter(d => d['location.lat'] !== 0 || d['location.lon'] !== 0);
+      var mapData = this.filterForUsage(this.props.data);
 
       var [latMin, latMax] = d3.extent(mapData, d => d['location.lat']);
       var [lonMin, lonMax] = d3.extent(mapData, d => d['location.lon']);
@@ -126,17 +143,42 @@ class MapComponent extends Component {
       this.update();
     }
 
+    filterForUsage(data) {
+      // The sort is so that smaller schools are on top on the map, making
+      // them hoverable.
+      // We exclude University of Guam because it is too far away.
+      return data
+        .filter(d => d['2014.student.size'] !== null)
+        .sort((a, b) => b['2014.student.size'] - a['2014.student.size'])
+        .filter(d => d['name'] !== 'University of Guam')
+        .filter(d => d['location.lat'] !== 0 || d['location.lon'] !== 0)
+        .filter(d => this.typesFilteredOut.indexOf(d['school.ownership']) === -1)
+    }
+
+    zoomToSelected(value) {
+      let getObject = this.filterForUsage(this.props.data);
+      let school = _.find(getObject, function (d) { return d['name'] === value.value });
+
+      this.map.setView([school['location.lat'], school['location.lon']], 15)
+    }
+
     render() {
+        var filteredSchool = this.filterForUsage(this.props.data);
+        var schoolChoices = filteredSchool.map(function (d) {
+          let name = d['name'];
+          return { value: name, label: name };
+        });
         return (
-            <div style={sampleStyle}>
+            <div style={containerStyle}>
                 <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
                     transitionAppearTimeout={1000}>
-                <div>
+                <div style={textDivStyle}>
                     <Count maxNumber={this.state.public || 0 } duration='8' textInfo='Public Universities' /><span style={spanStyle}>  |  </span>
                     <Count maxNumber={this.state.private || 0} duration='8' textInfo='Private Universities' />
                     <br/>
                     <Count maxNumber={this.state.ranked || 0} duration='8' textInfo='are in the Top 50 Universities in the US' />
                 </div>
+                <Select name='school-name' placeholder='Search Schools' value='' options={schoolChoices} onChange={this.zoomToSelected.bind(this)} />
                 <div id="map" style={ {width: '100%', height: '500px'} }>
                 </div>
                 <div className="center">
