@@ -33,6 +33,10 @@ class App extends Component {
             donutScatterIntroPlayed: false,
             onDonutScatterIntroPlayed: () => {
                 this.setState({ donutScatterIntroPlayed: true });
+            },
+            radarScatterIntroPlayed: false,
+            onRadarScatterIntroPlayed: () => {
+                this.setState({ radarScatterIntroPlayed: true });
             }
         };
         this.handleChange = this.handleChange.bind(this);

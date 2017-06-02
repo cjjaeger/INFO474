@@ -141,7 +141,7 @@ class MapComponent extends Component {
                 </div>
                 <div className="center">
                     <Button onClick={() => hashHistory.push('/pre-map')} raised ripple colored>&lt;&lt; Back</Button>
-                    <Button onClick={() => hashHistory.push('/pre-graduation')} raised ripple colored>Next &gt;&gt;</Button>
+                    <Button onClick={() => hashHistory.push('/pre-culture')} raised ripple colored>Next &gt;&gt;</Button>
                 </div>
                 </CSSTransitionGroup>
             </div>

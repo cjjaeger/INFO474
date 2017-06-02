@@ -28,6 +28,7 @@ ReactDOM.render(
         <IndexRoute component={Filter} />
         <Route path='/pre-map' component={PreMap} />
         <Route path='/map' component={MapComponent} />
+        <Route path='/pre-culture' component={Census}/>
         <Route path='/culture'component={RadarScatterComponent}/>
         <Route path='/pre-graduation' component={PreGraduation} />
         <Route path='/graduation' component={ScatterPlotComponent}/>
@@ -35,8 +36,6 @@ ReactDOM.render(
         <Route path='/cost' component={DonutScatterComponent}/>
         <Route path='/pre-selectivity' component={PreSelectivity}/>
         <Route path='/selectivity' component={BubbleComponent}/>
-        {/*This isn't shown yet, it accompanies the radar*/}
-        <Route path='/pre-viz' component={Census}/>
       </Route>
     </Router>,
   document.getElementById('root')

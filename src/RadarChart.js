@@ -22,7 +22,7 @@ var radarChart = function () {
                 top: 10,
                 right: 10,
                 bottom: 150,
-                left: 60
+                left: 10
             },
             allAxis = null,
             totalAxes = null,

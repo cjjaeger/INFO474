@@ -19,9 +19,12 @@ var RadarScatter = function() {
         yAxisTickFormat = d3.format(".0"),
         fill = 'green',
         onHover = () => null,
+        introDisabled,
+        onIntroEnd = () => null,
         radarIntro,
         xAxisIntro,
         yAxisIntro,
+        manuallyEnclosed,
         radius = (d) => 5,
         margin = {
             left: 70,
@@ -95,7 +98,7 @@ var RadarScatter = function() {
             var yMax = d3.max(data, (d) => +d[yAccessor]) * 1.05;
             yScale.range([chartHeight, 0]).domain([yMin, yMax]);
 
-            if (!gEnter.empty()) {
+            if (!gEnter.empty() && !introDisabled) {
               // This is the first render, run the intro!
               var firstCollege = data[Math.floor(Math.random() * data.length)];
 
@@ -224,7 +227,10 @@ var RadarScatter = function() {
                         })
                         // ... or whatever you want to do
                     )
-                    .on('end', renderCompleteChart);
+                    .on('end', () => {
+                      onIntroEnd();
+                      renderCompleteChart();
+                    });
 
               // Update axes
               xAxis.scale(xScale);
@@ -277,28 +283,43 @@ var RadarScatter = function() {
               // Use the .enter() method to get entering elements, and assign initial position
               gs.enter().append('g')
                   .attr('class', 'radar')
-                  .on('mouseover', d => {
-                    ele.select('.chartG').selectAll('circle.enclosing-circle')
-                      .data([d])
-                      .enter()
-                        .append('circle')
-                        .attr('class', 'enclosing-circle')
-                        .attr('cx', xScale(d[xAccessor]))
-                        .attr('cy', yScale(d[yAccessor]))
-                      .merge(ele.select('.chartG').select('circle.enclosing-circle'))
-                        .attr('fill', 'none')
-                        .attr('stroke-width', 1)
-                        .attr('stroke', 'red')
-                        .attr('r', 8)
-                        .transition().duration(200)
-                        .attr('cx', xScale(d[xAccessor]))
-                        .attr('cy', yScale(d[yAccessor]));
-
-                    // Exterior callback
-                    onHover(d);
-                  })
                   .attr('opacity', 0)
                   .merge(gs)
+                  .on('mouseover', function(d) {
+                    this.mousedOut = false;
+                    var self = this;
+                    setTimeout(() => {
+                      if (self.mousedOut) {
+                        return;
+                      }
+
+                      ele.select('.chartG').selectAll('g.radar').each(function() {
+                        self.enclosed = false;
+                      });
+                      self.enclosed = true;
+                      ele.select('.chartG').selectAll('circle.enclosing-circle')
+                        .data([d])
+                        .enter()
+                          .append('circle')
+                          .attr('class', 'enclosing-circle')
+                          .attr('cx', xScale(d[xAccessor]))
+                          .attr('cy', yScale(d[yAccessor]))
+                        .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                          .attr('fill', 'none')
+                          .attr('stroke-width', 1)
+                          .attr('stroke', 'red')
+                          .attr('r', 8)
+                          .transition().duration(200)
+                          .attr('cx', xScale(d[xAccessor]))
+                          .attr('cy', yScale(d[yAccessor]));
+
+                      // Exterior callback
+                      onHover(d);
+                    }, 50);
+                  })
+                  .on('mouseout', function(d) {
+                    this.mousedOut = true;
+                  })
                   .attr('transform', (d) => {
                     return 'translate(' + xScale(d[xAccessor]) + ', ' + yScale(d[yAccessor]) + ')';
                   })
@@ -312,6 +333,40 @@ var RadarScatter = function() {
 
               // Use the .exit() and .remove() methods to remove elements that are no longer in the data
               gs.exit().remove();
+
+              if (manuallyEnclosed) {
+                ele.select('.chartG').selectAll('g.radar').data([manuallyEnclosed], d => d.id).each(function() {
+                  ele.select('.chartG').selectAll('g.radar').each(function() {
+                    this.enclosed = false;
+                  });
+                  this.enclosed = true;
+                });
+                manuallyEnclosed = null;
+              }
+
+              var enclosingCircles = ele.select('.chartG').selectAll('g.radar').filter(function() {
+                return this.enclosed;
+              }).each(function(d) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle')
+                  .data([d])
+                  .enter()
+                    .append('circle')
+                    .attr('class', 'enclosing-circle')
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]))
+                  .merge(ele.select('.chartG').select('circle.enclosing-circle'))
+                    .attr('fill', 'none')
+                    .attr('stroke-width', 1)
+                    .attr('stroke', 'red')
+                    .attr('r', 8)
+                    .transition().duration(200)
+                    .attr('cx', xScale(d[xAccessor]))
+                    .attr('cy', yScale(d[yAccessor]));
+              });
+
+              if (enclosingCircles.size() === 0) {
+                ele.select('.chartG').selectAll('circle.enclosing-circle').remove();
+              }
             }
         });
     };
@@ -319,6 +374,23 @@ var RadarScatter = function() {
     chart.onHover = function(value) {
       if (!arguments.length) return onHover;
       onHover = value;
+      return chart;
+    };
+
+    chart.onIntroEnd = function(value) {
+      if (!arguments.length) return onIntroEnd;
+      onIntroEnd = value;
+      return chart;
+    };
+
+    chart.introDisabled = function(value) {
+      if (!arguments.length) return introDisabled;
+      introDisabled = value;
+      return chart;
+    };
+
+    chart.enclose = function(value) {
+      manuallyEnclosed = value;
       return chart;
     };
 
