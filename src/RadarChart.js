@@ -258,7 +258,7 @@ var radarChart = function () {
                                 .on(over, function(d) {
                                     verticesTooltip.style("opacity", 0.9)
                                         .html("<strong>Race</strong>: " + d.axis + "<br />" +
-                                        "<strong>Percentile</strong>: " + d.value + "<br />")
+                                        "<strong>Percentile</strong>: " + d.value.toFixed(2) + "<br />")
                                         .style("left", (d3.event.pageX) + "px")
                                         .style("top", (d3.event.pageY) + "px");
                                 })
