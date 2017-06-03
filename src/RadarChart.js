@@ -471,7 +471,6 @@ var radarChart = function () {
 
         return chart
 
-
 };
 
 export default radarChart;
