@@ -214,7 +214,6 @@ var RadarScatter = function() {
                         // Customize the chart for being tiny!
                         .lineThickness(1)
                         .showVertice(false)
-                        .showTooltip(false)
                         .showLevelLabel(false)
                         .showAxesLabel(false)
                         .showLevel(false)
@@ -266,7 +265,6 @@ var RadarScatter = function() {
                 // Customize the chart for being tiny!
                 .lineThickness(0.5)
                 .showVertice(false)
-                .showTooltip(false)
                 .showLevelLabel(false)
                 .showAxesLabel(false)
                 .showLevel(false)
