@@ -116,8 +116,8 @@ class BubbleComponent extends Component {
         }
         // Define function to draw ScatterPlot
         this.bubblePlot.xTitle(xText)
-            .height(500)
-            .width(800)
+            .height(400)
+            .width(700)
             .yTitle(text + ' Score Range')
             .scores(score)
             .sizeIntro(d => {
@@ -185,12 +185,12 @@ class BubbleComponent extends Component {
         return (
             <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
                 transitionAppearTimeout={1000}>
-                <div style={{width: '100%', marginTop: '30px'}}>
+                <div style={{width: '100%'}}>
                   <Select name='school-name' placeholder='Search Schools' value='' options={schoolChoices} onChange={this.showSelected.bind(this)} />
-                    <div style={{ "marginLeft": "auto", "marginRight": "auto", width: '90px' }}>
+                    <div style={{ "margin": "50px", width: '90px', float:"left" }}>
                         <Switch ripple id="switch1" onChange={this.switched} defaultChecked>{text}</Switch>
                     </div>
-                    <div id="bubble-plot" style={{ "width":"65%", "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}>
+                    <div id="bubble-plot" style={{ "alignItems": "stretch", "width":"65%", "marginLeft": "auto", "marginRight": "auto" }} ref={node => this.root = node}>
                     </div>
                     <div className="center">
                         <Button onClick={() => hashHistory.push('/pre-selectivity')} raised ripple colored>&lt;&lt; Back</Button>
