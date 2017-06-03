@@ -256,8 +256,6 @@ var radarChart = function () {
                                 .attr("fill", color(gColor))
                                 .attr("fill-opacity", 1)
                                 .on(over, function(d) {
-                                    console.log(d);
-                                    console.log(verticesTooltip);
                                     verticesTooltip.style("opacity", 0.9)
                                         .html("<strong>Race</strong>: " + d.axis + "<br />" +
                                         "<strong>Percentile</strong>: " + d.value + "<br />")
