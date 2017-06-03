@@ -23,7 +23,7 @@ class Filter extends Component {
         <div className="center App">
           <h1>Explore Your Choices</h1>
         <div className="alert alert-info zip-box" role="alert">
-            Enter in your zip code so we can customize the colleges we show to you!
+            Enter your zip code of residence so we can change the tuition data for each college depending if the college is in your state or out of your state!
         </div>
         </div>
         <div className="center">
