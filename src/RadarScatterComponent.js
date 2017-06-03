@@ -182,21 +182,20 @@ class RadarScatterComponent extends Component {
     });
 
     return (
-      <div>
-        <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
-          transitionAppearTimeout={1000}>
-          <Select name='school-name' placeholder="Search Schools" value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)}/>
-          <div id="radar-scatter" style={{display: 'inline-block', width: '75%'}} ref={ node => this.root = node } />
-          <div style={{width: '25%', display: 'inline-block'}}>
-            <h4 id="large-radar-title"></h4>
-            <svg id="large-radar"  width="300" height="300" viewBox="0 -20 300 300" ref={ node => this.largeRadarRoot = node }></svg>
-          </div>
-          <div className="center">
-            <Button onClick={() => hashHistory.push('/map')} raised colored>&lt;&lt; Back</Button>
-            <Button onClick={() => hashHistory.push('/pre-graduation')} raised colored>Next &gt;&gt;</Button>
+        <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true} transitionAppearTimeout={1000}>
+          <div style={{width: '100%'}}>
+            <Select name='school-name' placeholder="Search Schools" value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)}/>
+            <div id="radar-scatter" style={{display: 'inline-block',"width":"65%"}} ref={ node => this.root = node } />
+            <div style={{width: '35%', display: 'inline-block'}}>
+              <h4 id="large-radar-title"></h4>
+              <svg id="large-radar" width="100%" height="400" viewBox="0 -20 300 300" ref={ node => this.largeRadarRoot = node }></svg>
+            </div>
+            <div className="center">
+              <Button onClick={() => hashHistory.push('/map')} raised colored>&lt;&lt; Back</Button>
+              <Button onClick={() => hashHistory.push('/pre-graduation')} raised colored>Next &gt;&gt;</Button>
+            </div>
           </div>
         </CSSTransitionGroup>
-      </div>
     );
   }
 }

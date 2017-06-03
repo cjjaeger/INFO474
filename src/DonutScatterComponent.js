@@ -143,18 +143,20 @@ class DonutScatterComponent extends Component {
     });
 
     return (
-      <div>
         <CSSTransitionGroup transitionName="main" transitionEnter={false} transitionLeave={false} transitionAppear={true}
           transitionAppearTimeout={1000}>
-          <Select name='school-name' placeholder='Search Schools' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
-          <div id="donut-scatter" ref={node => this.donutScatterRoot = node}></div>
-          <svg id="large-donut" style={{ width: '25%' }} width="300" height="400" ref={node => this.largeDonutRoot = node}></svg>
-          <div className="center">
-            <Button onClick={() => hashHistory.push('/pre-cost')} raised colored>&lt;&lt; Back</Button>
-            <Button onClick={() => hashHistory.push('/pre-selectivity')} raised colored>Next &gt;&gt;</Button>
+          <div style={{width: '100%'}}>
+            <Select name='school-name' placeholder='Search Schools' value='' options={schoolChoices} onChange={this.drawSelectedSchool.bind(this)} />
+            <div id="donut-scatter" style={{display: 'inline-block', width: '65%' }} ref={node => this.donutScatterRoot = node} />
+            <div style={{width: '35%', display: 'inline-block'}}>
+              <svg style={{marginLeft:"auto", marginRight:"auto"}}id="large-donut" width="100%" height="400"  ref={node => this.largeDonutRoot = node}></svg>
+            </div>
+            <div className="center">
+              <Button onClick={() => hashHistory.push('/pre-cost')} raised colored>&lt;&lt; Back</Button>
+              <Button onClick={() => hashHistory.push('/pre-selectivity')} raised colored>Next &gt;&gt;</Button>
+            </div>
           </div>
         </CSSTransitionGroup>
-      </div>
     );
   }
 }
